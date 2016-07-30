@@ -1,14 +1,17 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
+import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import org.geojson.Polygon;
 import org.threeten.extra.Interval;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class Datastream extends Entity<Datastream> {
 
-import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
-import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
-
-public class Datastream extends Entity {
+	private String name;
 	private String description;
 	private String observationType;
 	// TODO: needs proper jackson deserialization
@@ -16,28 +19,35 @@ public class Datastream extends Entity {
 	private Polygon observedArea;
 	private Interval phenomenonTime;
 	private Interval resultTime;
-	
+
 	@JsonProperty("Thing")
 	private Thing thing;
-	
+
 	@JsonProperty("Sensor")
 	private Sensor sensor;
-	
+
 	@JsonProperty("ObservedProperty")
 	private ObservedProperty observedProperty;
-	
+
 	@JsonProperty("Observations")
 	private EntityList<Observation> observations;
 
-	public Datastream() {}
-	
-	public Datastream(String description, String observationType, UnitOfMeasurement unitOfMeasurement, Polygon observedArea, Interval phenomenonTime, Interval resultTime) {
+	public Datastream() {
+	}
+
+	public Datastream(String name, String description, String observationType, UnitOfMeasurement unitOfMeasurement) {
+		this.name = name;
 		this.description = description;
 		this.observationType = observationType;
 		this.unitOfMeasurement = unitOfMeasurement;
-		this.observedArea = observedArea;
-		this.phenomenonTime = phenomenonTime;
-		this.resultTime = resultTime;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
@@ -91,7 +101,7 @@ public class Datastream extends Entity {
 	public Thing getThing() {
 		return this.thing;
 	}
-	
+
 	public void setThing(Thing thing) {
 		this.thing = thing;
 	}
@@ -99,7 +109,7 @@ public class Datastream extends Entity {
 	public Sensor getSensor() {
 		return this.sensor;
 	}
-	
+
 	public void setSensor(Sensor sensor) {
 		this.sensor = sensor;
 	}
@@ -107,7 +117,7 @@ public class Datastream extends Entity {
 	public ObservedProperty getObservedProperty() {
 		return this.observedProperty;
 	}
-	
+
 	public void setObservedProperty(ObservedProperty observedProperty) {
 		this.observedProperty = observedProperty;
 	}
@@ -115,8 +125,14 @@ public class Datastream extends Entity {
 	public EntityList<Observation> getObservations() {
 		return this.observations;
 	}
-	
+
 	public void setObservations(EntityList<Observation> observations) {
 		this.observations = observations;
 	}
+
+	@Override
+	public BaseDao<Datastream> getDao(SensorThingsService service) {
+		return new DatastreamDao(service);
+	}
+
 }

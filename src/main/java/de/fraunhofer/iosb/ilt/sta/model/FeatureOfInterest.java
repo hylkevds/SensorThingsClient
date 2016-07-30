@@ -1,21 +1,24 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
+import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import org.geojson.GeoJsonObject;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 
-import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
-
-public class FeatureOfInterest extends Entity {
 	private String description;
 	private String encodingType;
 	private GeoJsonObject feature;
 
 	@JsonProperty("Observations")
 	private EntityList<Observation> observations;
-	
-	public FeatureOfInterest() {}
-	
+
+	public FeatureOfInterest() {
+	}
+
 	public FeatureOfInterest(String description, String encodingType, GeoJsonObject feature) {
 		this.description = description;
 		this.encodingType = encodingType;
@@ -49,8 +52,14 @@ public class FeatureOfInterest extends Entity {
 	public EntityList<Observation> getObservations() {
 		return this.observations;
 	}
-	
+
 	public void setObservations(EntityList<Observation> observations) {
 		this.observations = observations;
 	}
+
+	@Override
+	public BaseDao<FeatureOfInterest> getDao(SensorThingsService service) {
+		return new FeatureOfInterestDao(service);
+	}
+
 }

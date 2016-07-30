@@ -1,10 +1,12 @@
 package de.fraunhofer.iosb.ilt.sta.model.ext;
 
 public class UnitOfMeasurement {
+
 	private String name, symbol, definition;
 
-	public UnitOfMeasurement() {}
-	
+	public UnitOfMeasurement() {
+	}
+
 	public UnitOfMeasurement(String name, String symbol, String definition) {
 		this.name = name;
 		this.symbol = symbol;
