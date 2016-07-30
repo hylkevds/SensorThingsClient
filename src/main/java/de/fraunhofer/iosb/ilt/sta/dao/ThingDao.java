@@ -5,11 +5,12 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 
 /**
  * A data access object for operations with the <i>Thing</i> entity.
- * 
+ *
  * @author Nils Sommer
  *
  */
 public class ThingDao extends BaseDao<Thing> {
+
 	public ThingDao(SensorThingsService service) {
 		super(service, "Things", Thing.class);
 	}

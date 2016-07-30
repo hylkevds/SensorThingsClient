@@ -5,25 +5,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 
 /**
  * Factory for ObjectMapper instances. Keeps track of configuration.
- * 
+ *
  * @author Nils Sommer
  *
  */
 public final class ObjectMapperFactory {
+
 	private static ObjectMapper mapper;
 
-	private ObjectMapperFactory() {}
+	private ObjectMapperFactory() {
+	}
 
 	/**
 	 * Get a preconfigured, long living instance of {@link ObjectMapper} with
 	 * all custom modules needed.
-	 * 
+	 *
 	 * @return the object mapper
 	 */
 	public static ObjectMapper get() {
@@ -34,24 +35,25 @@ public final class ObjectMapperFactory {
 			// Write any date/time values as ISO-8601 formated strings.
 			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		}
-		
+
 		return mapper;
 	}
-	
+
 	/**
-	 * Get a preconfigured, unique, short living instance of {@link ObjectMapper}
-	 * with all custom modules needed.
-	 * 
-	 * @param entityType the entity type to use when deserializing {@link EntityList}s
+	 * Get a preconfigured, unique, short living instance of
+	 * {@link ObjectMapper} with all custom modules needed.
+	 *
+	 * @param entityType the entity type to use when deserializing
+	 * {@link EntityList}s
 	 * @return the object mapper
 	 */
 	public static <T extends Entity> ObjectMapper getForEntityList(Class<T> entityType) {
 		final ObjectMapper mapper = get().copy();
-		
+
 		final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
 		m.addDeserializer(EntityList.class, new EntityListDeserializer<T>(entityType));
 		mapper.registerModule(m);
-		
+
 		return mapper;
 	}
 }

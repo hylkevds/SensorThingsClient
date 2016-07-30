@@ -2,11 +2,12 @@ package de.fraunhofer.iosb.ilt.sta.query;
 
 /**
  * This type represents failures caused by illegal queries.
- * 
+ *
  * @author Nils Sommer
  *
  */
 public class IllegalQueryException extends Exception {
+
 	private static final long serialVersionUID = -3574526953449714406L;
 
 	public IllegalQueryException() {
