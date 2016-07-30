@@ -1,11 +1,5 @@
 package de.fraunhofer.iosb.ilt.sta.jackson;
 
-import java.io.IOException;
-import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -14,29 +8,33 @@ import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Serializer for SensorThings Entities.
- * 
+ *
  * @author Nils Sommer
  *
  */
 public class EntitySerializer extends JsonSerializer<Entity> {
+
 	private static final Logger logger = LoggerFactory.getLogger(EntitySerializer.class);
-	
+
 	@Override
 	public void serialize(Entity entity, JsonGenerator gen, SerializerProvider serializers)
 			throws IOException, JsonProcessingException {
 		gen.writeStartObject();
-		
+
 		final BasicBeanDescription beanDesc = serializers.getConfig().introspect(serializers.constructType(entity.getClass()));
-		
+
 		for (BeanPropertyDefinition def : beanDesc.findProperties()) {
-			Object rawValue = def.getAccessor().getValue(entity);			
+			Object rawValue = def.getAccessor().getValue(entity);
 			// TODO: Check if prop is collection
-			
+
 			// Write field if not null.
 			if (rawValue != null) {
 				if (rawValue instanceof Entity) {
@@ -46,11 +44,28 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 					gen.writeFieldName("@iot.id");
 					gen.writeNumber(((Entity) rawValue).getId());
 					gen.writeEndObject();
-				} else if(rawValue instanceof Collection<?>) {
+				} else if (rawValue instanceof EntityList) {
+					EntityList entityList = (EntityList) rawValue;
 					// Ignore collections during serialization.
+					gen.writeFieldName(entityList.getType().getName());
+					gen.writeStartArray();
+					for (Object sub : entityList) {
+						if (sub instanceof Entity) {
+							Entity subEntity = (Entity) sub;
+							if (subEntity.getId() == null) {
+								serialize(subEntity, gen, serializers);
+							} else {
+								gen.writeStartObject();
+								gen.writeFieldName("@iot.id");
+								gen.writeNumber(subEntity.getId());
+								gen.writeEndObject();
+							}
+						}
+					}
+					gen.writeEndArray();
 					continue;
 				} else {
-					TypeSerializer typeSerializer = serializers.findTypeSerializer(serializers.constructType(def.getAccessor().getRawType()));	
+					TypeSerializer typeSerializer = serializers.findTypeSerializer(serializers.constructType(def.getAccessor().getRawType()));
 					BeanPropertyWriter writer = new BeanPropertyWriter(
 							def,
 							def.getAccessor(),
@@ -69,7 +84,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 				}
 			}
 		}
-		
+
 		gen.writeEndObject();
 	}
 }
