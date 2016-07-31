@@ -8,15 +8,18 @@ import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status.Family;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +34,7 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 	private final SensorThingsService service;
 	private final String pluralizedEntityName;
 	private final Class<T> entityClass;
-	private final MultivaluedMap<String, String> params = new MultivaluedHashMap<>();
+	private final List<NameValuePair> params = new ArrayList<>();
 
 	private final static Logger logger = LoggerFactory.getLogger(Query.class);
 
@@ -42,31 +45,31 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 	}
 
 	public Query<T> filter(String options) {
-		this.params.add("$filter", options);
+		this.params.add(new BasicNameValuePair("$filter", options));
 
 		return this;
 	}
 
 	public Query<T> top(int n) {
-		this.params.add("$top", Integer.valueOf(n).toString());
+		this.params.add(new BasicNameValuePair("$top", Integer.toString(n)));
 
 		return this;
 	}
 
 	public Query<T> orderBy(String clause) {
-		this.params.add("$orderby", clause);
+		this.params.add(new BasicNameValuePair("$orderby", clause));
 
 		return this;
 	}
 
 	public Query<T> skip(int n) {
-		this.params.add("$skip", Integer.valueOf(n).toString());
+		this.params.add(new BasicNameValuePair("$skip", Integer.valueOf(n).toString()));
 
 		return this;
 	}
 
 	public Query<T> count() {
-		this.params.add("$count", "true");
+		this.params.add(new BasicNameValuePair("$count", "true"));
 
 		return this;
 	}
@@ -79,31 +82,22 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 	public EntityList<T> list() throws ServiceFailureException {
 		EntityList<T> list = new EntityList<>(EntityType.listForClass(entityClass));
 
-		final Client client = this.service.newClient();
-		WebTarget target = client
-				.target(this.service.getEndpoint())
-				.path(this.pluralizedEntityName);
-
-		for (Map.Entry<String, List<String>> paramsByKey : this.params.entrySet()) {
-			for (String value : paramsByKey.getValue()) {
-				target = target.queryParam(paramsByKey.getKey(), value);
-			}
-		}
-
-		final Response response = target.request(MediaType.APPLICATION_JSON_TYPE).get();
-
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
-		}
-
-		final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(this.entityClass);
-
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.pluralizedEntityName));
+		uriBuilder.addParameters(params);
+		final CloseableHttpClient client = service.newClient();
+		HttpGet httpGet;
 		try {
-			list = mapper.readValue(response.readEntity(String.class),
-					EntityList.class);
-		} catch (IOException e) {
-			logger.error("Failed deserializing collection.", e);
+			httpGet = new HttpGet(uriBuilder.build());
+			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+
+			CloseableHttpResponse response = client.execute(httpGet);
+			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+			final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
+			list = mapper.readValue(json, EntityList.class);
+		} catch (URISyntaxException | IOException ex) {
+			logger.error("Failed to fetch list.", ex);
 		}
+
 		list.setService(service, entityClass);
 		return list;
 	}

@@ -11,10 +11,10 @@ import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import java.net.URI;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import java.net.URISyntaxException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * A SensorThingsService represents the service endpoint of a server.
@@ -24,15 +24,15 @@ import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 public class SensorThingsService {
 
 	private final URI endpoint;
-	private ClientConfig config = null;
+	private RequestConfig config = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param endpoint the base URI of the SensorThings service
 	 */
-	public SensorThingsService(URI endpoint) {
-		this.endpoint = endpoint;
+	public SensorThingsService(URI endpoint) throws URISyntaxException {
+		this.endpoint = new URI(endpoint.toString() + "/").normalize();
 	}
 
 	/**
@@ -41,8 +41,8 @@ public class SensorThingsService {
 	 * @param endpoint the base URI of the SensorThings service
 	 * @param config the config for the jersey client
 	 */
-	public SensorThingsService(URI endpoint, ClientConfig config) {
-		this.endpoint = endpoint;
+	public SensorThingsService(URI endpoint, RequestConfig config) throws URISyntaxException {
+		this.endpoint = new URI(endpoint.toString() + "/").normalize();
 		this.config = config;
 	}
 
@@ -50,14 +50,12 @@ public class SensorThingsService {
 		return this.endpoint;
 	}
 
-	public Client newClient() {
-		if (this.config == null) {
-			return ClientBuilder.newClient()
-					.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-		} else {
-			return ClientBuilder.newClient(this.config)
-					.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-		}
+	public CloseableHttpClient newClient() {
+		return HttpClients.createDefault();
+	}
+
+	public RequestConfig getConfig() {
+		return config;
 	}
 
 	public DatastreamDao datastreams() {
@@ -96,7 +94,7 @@ public class SensorThingsService {
 		entity.getDao(this).create(entity);
 	}
 
-	public <T extends Entity> void delete(T entity) {
+	public <T extends Entity> void delete(T entity) throws ServiceFailureException {
 		entity.getDao(this).delete(entity);
 	}
 }

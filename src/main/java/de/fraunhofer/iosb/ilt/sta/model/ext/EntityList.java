@@ -5,15 +5,18 @@ import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.apache.http.Consts;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,18 +77,18 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 					currentIterator = null;
 					return;
 				}
-				Response response = service.newClient().target(nextLink).request(MediaType.APPLICATION_JSON_TYPE).get();
-				if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
-					LOGGER.error("Failed to follow nextlink: {}.", response.getStatusInfo().getReasonPhrase());
-				}
 
-				final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
+				final CloseableHttpClient client = service.newClient();
+				HttpGet httpGet = new HttpGet(nextLink);
+				httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+				CloseableHttpResponse response;
 				EntityList nextList;
 				try {
-					nextList = mapper.readValue(
-							response.readEntity(String.class),
-							EntityList.class);
-				} catch (IOException e) {
+					response = client.execute(httpGet);
+					String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+					final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
+					nextList = mapper.readValue(json, EntityList.class);
+				} catch (Exception e) {
 					LOGGER.error("Failed deserializing collection.", e);
 					currentIterator = null;
 					nextLink = null;

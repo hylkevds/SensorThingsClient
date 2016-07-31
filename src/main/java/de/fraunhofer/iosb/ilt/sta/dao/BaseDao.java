@@ -10,11 +10,20 @@ import de.fraunhofer.iosb.ilt.sta.query.Query;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.net.URI;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status.Family;
+import java.net.URISyntaxException;
+import org.apache.http.Consts;
+import org.apache.http.Header;
+import org.apache.http.ParseException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,126 +59,118 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 	}
 
 	public void create(T entity) throws ServiceFailureException {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(this.service.getEndpoint())
-				.path(this.pluralizedEntityName);
-		final ObjectMapper mapper = ObjectMapperFactory.get();
-		String json;
+		final CloseableHttpClient client = this.service.newClient();
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(pluralizedEntityName));
 
 		try {
-			json = mapper.writeValueAsString(entity);
-		} catch (JsonProcessingException e) {
+
+			final ObjectMapper mapper = ObjectMapperFactory.get();
+			String json = mapper.writeValueAsString(entity);
+
+			HttpPost httpPost = new HttpPost(uriBuilder.build());
+			httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
+			CloseableHttpResponse response = client.execute(httpPost);
+
+			if (response.getStatusLine().getStatusCode() != 201) {
+				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase());
+			}
+
+			Header locationHeader = response.getLastHeader("location");
+			if (locationHeader == null) {
+				throw new IllegalStateException("Server did not send a location header for the new entitiy.");
+			}
+			String newLocation = locationHeader.getValue();
+			int pos1 = newLocation.indexOf('(') + 1;
+			int pos2 = newLocation.indexOf(')', pos1);
+			String stringId = newLocation.substring(pos1, pos2);
+			entity.setId(Long.valueOf(stringId));
+		} catch (JsonProcessingException | URISyntaxException e) {
+			throw new ServiceFailureException(e);
+		} catch (IOException e) {
 			throw new ServiceFailureException(e);
 		}
 
-		final Response response = target.request()
-				.post(javax.ws.rs.client.Entity.entity(json, MediaType.APPLICATION_JSON_TYPE));
-
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
-		}
-
-		String newLocation = response.getHeaderString("location");
-		int pos1 = newLocation.indexOf('(') + 1;
-		int pos2 = newLocation.indexOf(')', pos1);
-		String stringId = newLocation.substring(pos1, pos2);
-		entity.setId(Long.valueOf(stringId));
 	}
 
+	@Override
 	public T find(Long id) throws ServiceFailureException {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(this.service.getEndpoint())
-				.path(this.entityPath(id));
-		final Response response = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
-
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
-		}
-
-		// TODO: Use Jackson Provider for jersey.
-		final ObjectMapper mapper = ObjectMapperFactory.get();
-
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(id)));
 		try {
-			return mapper.readValue(response.readEntity(String.class), this.entityClass);
-		} catch (IOException e) {
-			logger.error("Failed to instantiate entity from JSON response.", e);
-			throw new ServiceFailureException(e);
+			return find(uriBuilder.build());
+		} catch (URISyntaxException ex) {
+			throw new ServiceFailureException(ex);
 		}
 	}
 
+	@Override
 	public T find(URI uri) throws ServiceFailureException {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(uri);
-		final Response response = target.request(MediaType.APPLICATION_JSON_TYPE).get();
-
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
-		}
-
-		final ObjectMapper mapper = ObjectMapperFactory.get();
-
+		CloseableHttpClient client = this.service.newClient();
 		try {
-			return mapper.readValue(response.readEntity(String.class), this.entityClass);
-		} catch (IOException e) {
-			logger.error("Failed to instantiate entity from JSON response.", e);
-			throw new ServiceFailureException(e);
+			HttpGet httpGet = new HttpGet(uri);
+			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+			CloseableHttpResponse response = client.execute(httpGet);
+			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+
+			final ObjectMapper mapper = ObjectMapperFactory.get();
+			return mapper.readValue(json, this.entityClass);
+
+		} catch (IOException | ParseException ex) {
+			throw new ServiceFailureException(ex);
 		}
 	}
 
+	@Override
 	public T find(Long id, Expansion expansion) throws ServiceFailureException {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(this.service.getEndpoint())
-				.path(this.entityPath(id))
-				.queryParam("$expand", expansion.toString());
-		final Response response = target.request(MediaType.APPLICATION_JSON_TYPE).get();
-
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
-		}
-
-		final ObjectMapper mapper = ObjectMapperFactory.get();
-
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(id)));
+		uriBuilder.addParameter("$expand", expansion.toString());
 		try {
-			return mapper.readValue(response.readEntity(String.class), this.entityClass);
-		} catch (IOException e) {
-			logger.error("Failed to instantiate entity from JSON response.", e);
-			throw new ServiceFailureException(e);
+			return find(uriBuilder.build());
+		} catch (URISyntaxException ex) {
+			throw new ServiceFailureException(ex);
 		}
 	}
 
+	@Override
 	public void update(T entity) throws ServiceFailureException {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(this.service.getEndpoint())
-				.path(this.entityPath(entity.getId()));
-
-		final ObjectMapper mapper = ObjectMapperFactory.get();
-		String json;
+		final CloseableHttpClient client = this.service.newClient();
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 
 		try {
-			json = mapper.writeValueAsString(entity);
-		} catch (JsonProcessingException e) {
-			throw new ServiceFailureException(e);
+
+			final ObjectMapper mapper = ObjectMapperFactory.get();
+			String json = mapper.writeValueAsString(entity);
+
+			HttpPatch httpPatch = new HttpPatch(uriBuilder.build());
+			httpPatch.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
+
+			CloseableHttpResponse response = client.execute(httpPatch);
+
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase());
+			}
+
+		} catch (JsonProcessingException | URISyntaxException ex) {
+			throw new ServiceFailureException(ex);
+		} catch (IOException ex) {
+			throw new ServiceFailureException(ex);
 		}
 
-		// java's HttpURLConnection doesn't support PATCH, therefore call
-		// with string arg "PATCH".
-		Response response = target.request(MediaType.APPLICATION_JSON_TYPE)
-				.method("PATCH",
-						javax.ws.rs.client.Entity.entity(json, MediaType.APPLICATION_JSON_TYPE)
-				);
+	}
 
-		if (response.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
-			throw new ServiceFailureException(response.getStatusInfo().getReasonPhrase());
+	@Override
+	public void delete(T entity) throws ServiceFailureException {
+		final CloseableHttpClient client = this.service.newClient();
+		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
+		try {
+			HttpDelete delete = new HttpDelete(uriBuilder.build());
+			client.execute(delete);
+		} catch (IOException | URISyntaxException ex) {
+			throw new ServiceFailureException(ex);
 		}
 	}
 
-	public void delete(T entity) {
-		final Client client = this.service.newClient();
-		final WebTarget target = client.target(this.service.getEndpoint())
-				.path(this.entityPath(entity.getId()));
-		target.request().delete();
-	}
-
+	@Override
 	public Query<T> query() {
 		return new Query<T>(this.service, this.pluralizedEntityName, this.entityClass);
 	}
