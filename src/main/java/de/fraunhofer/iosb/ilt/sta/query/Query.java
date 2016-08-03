@@ -84,7 +84,7 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.pluralizedEntityName));
 		uriBuilder.addParameters(params);
-		final CloseableHttpClient client = service.newClient();
+		final CloseableHttpClient client = service.getClient();
 		HttpGet httpGet;
 		try {
 			httpGet = new HttpGet(uriBuilder.build());

@@ -78,7 +78,7 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 					return;
 				}
 
-				final CloseableHttpClient client = service.newClient();
+				final CloseableHttpClient client = service.getClient();
 				HttpGet httpGet = new HttpGet(nextLink);
 				httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 				CloseableHttpResponse response;

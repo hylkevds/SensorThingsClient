@@ -25,6 +25,7 @@ public class SensorThingsService {
 
 	private final URI endpoint;
 	private RequestConfig config = null;
+	private CloseableHttpClient client;
 
 	/**
 	 * Constructor.
@@ -32,7 +33,7 @@ public class SensorThingsService {
 	 * @param endpoint the base URI of the SensorThings service
 	 */
 	public SensorThingsService(URI endpoint) throws URISyntaxException {
-		this.endpoint = new URI(endpoint.toString() + "/").normalize();
+		this(endpoint, null);
 	}
 
 	/**
@@ -44,14 +45,15 @@ public class SensorThingsService {
 	public SensorThingsService(URI endpoint, RequestConfig config) throws URISyntaxException {
 		this.endpoint = new URI(endpoint.toString() + "/").normalize();
 		this.config = config;
+		this.client = HttpClients.createDefault();
 	}
 
 	public URI getEndpoint() {
 		return this.endpoint;
 	}
 
-	public CloseableHttpClient newClient() {
-		return HttpClients.createDefault();
+	public CloseableHttpClient getClient() {
+		return client;
 	}
 
 	public RequestConfig getConfig() {

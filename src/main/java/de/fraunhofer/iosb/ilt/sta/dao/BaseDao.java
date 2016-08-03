@@ -59,7 +59,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 	}
 
 	public void create(T entity) throws ServiceFailureException {
-		final CloseableHttpClient client = this.service.newClient();
+		final CloseableHttpClient client = this.service.getClient();
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(pluralizedEntityName));
 
 		try {
@@ -105,7 +105,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public T find(URI uri) throws ServiceFailureException {
-		CloseableHttpClient client = this.service.newClient();
+		CloseableHttpClient client = this.service.getClient();
 		try {
 			HttpGet httpGet = new HttpGet(uri);
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
@@ -133,7 +133,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public void update(T entity) throws ServiceFailureException {
-		final CloseableHttpClient client = this.service.newClient();
+		final CloseableHttpClient client = this.service.getClient();
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 
 		try {
@@ -160,7 +160,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public void delete(T entity) throws ServiceFailureException {
-		final CloseableHttpClient client = this.service.newClient();
+		final CloseableHttpClient client = this.service.getClient();
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 		try {
 			HttpDelete delete = new HttpDelete(uriBuilder.build());
