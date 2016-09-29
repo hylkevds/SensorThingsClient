@@ -73,7 +73,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			CloseableHttpResponse response = client.execute(httpPost);
 
 			if (response.getStatusLine().getStatusCode() != 201) {
-				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase());
+				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(response.getEntity(), Consts.UTF_8));
 			}
 
 			Header locationHeader = response.getLastHeader("location");
