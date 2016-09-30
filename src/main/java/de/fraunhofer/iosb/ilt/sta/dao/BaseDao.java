@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -32,42 +33,60 @@ import org.slf4j.LoggerFactory;
  * entity Daos can be implemented by inheriting from this class and supplying
  * three arguments in the constructor.
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Hylke van der Schaaf
  *
  * @param <T> the entity's type
  */
 public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
 	private final SensorThingsService service;
-	private final String pluralizedEntityName;
+	private final EntityType plural;
+	private final EntityType singular;
 	private final Class<T> entityClass;
-
-	private static final Logger logger = LoggerFactory.getLogger(BaseDao.class);
+	private Entity<?> parent;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param service the service to operate on
-	 * @param pluralizedEntityName pluralized name of the entity type needed to
-	 * construct request URIs
 	 * @param entityClass the class of the entity's type
 	 */
-	public BaseDao(SensorThingsService service, String pluralizedEntityName, Class<T> entityClass) {
+	public BaseDao(SensorThingsService service, Class<T> entityClass) {
 		this.service = service;
-		this.pluralizedEntityName = pluralizedEntityName;
+		this.plural = EntityType.listForClass(entityClass);
+		this.singular = EntityType.singleForClass(entityClass);
 		this.entityClass = entityClass;
 	}
 
+	public BaseDao(SensorThingsService service, Class<T> entityClass, Entity<?> parent) {
+		this(service, entityClass);
+		this.parent = parent;
+	}
+
+	public BaseDao<T> setParent(Entity<?> parent) {
+		this.parent = parent;
+		return this;
+	}
+
+	@Override
 	public void create(T entity) throws ServiceFailureException {
+		if (parent != null && !parent.getType().hasRelationTo(plural)) {
+			throw new IllegalArgumentException("Can not create entity, not a list");
+		}
+
 		final CloseableHttpClient client = this.service.getClient();
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(pluralizedEntityName));
+		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
 
 		try {
-
 			final ObjectMapper mapper = ObjectMapperFactory.get();
 			String json = mapper.writeValueAsString(entity);
 
 			HttpPost httpPost = new HttpPost(uriBuilder.build());
+			LOGGER.debug("Posting to: {}", httpPost.getURI());
 			httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			CloseableHttpResponse response = client.execute(httpPost);
@@ -85,6 +104,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			int pos2 = newLocation.indexOf(')', pos1);
 			String stringId = newLocation.substring(pos1, pos2);
 			entity.setId(Long.valueOf(stringId));
+			entity.setService(service);
 		} catch (JsonProcessingException | URISyntaxException e) {
 			throw new ServiceFailureException(e);
 		} catch (IOException e) {
@@ -94,8 +114,14 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 	}
 
 	@Override
+	public T find(Entity<?> parent) throws ServiceFailureException {
+		URI fullPath = service.getFullPath(parent, singular);
+		return find(fullPath);
+	}
+
+	@Override
 	public T find(Long id) throws ServiceFailureException {
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(id)));
+		URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().resolve(entityPath(id)));
 		try {
 			return find(uriBuilder.build());
 		} catch (URISyntaxException ex) {
@@ -105,16 +131,23 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public T find(URI uri) throws ServiceFailureException {
-		CloseableHttpClient client = this.service.getClient();
+		CloseableHttpClient client = service.getClient();
 		try {
 			HttpGet httpGet = new HttpGet(uri);
+			LOGGER.debug("Fetching: {}", uri);
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 			CloseableHttpResponse response = client.execute(httpGet);
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 
-			final ObjectMapper mapper = ObjectMapperFactory.get();
-			return mapper.readValue(json, this.entityClass);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				LOGGER.info("{} not found; status {}; message: {}", uri, response.getStatusLine(), json);
+				return null;
+			}
 
+			final ObjectMapper mapper = ObjectMapperFactory.get();
+			T entity = mapper.readValue(json, this.entityClass);
+			entity.setService(service);
+			return entity;
 		} catch (IOException | ParseException ex) {
 			throw new ServiceFailureException(ex);
 		}
@@ -142,6 +175,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			String json = mapper.writeValueAsString(entity);
 
 			HttpPatch httpPatch = new HttpPatch(uriBuilder.build());
+			LOGGER.debug("Patching: {}", httpPatch.getURI());
 			httpPatch.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
 			CloseableHttpResponse response = client.execute(httpPatch);
@@ -163,8 +197,9 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 		final CloseableHttpClient client = this.service.getClient();
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 		try {
-			HttpDelete delete = new HttpDelete(uriBuilder.build());
-			client.execute(delete);
+			HttpDelete httpDelete = new HttpDelete(uriBuilder.build());
+			LOGGER.debug("Deleting: {}", httpDelete.getURI());
+			client.execute(httpDelete);
 		} catch (IOException | URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
 		}
@@ -172,10 +207,10 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public Query<T> query() {
-		return new Query<T>(this.service, this.pluralizedEntityName, this.entityClass);
+		return new Query<>(this.service, this.entityClass, this.parent);
 	}
 
 	private String entityPath(Long id) {
-		return String.format("%s(%d)", this.pluralizedEntityName, id);
+		return String.format("%s(%d)", this.plural.getName(), id);
 	}
 }

@@ -9,7 +9,7 @@ import java.net.URI;
 /**
  * An abstract representation of an entity.
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Hylke van der Schaaf
  * @param <T> The type of the entity implementing this interface
  *
  */
@@ -21,6 +21,23 @@ public abstract class Entity<T extends Entity> {
 
 	@JsonProperty("@iot.selfLink")
 	protected URI selfLink;
+
+	/**
+	 * The entity type.
+	 */
+	private final EntityType type;
+	/**
+	 * The service this thing belong to.
+	 */
+	SensorThingsService service;
+
+	public Entity(EntityType type) {
+		this.type = type;
+	}
+
+	public EntityType getType() {
+		return type;
+	}
 
 	public Long getId() {
 		return this.id;
@@ -36,6 +53,14 @@ public abstract class Entity<T extends Entity> {
 
 	public void setSelfLink(URI selfLink) {
 		this.selfLink = selfLink;
+	}
+
+	public void setService(SensorThingsService service) {
+		this.service = service;
+	}
+
+	public SensorThingsService getService() {
+		return service;
 	}
 
 	public abstract BaseDao<T> getDao(SensorThingsService service);

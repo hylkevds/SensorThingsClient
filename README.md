@@ -1,4 +1,4 @@
-SensorThingsClient [![Build Status](https://travis-ci.org/nsommer/SensorThingsClient.svg?branch=master)](https://travis-ci.org/nsommer/SensorThingsClient)
+SensorThingsClient [![Build Status](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient)
 ==================
 
 This library provides a Java-based client library for the [SensorThingsAPI](https://github.com/opengeospatial/sensorthings) and aims to simplify development of SensorThings enabled client applications.
@@ -62,6 +62,18 @@ EntityList<Thing> things = service.things()
 for (Thing thing : things) {
 	System.out.println("So many things!");
 }
+```
+
+Related entity sets can also be queried.
+```java
+thing = service.things().find(1l);
+
+EntityList<Datastream> dataStreams = thing.datastreams().query().list();
+for (Datastream dataStream : dataStreams) {
+	Sensor sensor = dataStream.getSensor();
+    System.out.println("dataStream " + dataStream.getId() + " has Sensor " + sensor.getId());
+}
+
 ```
 
 However, `$expand` does not work on queries yet.

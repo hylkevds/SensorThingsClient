@@ -9,7 +9,7 @@ import java.net.URI;
 /**
  * CRUD operations for data access objects (Daos).
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Hylke van der Schaaf
  *
  * @param <T> the entity's type
  */
@@ -22,6 +22,16 @@ public interface Dao<T extends Entity> {
 	 * @throws ServiceFailureException the operation failed
 	 */
 	void create(T entity) throws ServiceFailureException;
+
+	/**
+	 * Find the entity related to the given parent, like the Thing for a
+	 * Datastream.
+	 *
+	 * @param parent The parent to find the singular entity for.
+	 * @return the singular entity linked from the parent.
+	 * @throws ServiceFailureException
+	 */
+	public T find(Entity<?> parent) throws ServiceFailureException;
 
 	/**
 	 * Find an entity.

@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -22,24 +23,23 @@ public class Thing extends Entity<Thing> {
 	private EntityList<Datastream> datastreams;
 
 	public Thing() {
-	}
-
-	public Thing(String name, String description, Map<String, Object> properties) {
-		this.name = name;
-		this.description = description;
-		this.properties = properties;
+		super(EntityType.THING);
 	}
 
 	public Thing(String name, String description) {
+		this();
 		this.name = name;
 		this.description = description;
 	}
 
-	public Thing(String description, Map<String, Object> properties, EntityList<Location> locations,
-			EntityList<HistoricalLocation> historicalLocations, EntityList<Datastream> datastreams) {
-		super();
-		this.description = description;
+	public Thing(String name, String description, Map<String, Object> properties) {
+		this(name, description);
 		this.properties = properties;
+	}
+
+	public Thing(String name, String description, Map<String, Object> properties, EntityList<Location> locations,
+			EntityList<HistoricalLocation> historicalLocations, EntityList<Datastream> datastreams) {
+		this(name, description, properties);
 		this.locations = locations;
 		this.historicalLocations = historicalLocations;
 		this.datastreams = datastreams;
@@ -69,6 +69,10 @@ public class Thing extends Entity<Thing> {
 		this.properties = properties;
 	}
 
+	public BaseDao<Location> locations() {
+		return service.locations().setParent(this);
+	}
+
 	public EntityList<Location> getLocations() {
 		return this.locations;
 	}
@@ -83,6 +87,10 @@ public class Thing extends Entity<Thing> {
 
 	public void setHistoricalLocations(EntityList<HistoricalLocation> historicalLocations) {
 		this.historicalLocations = historicalLocations;
+	}
+
+	public BaseDao<Datastream> datastreams() {
+		return service.datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

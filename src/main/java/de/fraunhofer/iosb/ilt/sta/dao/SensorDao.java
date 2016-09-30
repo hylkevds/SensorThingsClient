@@ -12,6 +12,6 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 public class SensorDao extends BaseDao<Sensor> {
 
 	public SensorDao(SensorThingsService service) {
-		super(service, "Sensors", Sensor.class);
+		super(service, Sensor.class);
 	}
 }

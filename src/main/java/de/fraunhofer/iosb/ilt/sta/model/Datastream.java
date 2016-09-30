@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
@@ -33,9 +34,11 @@ public class Datastream extends Entity<Datastream> {
 	private EntityList<Observation> observations;
 
 	public Datastream() {
+		super(EntityType.DATASTREAM);
 	}
 
 	public Datastream(String name, String description, String observationType, UnitOfMeasurement unitOfMeasurement) {
+		this();
 		this.name = name;
 		this.description = description;
 		this.observationType = observationType;
@@ -98,28 +101,41 @@ public class Datastream extends Entity<Datastream> {
 		this.resultTime = resultTime;
 	}
 
-	public Thing getThing() {
-		return this.thing;
+	public Thing getThing() throws ServiceFailureException {
+		if (thing == null && service != null) {
+			thing = service.things().find(this);
+		}
+		return thing;
 	}
 
 	public void setThing(Thing thing) {
 		this.thing = thing;
 	}
 
-	public Sensor getSensor() {
-		return this.sensor;
+	public Sensor getSensor() throws ServiceFailureException {
+		if (sensor == null && service != null) {
+			sensor = service.sensors().find(this);
+		}
+		return sensor;
 	}
 
 	public void setSensor(Sensor sensor) {
 		this.sensor = sensor;
 	}
 
-	public ObservedProperty getObservedProperty() {
-		return this.observedProperty;
+	public ObservedProperty getObservedProperty() throws ServiceFailureException {
+		if (observedProperty == null && service != null) {
+			observedProperty = service.observedProperties().find(this);
+		}
+		return observedProperty;
 	}
 
 	public void setObservedProperty(ObservedProperty observedProperty) {
 		this.observedProperty = observedProperty;
+	}
+
+	public BaseDao<Observation> observations() {
+		return service.observations().setParent(this);
 	}
 
 	public EntityList<Observation> getObservations() {

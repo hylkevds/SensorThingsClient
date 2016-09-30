@@ -26,68 +26,87 @@ import org.slf4j.LoggerFactory;
 /**
  * A query for reading operations.
  *
- * @author Nils Sommer
- *
+ * @author Nils Sommer, Hylke van der Schaaf
+ * @param <T>
  */
 public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<T> {
 
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(Query.class);
 	private final SensorThingsService service;
-	private final String pluralizedEntityName;
+	private final EntityType plural;
 	private final Class<T> entityClass;
+	private final Entity<?> parent;
 	private final List<NameValuePair> params = new ArrayList<>();
 
 	private final static Logger logger = LoggerFactory.getLogger(Query.class);
 
-	public Query(SensorThingsService service, String pluralizedEntityName, Class<T> entityClass) {
-		this.service = service;
-		this.pluralizedEntityName = pluralizedEntityName;
-		this.entityClass = entityClass;
+	public Query(SensorThingsService service, Class<T> entityClass) {
+		this(service, entityClass, null);
 	}
 
+	public Query(SensorThingsService service, Class<T> entityClass, Entity<?> parent) {
+		this.service = service;
+		this.plural = EntityType.listForClass(entityClass);
+		this.entityClass = entityClass;
+		this.parent = parent;
+	}
+
+	@Override
 	public Query<T> filter(String options) {
 		this.params.add(new BasicNameValuePair("$filter", options));
 
 		return this;
 	}
 
+	@Override
 	public Query<T> top(int n) {
 		this.params.add(new BasicNameValuePair("$top", Integer.toString(n)));
 
 		return this;
 	}
 
+	@Override
 	public Query<T> orderBy(String clause) {
 		this.params.add(new BasicNameValuePair("$orderby", clause));
 
 		return this;
 	}
 
+	@Override
 	public Query<T> skip(int n) {
 		this.params.add(new BasicNameValuePair("$skip", Integer.valueOf(n).toString()));
 
 		return this;
 	}
 
+	@Override
 	public Query<T> count() {
 		this.params.add(new BasicNameValuePair("$count", "true"));
 
 		return this;
 	}
 
+	@Override
 	public T first() throws ServiceFailureException {
+		this.top(1);
 		return this.list().toList().get(0);
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public EntityList<T> list() throws ServiceFailureException {
-		EntityList<T> list = new EntityList<>(EntityType.listForClass(entityClass));
+		EntityList<T> list = new EntityList<>(plural);
 
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.pluralizedEntityName));
+		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
 		uriBuilder.addParameters(params);
 		final CloseableHttpClient client = service.getClient();
 		HttpGet httpGet;
 		try {
 			httpGet = new HttpGet(uriBuilder.build());
+			LOGGER.debug("Fetching: {}", httpGet.getURI());
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
 			CloseableHttpResponse response = client.execute(httpGet);
@@ -102,8 +121,4 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 		return list;
 	}
 
-	public T last() throws ServiceFailureException {
-		final List<T> list = this.list().toList();
-		return list.get(list.size() - 1);
-	}
 }

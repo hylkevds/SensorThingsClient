@@ -10,8 +10,10 @@ import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
 import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -19,7 +21,7 @@ import org.apache.http.impl.client.HttpClients;
 /**
  * A SensorThingsService represents the service endpoint of a server.
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Hylke van der Schaaf
  */
 public class SensorThingsService {
 
@@ -32,7 +34,7 @@ public class SensorThingsService {
 	 *
 	 * @param endpoint the base URI of the SensorThings service
 	 */
-	public SensorThingsService(URI endpoint) throws URISyntaxException {
+	public SensorThingsService(URL endpoint) throws URISyntaxException {
 		this(endpoint, null);
 	}
 
@@ -42,7 +44,7 @@ public class SensorThingsService {
 	 * @param endpoint the base URI of the SensorThings service
 	 * @param config the config for the jersey client
 	 */
-	public SensorThingsService(URI endpoint, RequestConfig config) throws URISyntaxException {
+	public SensorThingsService(URL endpoint, RequestConfig config) throws URISyntaxException {
 		this.endpoint = new URI(endpoint.toString() + "/").normalize();
 		this.config = config;
 		this.client = HttpClients.createDefault();
@@ -50,6 +52,39 @@ public class SensorThingsService {
 
 	public URI getEndpoint() {
 		return this.endpoint;
+	}
+
+	/**
+	 * The path to the entity or collection. e.g.:
+	 * <ul>
+	 * <li>Things</li>
+	 * <li>Things(2)/Datastreams</li>
+	 * <li>Datastreams(5)/Thing</li>
+	 * </ul>
+	 *
+	 * @param parent The entity holding the relation, can be null.
+	 * @param relation The relation or collection to get.
+	 * @return
+	 */
+	public String getPath(Entity<?> parent, EntityType relation) {
+		if (parent == null) {
+			return relation.getName();
+		}
+		if (!parent.getType().hasRelationTo(relation)) {
+			throw new IllegalArgumentException("Entity of type " + parent.getType() + " has no relation of type " + relation + ".");
+		}
+		return String.format("%s(%d)/%s", EntityType.listForClass(parent.getClass()).getName(), parent.getId(), relation.getName());
+	}
+
+	/**
+	 * The full path to the entity or collection.
+	 *
+	 * @param parent The entity holding the relation, can be null.
+	 * @param relation The relation or collection to get.
+	 * @return
+	 */
+	public URI getFullPath(Entity<?> parent, EntityType relation) {
+		return getEndpoint().resolve(getPath(parent, relation));
 	}
 
 	public CloseableHttpClient getClient() {

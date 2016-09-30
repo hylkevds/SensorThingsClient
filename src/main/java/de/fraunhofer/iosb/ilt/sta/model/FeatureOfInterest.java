@@ -17,9 +17,11 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 	private EntityList<Observation> observations;
 
 	public FeatureOfInterest() {
+		super(EntityType.FEATURE_OF_INTEREST);
 	}
 
 	public FeatureOfInterest(String description, String encodingType, GeoJsonObject feature) {
+		this();
 		this.description = description;
 		this.encodingType = encodingType;
 		this.feature = feature;
@@ -47,6 +49,10 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 
 	public void setFeature(GeoJsonObject feature) {
 		this.feature = feature;
+	}
+
+	public BaseDao<Observation> observations() {
+		return service.observations().setParent(this);
 	}
 
 	public EntityList<Observation> getObservations() {

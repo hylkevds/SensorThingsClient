@@ -9,7 +9,7 @@
 
 	<name>SensorThingsClient</name>
 	<url>http://maven.apache.org</url>
-  
+
 	<build>
 		<plugins>
 			<plugin>
@@ -28,6 +28,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jackson.version>2.7.0</jackson.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<!-- Jitpack autogenerates maven packages from github projects -->
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -72,9 +80,17 @@
 			<version>1.6</version>
 		</dependency>
 		<dependency>
-			<groupId>org.threeten</groupId>
+			<!--
+				Due to https://github.com/ThreeTen/threeten-extra/issues/66 we need the snapshot version.
+				Since there is no official snapshot version we use jitpack to fetch it from github.
+				When 1.1 is released this can be changed back to:
+				<groupId>org.threeten</groupId>
+				<artifactId>threeten-extra</artifactId>
+				<version>1.1</version>
+			-->
+			<groupId>com.github.ThreeTen</groupId>
 			<artifactId>threeten-extra</artifactId>
-			<version>1.0</version>
+			<version>master-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

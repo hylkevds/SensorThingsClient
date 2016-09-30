@@ -21,9 +21,11 @@ public class Location extends Entity<Location> {
 	private EntityList<HistoricalLocation> historicalLocations;
 
 	public Location() {
+		super(EntityType.LOCATION);
 	}
 
 	public Location(String name, String description, String encodingType, GeoJsonObject location) {
+		this();
 		this.name = name;
 		this.description = description;
 		this.encodingType = encodingType;
@@ -54,6 +56,10 @@ public class Location extends Entity<Location> {
 		this.encodingType = encodingType;
 	}
 
+	public BaseDao<HistoricalLocation> historicalLocations() {
+		return service.historicalLocations().setParent(this);
+	}
+
 	public EntityList<HistoricalLocation> getHistoricalLocations() {
 		return this.historicalLocations;
 	}
@@ -68,6 +74,10 @@ public class Location extends Entity<Location> {
 
 	public void setLocation(GeoJsonObject location) {
 		this.location = location;
+	}
+
+	public BaseDao<Thing> things() {
+		return service.things().setParent(this);
 	}
 
 	public EntityList<Thing> getThings() {

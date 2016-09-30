@@ -17,9 +17,11 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	private EntityList<Datastream> datastreams;
 
 	public ObservedProperty() {
+		super(EntityType.OBSERVED_PROPERTY);
 	}
 
 	public ObservedProperty(String name, URI definition, String description) {
+		this();
 		this.name = name;
 		this.definition = definition;
 		this.description = description;
@@ -47,6 +49,10 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public BaseDao<Datastream> datastreams() {
+		return service.datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -10,6 +11,7 @@ import org.threeten.extra.Interval;
 
 public class Observation extends Entity<Observation> {
 
+	// TODO: This can also be an Interval!
 	private ZonedDateTime phenomenonTime;
 	private Object result;
 	private ZonedDateTime resultTime;
@@ -24,9 +26,11 @@ public class Observation extends Entity<Observation> {
 	private FeatureOfInterest featureOfInterest;
 
 	public Observation() {
+		super(EntityType.OBSERVATION);
 	}
 
 	public Observation(Object result, Datastream datastream) {
+		this();
 		this.result = result;
 		this.datastream = datastream;
 	}
@@ -79,15 +83,21 @@ public class Observation extends Entity<Observation> {
 		this.parameters = parameters;
 	}
 
-	public Datastream getDatastream() {
-		return this.datastream;
+	public Datastream getDatastream() throws ServiceFailureException {
+		if (datastream == null && service != null) {
+			datastream = service.datastreams().find(this);
+		}
+		return datastream;
 	}
 
 	public void setDatastream(Datastream datastream) {
 		this.datastream = datastream;
 	}
 
-	public FeatureOfInterest getFeatureOfInterest() {
+	public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {
+		if (featureOfInterest == null && service != null) {
+			featureOfInterest = service.featuresOfInterest().find(this);
+		}
 		return this.featureOfInterest;
 	}
 

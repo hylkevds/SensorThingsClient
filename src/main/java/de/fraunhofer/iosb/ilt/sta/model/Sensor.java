@@ -17,9 +17,11 @@ public class Sensor extends Entity<Sensor> {
 	private EntityList<Datastream> datastreams;
 
 	public Sensor() {
+		super(EntityType.DATASTREAM);
 	}
 
 	public Sensor(String name, String description, String encodingType, Object metadata) {
+		this();
 		this.name = name;
 		this.description = description;
 		this.encodingType = encodingType;
@@ -56,6 +58,10 @@ public class Sensor extends Entity<Sensor> {
 
 	public void setMetadata(Object metadata) {
 		this.metadata = metadata;
+	}
+
+	public BaseDao<Datastream> datastreams() {
+		return service.datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

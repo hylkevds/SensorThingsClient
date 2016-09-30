@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
@@ -18,9 +19,11 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 	private Thing thing;
 
 	public HistoricalLocation() {
+		super(EntityType.HISTORICAL_LOCATION);
 	}
 
 	public HistoricalLocation(ZonedDateTime time) {
+		this();
 		this.time = time;
 	}
 
@@ -32,6 +35,10 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 		this.time = time;
 	}
 
+	public BaseDao<Location> locations() {
+		return service.locations().setParent(this);
+	}
+
 	public EntityList<Location> getLocations() {
 		return this.locations;
 	}
@@ -40,7 +47,10 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 		this.locations = locations;
 	}
 
-	public Thing getThing() {
+	public Thing getThing() throws ServiceFailureException {
+		if (thing == null && service != null) {
+			thing = service.things().find(this);
+		}
 		return this.thing;
 	}
 

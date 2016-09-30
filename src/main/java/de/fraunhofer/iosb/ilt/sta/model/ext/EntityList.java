@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An entity set.
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Hylke van der Schaaf
  *
  * @param <T> the entity's type
  */
@@ -84,10 +84,12 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 				CloseableHttpResponse response;
 				EntityList nextList;
 				try {
+					LOGGER.info("Fetching: {}", httpGet.getURI());
 					response = client.execute(httpGet);
 					String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 					final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
 					nextList = mapper.readValue(json, EntityList.class);
+					nextList.setService(service, entityClass);
 				} catch (Exception e) {
 					LOGGER.error("Failed deserializing collection.", e);
 					currentIterator = null;
@@ -191,6 +193,9 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 	public void setService(SensorThingsService service, Class<T> entityClass) {
 		this.service = service;
 		this.entityClass = entityClass;
+		for (T entity : entities) {
+			entity.setService(service);
+		}
 	}
 
 }

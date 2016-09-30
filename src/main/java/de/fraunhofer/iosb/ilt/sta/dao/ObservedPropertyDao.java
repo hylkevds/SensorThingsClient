@@ -12,6 +12,6 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 public class ObservedPropertyDao extends BaseDao<ObservedProperty> {
 
 	public ObservedPropertyDao(SensorThingsService service) {
-		super(service, "ObservedProperties", ObservedProperty.class);
+		super(service, ObservedProperty.class);
 	}
 }
