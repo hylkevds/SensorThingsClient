@@ -64,6 +64,26 @@ for (Thing thing : things) {
 }
 ```
 
+
+Entity sets only load so many entities at a time. If you want to get *all* entities,
+and there are more entities than the $top parameter allows you get in one request, you can
+use the `EntityList.fullIterator();` Iterator.
+
+```java
+EntityList<Observations> observations = service.observations()
+							.query()
+							.count()
+							.top(1000)
+							.list();
+
+Iterator<Observation> i = observations.fullIterator();
+while (i.hasNext()) {
+    Observation obs = i.next();
+	System.out.println("Observation " + obs.getId() + " has result " + obs.getResult());
+}
+```
+
+
 Related entity sets can also be queried.
 ```java
 thing = service.things().find(1l);
