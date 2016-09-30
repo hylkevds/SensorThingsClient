@@ -4,7 +4,7 @@
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>SensorThingsClient</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>SensorThingsClient</name>
@@ -21,21 +21,28 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
 		</plugins>
 	</build>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jackson.version>2.7.0</jackson.version>
+		<bintray.subject>fraunhoferiosb</bintray.subject>
+		<bintray.repo>Maven</bintray.repo>
+		<bintray.package>SensorThingsClient</bintray.package>
 	</properties>
 
-	<repositories>
+	<distributionManagement>
 		<repository>
-			<!-- Jitpack autogenerates maven packages from github projects -->
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
+			<id>fraunhoferiosb-Maven</id>
+			<url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
 		</repository>
-	</repositories>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -80,17 +87,9 @@
 			<version>1.6</version>
 		</dependency>
 		<dependency>
-			<!--
-				Due to https://github.com/ThreeTen/threeten-extra/issues/66 we need the snapshot version.
-				Since there is no official snapshot version we use jitpack to fetch it from github.
-				When 1.1 is released this can be changed back to:
-				<groupId>org.threeten</groupId>
-				<artifactId>threeten-extra</artifactId>
-				<version>1.1</version>
-			-->
-			<groupId>com.github.ThreeTen</groupId>
+			<groupId>org.threeten</groupId>
 			<artifactId>threeten-extra</artifactId>
-			<version>master-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>
