@@ -13,7 +13,7 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 	private ZonedDateTime time;
 
 	@JsonProperty("Locations")
-	private EntityList<Location> locations;
+	private EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
 
 	@JsonProperty("Thing")
 	private Thing thing;

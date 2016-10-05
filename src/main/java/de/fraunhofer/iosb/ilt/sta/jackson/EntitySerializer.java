@@ -3,6 +3,7 @@ package de.fraunhofer.iosb.ilt.sta.jackson;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
@@ -29,7 +30,8 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 			throws IOException, JsonProcessingException {
 		gen.writeStartObject();
 
-		final BasicBeanDescription beanDesc = serializers.getConfig().introspect(serializers.constructType(entity.getClass()));
+		SerializationConfig config = serializers.getConfig();
+		final BasicBeanDescription beanDesc = config.introspect(serializers.constructType(entity.getClass()));
 
 		for (BeanPropertyDefinition def : beanDesc.findProperties()) {
 			Object rawValue = def.getAccessor().getValue(entity);
@@ -38,14 +40,23 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 			// Write field if not null.
 			if (rawValue != null) {
 				if (rawValue instanceof Entity) {
-					// It's a referenced entity. -> <Entity>: { "@iot.id": <id> }
-					gen.writeFieldName(rawValue.getClass().getSimpleName());
-					gen.writeStartObject();
-					gen.writeFieldName("@iot.id");
-					gen.writeNumber(((Entity) rawValue).getId());
-					gen.writeEndObject();
+					Entity subEntity = (Entity) rawValue;
+					if (subEntity.getId() != null) {
+						// It's a referenced entity. -> <Entity>: { "@iot.id": <id> }
+						gen.writeFieldName(rawValue.getClass().getSimpleName());
+						gen.writeStartObject();
+						gen.writeFieldName("@iot.id");
+						gen.writeNumber(((Entity) rawValue).getId());
+						gen.writeEndObject();
+					} else {
+						gen.writeFieldName(rawValue.getClass().getSimpleName());
+						serialize(subEntity, gen, serializers);
+					}
 				} else if (rawValue instanceof EntityList) {
 					EntityList entityList = (EntityList) rawValue;
+					if (entityList.isEmpty()) {
+						continue;
+					}
 					// Ignore collections during serialization.
 					gen.writeFieldName(entityList.getType().getName());
 					gen.writeStartArray();

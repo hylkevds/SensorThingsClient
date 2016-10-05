@@ -15,10 +15,10 @@ public class Location extends Entity<Location> {
 	private GeoJsonObject location;
 
 	@JsonProperty("Things")
-	private EntityList<Thing> things;
+	private EntityList<Thing> things = new EntityList<>(EntityType.THINGS);
 
 	@JsonProperty("HistoricalLocations")
-	private EntityList<HistoricalLocation> historicalLocations;
+	private EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
 
 	public Location() {
 		super(EntityType.LOCATION);

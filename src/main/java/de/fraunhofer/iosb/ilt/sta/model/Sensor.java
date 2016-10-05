@@ -14,7 +14,7 @@ public class Sensor extends Entity<Sensor> {
 	private Object metadata;
 
 	@JsonProperty("Datastreams")
-	private EntityList<Datastream> datastreams;
+	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
 	public Sensor() {
 		super(EntityType.DATASTREAM);

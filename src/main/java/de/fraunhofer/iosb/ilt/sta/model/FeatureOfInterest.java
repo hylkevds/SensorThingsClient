@@ -14,7 +14,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 	private GeoJsonObject feature;
 
 	@JsonProperty("Observations")
-	private EntityList<Observation> observations;
+	private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
 	public FeatureOfInterest() {
 		super(EntityType.FEATURE_OF_INTEREST);

@@ -14,7 +14,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	private String description;
 
 	@JsonProperty("Datastreams")
-	private EntityList<Datastream> datastreams;
+	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
 	public ObservedProperty() {
 		super(EntityType.OBSERVED_PROPERTY);

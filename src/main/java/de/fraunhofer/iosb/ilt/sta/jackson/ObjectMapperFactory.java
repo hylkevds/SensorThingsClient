@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.jackson;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -30,6 +31,9 @@ public final class ObjectMapperFactory {
 	public static ObjectMapper get() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+			mapper.disable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
+			mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
 			mapper.registerModule(new JavaTimeModule());
 			mapper.registerModule(new EntityModule());
 			// Write any date/time values as ISO-8601 formated strings.

@@ -35,6 +35,12 @@ public class Observation extends Entity<Observation> {
 		this.datastream = datastream;
 	}
 
+	public Observation(Object result, ZonedDateTime phenomenonTime) {
+		this();
+		this.result = result;
+		this.phenomenonTime = phenomenonTime;
+	}
+
 	public ZonedDateTime getPhenomenonTime() {
 		return this.phenomenonTime;
 	}

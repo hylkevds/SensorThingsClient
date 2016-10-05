@@ -14,13 +14,13 @@ public class Thing extends Entity<Thing> {
 	private Map<String, Object> properties;
 
 	@JsonProperty("Locations")
-	private EntityList<Location> locations;
+	private EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
 
 	@JsonProperty("HistoricalLocations")
-	private EntityList<HistoricalLocation> historicalLocations;
+	private EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
 
 	@JsonProperty("Datastreams")
-	private EntityList<Datastream> datastreams;
+	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
 	public Thing() {
 		super(EntityType.THING);
