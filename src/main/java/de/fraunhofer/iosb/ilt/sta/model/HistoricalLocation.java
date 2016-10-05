@@ -36,7 +36,7 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 	}
 
 	public BaseDao<Location> locations() {
-		return service.locations().setParent(this);
+		return getService().locations().setParent(this);
 	}
 
 	public EntityList<Location> getLocations() {
@@ -48,8 +48,8 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 	}
 
 	public Thing getThing() throws ServiceFailureException {
-		if (thing == null && service != null) {
-			thing = service.things().find(this);
+		if (thing == null && getService() != null) {
+			thing = getService().things().find(this);
 		}
 		return this.thing;
 	}

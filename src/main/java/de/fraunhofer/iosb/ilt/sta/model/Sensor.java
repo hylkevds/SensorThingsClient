@@ -61,7 +61,7 @@ public class Sensor extends Entity<Sensor> {
 	}
 
 	public BaseDao<Datastream> datastreams() {
-		return service.datastreams().setParent(this);
+		return getService().datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

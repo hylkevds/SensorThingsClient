@@ -102,8 +102,8 @@ public class Datastream extends Entity<Datastream> {
 	}
 
 	public Thing getThing() throws ServiceFailureException {
-		if (thing == null && service != null) {
-			thing = service.things().find(this);
+		if (thing == null && getService() != null) {
+			thing = getService().things().find(this);
 		}
 		return thing;
 	}
@@ -113,8 +113,8 @@ public class Datastream extends Entity<Datastream> {
 	}
 
 	public Sensor getSensor() throws ServiceFailureException {
-		if (sensor == null && service != null) {
-			sensor = service.sensors().find(this);
+		if (sensor == null && getService() != null) {
+			sensor = getService().sensors().find(this);
 		}
 		return sensor;
 	}
@@ -124,8 +124,8 @@ public class Datastream extends Entity<Datastream> {
 	}
 
 	public ObservedProperty getObservedProperty() throws ServiceFailureException {
-		if (observedProperty == null && service != null) {
-			observedProperty = service.observedProperties().find(this);
+		if (observedProperty == null && getService() != null) {
+			observedProperty = getService().observedProperties().find(this);
 		}
 		return observedProperty;
 	}
@@ -135,7 +135,7 @@ public class Datastream extends Entity<Datastream> {
 	}
 
 	public BaseDao<Observation> observations() {
-		return service.observations().setParent(this);
+		return getService().observations().setParent(this);
 	}
 
 	public EntityList<Observation> getObservations() {

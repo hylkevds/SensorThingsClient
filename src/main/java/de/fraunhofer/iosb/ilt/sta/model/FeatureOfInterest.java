@@ -52,7 +52,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 	}
 
 	public BaseDao<Observation> observations() {
-		return service.observations().setParent(this);
+		return getService().observations().setParent(this);
 	}
 
 	public EntityList<Observation> getObservations() {

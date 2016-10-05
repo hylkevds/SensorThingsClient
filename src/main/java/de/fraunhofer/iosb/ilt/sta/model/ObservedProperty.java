@@ -52,7 +52,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	}
 
 	public BaseDao<Datastream> datastreams() {
-		return service.datastreams().setParent(this);
+		return getService().datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

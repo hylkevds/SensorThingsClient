@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
@@ -25,11 +26,13 @@ public abstract class Entity<T extends Entity> {
 	/**
 	 * The entity type.
 	 */
+	@JsonIgnore
 	private final EntityType type;
 	/**
 	 * The service this thing belong to.
 	 */
-	SensorThingsService service;
+	@JsonIgnore
+	private SensorThingsService service;
 
 	public Entity(EntityType type) {
 		this.type = type;

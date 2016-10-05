@@ -57,7 +57,7 @@ public class Location extends Entity<Location> {
 	}
 
 	public BaseDao<HistoricalLocation> historicalLocations() {
-		return service.historicalLocations().setParent(this);
+		return getService().historicalLocations().setParent(this);
 	}
 
 	public EntityList<HistoricalLocation> getHistoricalLocations() {
@@ -77,7 +77,7 @@ public class Location extends Entity<Location> {
 	}
 
 	public BaseDao<Thing> things() {
-		return service.things().setParent(this);
+		return getService().things().setParent(this);
 	}
 
 	public EntityList<Thing> getThings() {

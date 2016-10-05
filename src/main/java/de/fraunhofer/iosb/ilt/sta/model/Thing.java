@@ -70,7 +70,7 @@ public class Thing extends Entity<Thing> {
 	}
 
 	public BaseDao<Location> locations() {
-		return service.locations().setParent(this);
+		return getService().locations().setParent(this);
 	}
 
 	public EntityList<Location> getLocations() {
@@ -90,7 +90,7 @@ public class Thing extends Entity<Thing> {
 	}
 
 	public BaseDao<Datastream> datastreams() {
-		return service.datastreams().setParent(this);
+		return getService().datastreams().setParent(this);
 	}
 
 	public EntityList<Datastream> getDatastreams() {

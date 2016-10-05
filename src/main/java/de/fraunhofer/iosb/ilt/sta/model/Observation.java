@@ -84,8 +84,8 @@ public class Observation extends Entity<Observation> {
 	}
 
 	public Datastream getDatastream() throws ServiceFailureException {
-		if (datastream == null && service != null) {
-			datastream = service.datastreams().find(this);
+		if (datastream == null && getService() != null) {
+			datastream = getService().datastreams().find(this);
 		}
 		return datastream;
 	}
@@ -95,8 +95,8 @@ public class Observation extends Entity<Observation> {
 	}
 
 	public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {
-		if (featureOfInterest == null && service != null) {
-			featureOfInterest = service.featuresOfInterest().find(this);
+		if (featureOfInterest == null && getService() != null) {
+			featureOfInterest = getService().featuresOfInterest().find(this);
 		}
 		return this.featureOfInterest;
 	}
