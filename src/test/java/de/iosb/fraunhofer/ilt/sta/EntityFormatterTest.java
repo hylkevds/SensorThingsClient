@@ -29,6 +29,7 @@ import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.threeten.extra.Interval;
 
 /**
  *
@@ -261,6 +263,50 @@ public class EntityFormatterTest {
 		final ObjectMapper mapper = ObjectMapperFactory.get();
 		String json = mapper.writeValueAsString(thing);
 		assert (jsonEqual(expResult, json));
+	}
+
+	@Test
+	public void writeObservationDateTime() throws IOException {
+		String expResult
+				= "{\n"
+				+ "	\"@iot.id\": 1,\n"
+				+ "	\"phenomenonTime\": \"2014-12-31T11:59:59Z\",\n"
+				+ "	\"result\": 70.40\n"
+				+ "}";
+		Observation entity = new Observation();
+		entity.setId(1L);
+		entity.setResult(new BigDecimal("70.40"));
+		entity.setPhenomenonTimeFrom(ZonedDateTime.parse("2014-12-31T11:59:59Z"));
+
+		final ObjectMapper mapper = ObjectMapperFactory.get();
+		String json = mapper.writeValueAsString(entity);
+		assert (jsonEqual(expResult, json));
+
+		Observation parsed = mapper.readValue(expResult, Observation.class);
+		String json2 = mapper.writeValueAsString(parsed);
+		assert (jsonEqual(expResult, json2));
+	}
+
+	@Test
+	public void writeObservationInterval() throws IOException {
+		String expResult
+				= "{\n"
+				+ "	\"@iot.id\": 1,\n"
+				+ "	\"phenomenonTime\": \"2014-12-31T11:59:59Z/2014-12-31T12:01:01Z\",\n"
+				+ "	\"result\": 70.40\n"
+				+ "}";
+		Observation entity = new Observation();
+		entity.setId(1L);
+		entity.setResult(new BigDecimal("70.40"));
+		entity.setPhenomenonTimeFrom(Interval.parse("2014-12-31T11:59:59Z/2014-12-31T12:01:01Z"));
+
+		final ObjectMapper mapper = ObjectMapperFactory.get();
+		String json = mapper.writeValueAsString(entity);
+		assert (jsonEqual(expResult, json));
+
+		Observation parsed = mapper.readValue(expResult, Observation.class);
+		String json2 = mapper.writeValueAsString(parsed);
+		assert (jsonEqual(expResult, json2));
 	}
 
 	private boolean jsonEqual(String string1, String string2) {

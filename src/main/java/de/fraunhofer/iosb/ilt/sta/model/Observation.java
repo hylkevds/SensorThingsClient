@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
@@ -11,8 +12,7 @@ import org.threeten.extra.Interval;
 
 public class Observation extends Entity<Observation> {
 
-	// TODO: This can also be an Interval!
-	private ZonedDateTime phenomenonTime;
+	private TimeObject phenomenonTime;
 	private Object result;
 	private ZonedDateTime resultTime;
 	private Object resultQuality; //DQ_Element
@@ -38,14 +38,30 @@ public class Observation extends Entity<Observation> {
 	public Observation(Object result, ZonedDateTime phenomenonTime) {
 		this();
 		this.result = result;
-		this.phenomenonTime = phenomenonTime;
+		this.phenomenonTime = new TimeObject(phenomenonTime);
 	}
 
-	public ZonedDateTime getPhenomenonTime() {
+	public Observation(Object result, Interval phenomenonTime) {
+		this();
+		this.result = result;
+		this.phenomenonTime = new TimeObject(phenomenonTime);
+	}
+
+	public TimeObject getPhenomenonTime() {
 		return this.phenomenonTime;
 	}
 
-	public void setPhenomenonTime(ZonedDateTime phenomenonTime) {
+	@JsonIgnore
+	public void setPhenomenonTimeFrom(ZonedDateTime phenomenonTime) {
+		this.phenomenonTime = new TimeObject(phenomenonTime);
+	}
+
+	@JsonIgnore
+	public void setPhenomenonTimeFrom(Interval phenomenonTime) {
+		this.phenomenonTime = new TimeObject(phenomenonTime);
+	}
+
+	public void setPhenomenonTime(TimeObject phenomenonTime) {
 		this.phenomenonTime = phenomenonTime;
 	}
 
