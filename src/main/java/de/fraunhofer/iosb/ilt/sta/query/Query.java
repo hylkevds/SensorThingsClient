@@ -110,6 +110,10 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
 			CloseableHttpResponse response = client.execute(httpGet);
+			int code = response.getStatusLine().getStatusCode();
+			if (code < 200 || code >= 300) {
+				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+			}
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 			final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
 			list = mapper.readValue(json, EntityList.class);
