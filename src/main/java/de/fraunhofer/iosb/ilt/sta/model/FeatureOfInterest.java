@@ -9,6 +9,7 @@ import org.geojson.GeoJsonObject;
 
 public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 
+	private String name;
 	private String description;
 	private String encodingType;
 	private GeoJsonObject feature;
@@ -20,11 +21,20 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		super(EntityType.FEATURE_OF_INTEREST);
 	}
 
-	public FeatureOfInterest(String description, String encodingType, GeoJsonObject feature) {
+	public FeatureOfInterest(String name, String description, String encodingType, GeoJsonObject feature) {
 		this();
+		this.name = name;
 		this.description = description;
 		this.encodingType = encodingType;
 		this.feature = feature;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
