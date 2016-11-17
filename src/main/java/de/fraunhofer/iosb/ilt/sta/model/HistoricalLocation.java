@@ -7,6 +7,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 public class HistoricalLocation extends Entity<HistoricalLocation> {
 
@@ -25,6 +26,31 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 	public HistoricalLocation(ZonedDateTime time) {
 		this();
 		this.time = time;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final HistoricalLocation other = (HistoricalLocation) obj;
+		if (!Objects.equals(this.time, other.time)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 53 * hash + Objects.hashCode(this.time);
+		return hash;
 	}
 
 	public ZonedDateTime getTime() {
@@ -63,4 +89,10 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 		return new HistoricalLocationDao(service);
 	}
 
+	@Override
+	public HistoricalLocation withOnlyId() {
+		HistoricalLocation copy = new HistoricalLocation();
+		copy.setId(id);
+		return copy;
+	}
 }

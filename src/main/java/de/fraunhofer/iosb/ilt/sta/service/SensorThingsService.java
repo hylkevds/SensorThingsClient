@@ -33,6 +33,7 @@ public class SensorThingsService {
 	 * Constructor.
 	 *
 	 * @param endpoint the base URI of the SensorThings service
+	 * @throws java.net.URISyntaxException when building the final url fails.
 	 */
 	public SensorThingsService(URL endpoint) throws URISyntaxException {
 		this(endpoint, null);
@@ -43,6 +44,7 @@ public class SensorThingsService {
 	 *
 	 * @param endpoint the base URI of the SensorThings service
 	 * @param config the config for the jersey client
+	 * @throws java.net.URISyntaxException when building the final url fails.
 	 */
 	public SensorThingsService(URL endpoint, RequestConfig config) throws URISyntaxException {
 		this.endpoint = new URI(endpoint.toString() + "/").normalize();

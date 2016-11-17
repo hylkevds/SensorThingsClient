@@ -3,6 +3,7 @@ package de.fraunhofer.iosb.ilt.sta.model;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import org.threeten.extra.Interval;
 
 /**
@@ -24,6 +25,36 @@ public class TimeObject {
 	public TimeObject(ZonedDateTime value) {
 		valueDateTime = value;
 		interval = false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final TimeObject other = (TimeObject) obj;
+		if (this.interval != other.interval) {
+			return false;
+		}
+		if (!Objects.equals(this.valueInterval, other.valueInterval)) {
+			return false;
+		}
+		return Objects.equals(this.valueDateTime, other.valueDateTime);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 29 * hash + Objects.hashCode(this.valueInterval);
+		hash = 29 * hash + Objects.hashCode(this.valueDateTime);
+		hash = 29 * hash + (this.interval ? 1 : 0);
+		return hash;
 	}
 
 	public boolean isInterval() {

@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Objects;
 
 public class Sensor extends Entity<Sensor> {
 
@@ -26,6 +27,43 @@ public class Sensor extends Entity<Sensor> {
 		this.description = description;
 		this.encodingType = encodingType;
 		this.metadata = metadata;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Sensor other = (Sensor) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		if (!Objects.equals(this.description, other.description)) {
+			return false;
+		}
+		if (!Objects.equals(this.encodingType, other.encodingType)) {
+			return false;
+		}
+		if (!Objects.equals(this.metadata, other.metadata)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 59 * hash + Objects.hashCode(this.name);
+		hash = 59 * hash + Objects.hashCode(this.description);
+		hash = 59 * hash + Objects.hashCode(this.encodingType);
+		hash = 59 * hash + Objects.hashCode(this.metadata);
+		return hash;
 	}
 
 	public String getName() {
@@ -75,5 +113,12 @@ public class Sensor extends Entity<Sensor> {
 	@Override
 	public BaseDao<Sensor> getDao(SensorThingsService service) {
 		return new SensorDao(service);
+	}
+
+	@Override
+	public Sensor withOnlyId() {
+		Sensor copy = new Sensor();
+		copy.setId(id);
+		return copy;
 	}
 }

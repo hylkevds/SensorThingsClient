@@ -8,6 +8,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Objects;
 import org.threeten.extra.Interval;
 
 public class Observation extends Entity<Observation> {
@@ -45,6 +46,51 @@ public class Observation extends Entity<Observation> {
 		this();
 		this.result = result;
 		this.phenomenonTime = new TimeObject(phenomenonTime);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Observation other = (Observation) obj;
+		if (!Objects.equals(this.phenomenonTime, other.phenomenonTime)) {
+			return false;
+		}
+		if (!Objects.equals(this.result, other.result)) {
+			return false;
+		}
+		if (!Objects.equals(this.resultTime, other.resultTime)) {
+			return false;
+		}
+		if (!Objects.equals(this.resultQuality, other.resultQuality)) {
+			return false;
+		}
+		if (!Objects.equals(this.validTime, other.validTime)) {
+			return false;
+		}
+		if (!Objects.equals(this.parameters, other.parameters)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 89 * hash + Objects.hashCode(this.phenomenonTime);
+		hash = 89 * hash + Objects.hashCode(this.result);
+		hash = 89 * hash + Objects.hashCode(this.resultTime);
+		hash = 89 * hash + Objects.hashCode(this.resultQuality);
+		hash = 89 * hash + Objects.hashCode(this.validTime);
+		hash = 89 * hash + Objects.hashCode(this.parameters);
+		return hash;
 	}
 
 	public TimeObject getPhenomenonTime() {
@@ -130,6 +176,13 @@ public class Observation extends Entity<Observation> {
 	@Override
 	public BaseDao<Observation> getDao(SensorThingsService service) {
 		return new ObservationDao(service);
+	}
+
+	@Override
+	public Observation withOnlyId() {
+		Observation copy = new Observation();
+		copy.setId(id);
+		return copy;
 	}
 
 }

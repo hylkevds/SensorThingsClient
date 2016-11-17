@@ -6,6 +6,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.Map;
+import java.util.Objects;
 
 public class Thing extends Entity<Thing> {
 
@@ -43,6 +44,39 @@ public class Thing extends Entity<Thing> {
 		this.locations = locations;
 		this.historicalLocations = historicalLocations;
 		this.datastreams = datastreams;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Thing other = (Thing) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		if (!Objects.equals(this.description, other.description)) {
+			return false;
+		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 97 * hash + Objects.hashCode(this.name);
+		hash = 97 * hash + Objects.hashCode(this.description);
+		hash = 97 * hash + Objects.hashCode(this.properties);
+		return hash;
 	}
 
 	public String getName() {
@@ -104,6 +138,13 @@ public class Thing extends Entity<Thing> {
 	@Override
 	public ThingDao getDao(SensorThingsService service) {
 		return new ThingDao(service);
+	}
+
+	@Override
+	public Thing withOnlyId() {
+		Thing copy = new Thing();
+		copy.setId(id);
+		return copy;
 	}
 
 }

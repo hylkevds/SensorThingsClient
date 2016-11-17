@@ -7,6 +7,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Objects;
 import org.geojson.Polygon;
 import org.threeten.extra.Interval;
 
@@ -15,7 +16,6 @@ public class Datastream extends Entity<Datastream> {
 	private String name;
 	private String description;
 	private String observationType;
-	// TODO: needs proper jackson deserialization
 	private UnitOfMeasurement unitOfMeasurement;
 	private Polygon observedArea;
 	private Interval phenomenonTime;
@@ -43,6 +43,47 @@ public class Datastream extends Entity<Datastream> {
 		this.description = description;
 		this.observationType = observationType;
 		this.unitOfMeasurement = unitOfMeasurement;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Datastream other = (Datastream) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		if (!Objects.equals(this.description, other.description)) {
+			return false;
+		}
+		if (!Objects.equals(this.observationType, other.observationType)) {
+			return false;
+		}
+		if (!Objects.equals(this.unitOfMeasurement, other.unitOfMeasurement)) {
+			return false;
+		}
+		if (!Objects.equals(this.resultTime, other.resultTime)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 17 * hash + Objects.hashCode(this.name);
+		hash = 17 * hash + Objects.hashCode(this.description);
+		hash = 17 * hash + Objects.hashCode(this.observationType);
+		hash = 17 * hash + Objects.hashCode(this.unitOfMeasurement);
+		hash = 17 * hash + Objects.hashCode(this.resultTime);
+		return hash;
 	}
 
 	public String getName() {
@@ -151,4 +192,10 @@ public class Datastream extends Entity<Datastream> {
 		return new DatastreamDao(service);
 	}
 
+	@Override
+	public Datastream withOnlyId() {
+		Datastream copy = new Datastream();
+		copy.setId(id);
+		return copy;
+	}
 }

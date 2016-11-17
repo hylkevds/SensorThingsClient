@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Objects;
 import org.geojson.GeoJsonObject;
 
 public class FeatureOfInterest extends Entity<FeatureOfInterest> {
@@ -27,6 +28,43 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		this.description = description;
 		this.encodingType = encodingType;
 		this.feature = feature;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final FeatureOfInterest other = (FeatureOfInterest) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		if (!Objects.equals(this.description, other.description)) {
+			return false;
+		}
+		if (!Objects.equals(this.encodingType, other.encodingType)) {
+			return false;
+		}
+		if (!Objects.equals(this.feature, other.feature)) {
+			return false;
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = super.hashCode();
+		hash = 47 * hash + Objects.hashCode(this.name);
+		hash = 47 * hash + Objects.hashCode(this.description);
+		hash = 47 * hash + Objects.hashCode(this.encodingType);
+		hash = 47 * hash + Objects.hashCode(this.feature);
+		return hash;
 	}
 
 	public String getName() {
@@ -78,4 +116,10 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		return new FeatureOfInterestDao(service);
 	}
 
+	@Override
+	public FeatureOfInterest withOnlyId() {
+		FeatureOfInterest copy = new FeatureOfInterest();
+		copy.setId(id);
+		return copy;
+	}
 }
