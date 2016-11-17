@@ -18,7 +18,7 @@ public class Sensor extends Entity<Sensor> {
 	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
 	public Sensor() {
-		super(EntityType.DATASTREAM);
+		super(EntityType.SENSOR);
 	}
 
 	public Sensor(String name, String description, String encodingType, Object metadata) {
