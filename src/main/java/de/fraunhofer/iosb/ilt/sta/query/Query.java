@@ -41,8 +41,6 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 	private final Entity<?> parent;
 	private final List<NameValuePair> params = new ArrayList<>();
 
-	private final static Logger logger = LoggerFactory.getLogger(Query.class);
-
 	public Query(SensorThingsService service, Class<T> entityClass) {
 		this(service, entityClass, null);
 	}
@@ -103,13 +101,13 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
 		uriBuilder.addParameters(params);
 		final CloseableHttpClient client = service.getClient();
-		HttpGet httpGet;
+		CloseableHttpResponse response = null;
 		try {
-			httpGet = new HttpGet(uriBuilder.build());
+			HttpGet httpGet = new HttpGet(uriBuilder.build());
 			LOGGER.debug("Fetching: {}", httpGet.getURI());
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
-			CloseableHttpResponse response = client.execute(httpGet);
+			response = client.execute(httpGet);
 			int code = response.getStatusLine().getStatusCode();
 			if (code < 200 || code >= 300) {
 				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
@@ -118,7 +116,14 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 			final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
 			list = mapper.readValue(json, EntityList.class);
 		} catch (URISyntaxException | IOException ex) {
-			logger.error("Failed to fetch list.", ex);
+			LOGGER.error("Failed to fetch list.", ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
 		}
 
 		list.setService(service, entityClass);

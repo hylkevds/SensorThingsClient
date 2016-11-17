@@ -138,6 +138,10 @@ public class SensorThingsService {
 		entity.getDao(this).create(entity);
 	}
 
+	public <T extends Entity> void update(T entity) throws ServiceFailureException {
+		entity.getDao(this).update(entity);
+	}
+
 	public <T extends Entity> void delete(T entity) throws ServiceFailureException {
 		entity.getDao(this).delete(entity);
 	}

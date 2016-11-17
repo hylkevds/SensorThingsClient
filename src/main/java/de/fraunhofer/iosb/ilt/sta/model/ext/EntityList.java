@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +82,7 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 				final CloseableHttpClient client = service.getClient();
 				HttpGet httpGet = new HttpGet(nextLink);
 				httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-				CloseableHttpResponse response;
+				CloseableHttpResponse response = null;
 				EntityList nextList;
 				try {
 					LOGGER.info("Fetching: {}", httpGet.getURI());
@@ -95,6 +96,13 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 					currentIterator = null;
 					nextLink = null;
 					return;
+				} finally {
+					try {
+						if (response != null) {
+							response.close();
+						}
+					} catch (IOException ex) {
+					}
 				}
 				currentIterator = nextList.iterator();
 				nextLink = nextList.getNextLink();

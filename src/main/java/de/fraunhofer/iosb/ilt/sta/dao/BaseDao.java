@@ -79,6 +79,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 		}
 
 		final CloseableHttpClient client = this.service.getClient();
+		CloseableHttpResponse response = null;
 		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
 
 		try {
@@ -89,7 +90,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			LOGGER.debug("Posting to: {}", httpPost.getURI());
 			httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			CloseableHttpResponse response = client.execute(httpPost);
+			response = client.execute(httpPost);
 
 			if (response.getStatusLine().getStatusCode() != 201) {
 				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(response.getEntity(), Consts.UTF_8));
@@ -109,6 +110,13 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			throw new ServiceFailureException(e);
 		} catch (IOException e) {
 			throw new ServiceFailureException(e);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
 		}
 
 	}
@@ -131,12 +139,13 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public T find(URI uri) throws ServiceFailureException {
-		CloseableHttpClient client = service.getClient();
+		final CloseableHttpClient client = service.getClient();
+		CloseableHttpResponse response = null;
 		try {
 			HttpGet httpGet = new HttpGet(uri);
 			LOGGER.debug("Fetching: {}", uri);
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-			CloseableHttpResponse response = client.execute(httpGet);
+			response = client.execute(httpGet);
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
@@ -150,6 +159,13 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			return entity;
 		} catch (IOException | ParseException ex) {
 			throw new ServiceFailureException(ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
 		}
 	}
 
@@ -169,16 +185,17 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 		final CloseableHttpClient client = this.service.getClient();
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 
+		HttpPatch httpPatch = null;
+		CloseableHttpResponse response = null;
 		try {
-
 			final ObjectMapper mapper = ObjectMapperFactory.get();
 			String json = mapper.writeValueAsString(entity);
 
-			HttpPatch httpPatch = new HttpPatch(uriBuilder.build());
+			httpPatch = new HttpPatch(uriBuilder.build());
 			LOGGER.debug("Patching: {}", httpPatch.getURI());
 			httpPatch.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			CloseableHttpResponse response = client.execute(httpPatch);
+			response = client.execute(httpPatch);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
 				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase());
@@ -188,6 +205,13 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			throw new ServiceFailureException(ex);
 		} catch (IOException ex) {
 			throw new ServiceFailureException(ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
 		}
 
 	}
@@ -195,13 +219,21 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 	@Override
 	public void delete(T entity) throws ServiceFailureException {
 		final CloseableHttpClient client = this.service.getClient();
+		CloseableHttpResponse response = null;
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 		try {
 			HttpDelete httpDelete = new HttpDelete(uriBuilder.build());
 			LOGGER.debug("Deleting: {}", httpDelete.getURI());
-			client.execute(httpDelete);
+			response = client.execute(httpDelete);
 		} catch (IOException | URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
 		}
 	}
 
