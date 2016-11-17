@@ -17,6 +17,9 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	@JsonProperty("Datastreams")
 	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
+	@JsonProperty("MultiDatastreams")
+	private EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
+
 	public ObservedProperty() {
 		super(EntityType.OBSERVED_PROPERTY);
 	}
@@ -95,6 +98,18 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 
 	public void setDatastreams(EntityList<Datastream> datastreams) {
 		this.datastreams = datastreams;
+	}
+
+	public BaseDao<MultiDatastream> multiDatastreams() {
+		return getService().multiDatastreams().setParent(this);
+	}
+
+	public EntityList<MultiDatastream> getMultiDatastreams() {
+		return this.multiDatastreams;
+	}
+
+	public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
+		this.multiDatastreams = multiDatastreams;
 	}
 
 	@Override

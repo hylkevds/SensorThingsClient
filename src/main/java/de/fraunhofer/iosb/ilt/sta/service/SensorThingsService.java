@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
 import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
 import de.fraunhofer.iosb.ilt.sta.dao.LocationDao;
+import de.fraunhofer.iosb.ilt.sta.dao.MultiDatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
 import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
@@ -99,6 +100,10 @@ public class SensorThingsService {
 
 	public DatastreamDao datastreams() {
 		return new DatastreamDao(this);
+	}
+
+	public MultiDatastreamDao multiDatastreams() {
+		return new MultiDatastreamDao(this);
 	}
 
 	public FeatureOfInterestDao featuresOfInterest() {

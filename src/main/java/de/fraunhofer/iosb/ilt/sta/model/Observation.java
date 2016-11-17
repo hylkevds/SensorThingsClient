@@ -23,6 +23,9 @@ public class Observation extends Entity<Observation> {
 	@JsonProperty("Datastream")
 	private Datastream datastream;
 
+	@JsonProperty("MultiDatastream")
+	private MultiDatastream multiDatastream;
+
 	@JsonProperty("FeatureOfInterest")
 	private FeatureOfInterest featureOfInterest;
 
@@ -34,6 +37,12 @@ public class Observation extends Entity<Observation> {
 		this();
 		this.result = result;
 		this.datastream = datastream;
+	}
+
+	public Observation(Object result, MultiDatastream multiDatastream) {
+		this();
+		this.result = result;
+		this.multiDatastream = multiDatastream;
 	}
 
 	public Observation(Object result, ZonedDateTime phenomenonTime) {
@@ -160,6 +169,17 @@ public class Observation extends Entity<Observation> {
 
 	public void setDatastream(Datastream datastream) {
 		this.datastream = datastream;
+	}
+
+	public MultiDatastream getMultiDatastream() throws ServiceFailureException {
+		if (multiDatastream == null && getService() != null) {
+			multiDatastream = getService().multiDatastreams().find(this);
+		}
+		return multiDatastream;
+	}
+
+	public void setMultiDatastream(MultiDatastream multiDatastream) {
+		this.multiDatastream = multiDatastream;
 	}
 
 	public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {

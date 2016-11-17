@@ -15,7 +15,6 @@ This library provides a Java-based client library for the [SensorThingsAPI](http
 
 * Batch requests
 * *$select*
-* MultiDatastream
 * dataArray
 * MQTT
 

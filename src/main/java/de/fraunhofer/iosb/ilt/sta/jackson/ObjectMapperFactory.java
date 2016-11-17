@@ -47,6 +47,7 @@ public final class ObjectMapperFactory {
 	 * Get a preconfigured, unique, short living instance of
 	 * {@link ObjectMapper} with all custom modules needed.
 	 *
+	 * @param <T>
 	 * @param entityType the entity type to use when deserializing
 	 * {@link EntityList}s
 	 * @return the object mapper
