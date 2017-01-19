@@ -17,7 +17,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -98,16 +97,15 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 	public EntityList<T> list() throws ServiceFailureException {
 		EntityList<T> list = new EntityList<>(plural);
 
-		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
+		URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural));
 		uriBuilder.addParameters(params);
-		final CloseableHttpClient client = service.getClient();
 		CloseableHttpResponse response = null;
 		try {
 			HttpGet httpGet = new HttpGet(uriBuilder.build());
 			LOGGER.debug("Fetching: {}", httpGet.getURI());
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
-			response = client.execute(httpGet);
+			response = service.execute(httpGet);
 			int code = response.getStatusLine().getStatusCode();
 			if (code < 200 || code >= 300) {
 				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));

@@ -4,11 +4,19 @@
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>SensorThingsClient</artifactId>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>SensorThingsClient</name>
 	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jackson.version>2.8.5</jackson.version>
+		<bintray.subject>fraunhoferiosb</bintray.subject>
+		<bintray.repo>Maven</bintray.repo>
+		<bintray.package>SensorThingsClient</bintray.package>
+	</properties>
 
 	<build>
 		<plugins>
@@ -56,14 +64,6 @@
 		</plugins>
 	</build>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jackson.version>2.7.0</jackson.version>
-		<bintray.subject>fraunhoferiosb</bintray.subject>
-		<bintray.repo>Maven</bintray.repo>
-		<bintray.package>SensorThingsClient</bintray.package>
-	</properties>
-
 	<distributionManagement>
 		<repository>
 			<id>fraunhoferiosb-Maven</id>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.6.1</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.grundid.opendatalab</groupId>
@@ -117,6 +117,11 @@
 			<groupId>org.threeten</groupId>
 			<artifactId>threeten-extra</artifactId>
 			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
 		</dependency>
 	</dependencies>
 </project>

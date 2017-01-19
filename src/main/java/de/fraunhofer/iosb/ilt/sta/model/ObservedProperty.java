@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ObservedProperty extends Entity<ObservedProperty> {
 
 	private String name;
-	private URI definition;
+	private String definition;
 	private String description;
 
 	@JsonProperty("Datastreams")
@@ -27,7 +27,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	public ObservedProperty(String name, URI definition, String description) {
 		this();
 		this.name = name;
-		this.definition = definition;
+		this.definition = definition.toASCIIString();
 		this.description = description;
 	}
 
@@ -72,11 +72,11 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 		this.name = name;
 	}
 
-	public URI getDefinition() {
+	public String getDefinition() {
 		return this.definition;
 	}
 
-	public void setDefinition(URI definition) {
+	public void setDefinition(String definition) {
 		this.definition = definition;
 	}
 

@@ -12,6 +12,7 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.ParseException;
@@ -23,7 +24,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,9 +78,8 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			throw new IllegalArgumentException("Can not create entity, not a list");
 		}
 
-		final CloseableHttpClient client = this.service.getClient();
 		CloseableHttpResponse response = null;
-		URIBuilder uriBuilder = new URIBuilder(this.service.getFullPath(parent, plural));
+		URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural));
 
 		try {
 			final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -90,10 +89,14 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			LOGGER.debug("Posting to: {}", httpPost.getURI());
 			httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			response = client.execute(httpPost);
-
-			if (response.getStatusLine().getStatusCode() != 201) {
-				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+			response = service.execute(httpPost);
+			int code = response.getStatusLine().getStatusCode();
+			if (code != 201) {
+				if (code == 302 || code == 30 || code == 307) {
+					throw new ServiceFailureException("Server responded with a redirect to: " + Arrays.toString(response.getHeaders("Location")));
+				} else {
+					throw new ServiceFailureException(response.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+				}
 			}
 
 			Header locationHeader = response.getLastHeader("location");
@@ -139,13 +142,12 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public T find(URI uri) throws ServiceFailureException {
-		final CloseableHttpClient client = service.getClient();
 		CloseableHttpResponse response = null;
 		try {
 			HttpGet httpGet = new HttpGet(uri);
 			LOGGER.debug("Fetching: {}", uri);
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
-			response = client.execute(httpGet);
+			response = service.execute(httpGet);
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
@@ -154,7 +156,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			}
 
 			final ObjectMapper mapper = ObjectMapperFactory.get();
-			T entity = mapper.readValue(json, this.entityClass);
+			T entity = mapper.readValue(json, entityClass);
 			entity.setService(service);
 			return entity;
 		} catch (IOException | ParseException ex) {
@@ -182,10 +184,9 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public void update(T entity) throws ServiceFailureException {
-		final CloseableHttpClient client = this.service.getClient();
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
+		URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().resolve(entityPath(entity.getId())));
 
-		HttpPatch httpPatch = null;
+		HttpPatch httpPatch;
 		CloseableHttpResponse response = null;
 		try {
 			final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -195,7 +196,7 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 			LOGGER.debug("Patching: {}", httpPatch.getURI());
 			httpPatch.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
-			response = client.execute(httpPatch);
+			response = service.execute(httpPatch);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
 				throw new ServiceFailureException(response.getStatusLine().getReasonPhrase());
@@ -218,13 +219,12 @@ public abstract class BaseDao<T extends Entity> implements Dao<T> {
 
 	@Override
 	public void delete(T entity) throws ServiceFailureException {
-		final CloseableHttpClient client = this.service.getClient();
 		CloseableHttpResponse response = null;
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 		try {
 			HttpDelete httpDelete = new HttpDelete(uriBuilder.build());
 			LOGGER.debug("Deleting: {}", httpDelete.getURI());
-			response = client.execute(httpDelete);
+			response = service.execute(httpDelete);
 		} catch (IOException | URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
 		} finally {

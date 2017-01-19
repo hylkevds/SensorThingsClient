@@ -13,10 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.apache.http.Consts;
+import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,19 +79,18 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 					return;
 				}
 
-				final CloseableHttpClient client = service.getClient();
 				HttpGet httpGet = new HttpGet(nextLink);
 				httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 				CloseableHttpResponse response = null;
 				EntityList nextList;
 				try {
 					LOGGER.info("Fetching: {}", httpGet.getURI());
-					response = client.execute(httpGet);
+					response = service.execute(httpGet);
 					String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 					final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
 					nextList = mapper.readValue(json, EntityList.class);
 					nextList.setService(service, entityClass);
-				} catch (Exception e) {
+				} catch (IOException | ParseException e) {
 					LOGGER.error("Failed deserializing collection.", e);
 					currentIterator = null;
 					nextLink = null;

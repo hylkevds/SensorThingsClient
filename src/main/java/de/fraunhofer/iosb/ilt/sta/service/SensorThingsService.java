@@ -12,10 +12,13 @@ import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -29,6 +32,7 @@ public class SensorThingsService {
 	private final URI endpoint;
 	private RequestConfig config = null;
 	private CloseableHttpClient client;
+	private TokenManager tokenManager;
 
 	/**
 	 * Constructor.
@@ -90,8 +94,18 @@ public class SensorThingsService {
 		return getEndpoint().resolve(getPath(parent, relation));
 	}
 
-	public CloseableHttpClient getClient() {
-		return client;
+	/**
+	 * Execute the given request, adding a token header if needed.
+	 *
+	 * @param request The request to execute.
+	 * @return the response.
+	 * @throws IOException in case of problems.
+	 */
+	public CloseableHttpResponse execute(HttpUriRequest request) throws IOException {
+		if (tokenManager != null) {
+			tokenManager.addAuthHeader(request);
+		}
+		return client.execute(request);
 	}
 
 	public RequestConfig getConfig() {
@@ -145,4 +159,13 @@ public class SensorThingsService {
 	public <T extends Entity> void delete(T entity) throws ServiceFailureException {
 		entity.getDao(this).delete(entity);
 	}
+
+	public SensorThingsService setTokenManager(TokenManager tokenManager) {
+		if (tokenManager.getHttpClient() == null) {
+			tokenManager.setHttpClient(client);
+		}
+		this.tokenManager = tokenManager;
+		return this;
+	}
+
 }
