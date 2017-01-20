@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * A query for reading operations.
  *
  * @author Nils Sommer, Hylke van der Schaaf
- * @param <T>
+ * @param <T> The type of entity this query returns.
  */
 public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<T> {
 

@@ -29,7 +29,7 @@ public interface Dao<T extends Entity> {
 	 *
 	 * @param parent The parent to find the singular entity for.
 	 * @return the singular entity linked from the parent.
-	 * @throws ServiceFailureException
+	 * @throws ServiceFailureException the operation failed
 	 */
 	public T find(Entity<?> parent) throws ServiceFailureException;
 

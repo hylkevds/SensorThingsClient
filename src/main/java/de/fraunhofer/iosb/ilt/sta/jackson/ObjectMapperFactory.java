@@ -32,7 +32,6 @@ public final class ObjectMapperFactory {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-			mapper.disable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
 			mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
 			mapper.registerModule(new JavaTimeModule());
 			mapper.registerModule(new EntityModule());
@@ -47,7 +46,7 @@ public final class ObjectMapperFactory {
 	 * Get a preconfigured, unique, short living instance of
 	 * {@link ObjectMapper} with all custom modules needed.
 	 *
-	 * @param <T>
+	 * @param <T> The entity type, inferred.
 	 * @param entityType the entity type to use when deserializing
 	 * {@link EntityList}s
 	 * @return the object mapper

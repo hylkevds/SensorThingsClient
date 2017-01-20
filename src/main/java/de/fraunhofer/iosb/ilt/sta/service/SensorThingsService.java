@@ -62,7 +62,7 @@ public class SensorThingsService {
 	}
 
 	/**
-	 * The path to the entity or collection. e.g.:
+	 * The local path to the entity or collection. e.g.:
 	 * <ul>
 	 * <li>Things</li>
 	 * <li>Things(2)/Datastreams</li>
@@ -88,7 +88,7 @@ public class SensorThingsService {
 	 *
 	 * @param parent The entity holding the relation, can be null.
 	 * @param relation The relation or collection to get.
-	 * @return
+	 * @return the full path to the entity or collection.
 	 */
 	public URI getFullPath(Entity<?> parent, EntityType relation) {
 		return getEndpoint().resolve(getPath(parent, relation));
