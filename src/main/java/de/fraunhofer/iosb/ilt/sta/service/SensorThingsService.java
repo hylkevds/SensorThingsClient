@@ -71,7 +71,7 @@ public class SensorThingsService {
 	 *
 	 * @param parent The entity holding the relation, can be null.
 	 * @param relation The relation or collection to get.
-	 * @return
+	 * @return The path to the entity collection.
 	 */
 	public String getPath(Entity<?> parent, EntityType relation) {
 		if (parent == null) {
@@ -112,54 +112,112 @@ public class SensorThingsService {
 		return config;
 	}
 
+	/**
+	 * @return a new Datastream Dao.
+	 */
 	public DatastreamDao datastreams() {
 		return new DatastreamDao(this);
 	}
 
+	/**
+	 * @return a new MultiDatastream Dao.
+	 */
 	public MultiDatastreamDao multiDatastreams() {
 		return new MultiDatastreamDao(this);
 	}
 
+	/**
+	 * @return a new FeatureOfInterest Dao.
+	 */
 	public FeatureOfInterestDao featuresOfInterest() {
 		return new FeatureOfInterestDao(this);
 	}
 
+	/**
+	 * @return a new HistoricalLocation Dao.
+	 */
 	public HistoricalLocationDao historicalLocations() {
 		return new HistoricalLocationDao(this);
 	}
 
+	/**
+	 * @return a new Location Dao.
+	 */
 	public LocationDao locations() {
 		return new LocationDao(this);
 	}
 
+	/**
+	 * @return a new Observation Dao.
+	 */
 	public ObservationDao observations() {
 		return new ObservationDao(this);
 	}
 
+	/**
+	 * @return a new PbservedProperty Dao.
+	 */
 	public ObservedPropertyDao observedProperties() {
 		return new ObservedPropertyDao(this);
 	}
 
+	/**
+	 * @return a new Sensor Dao.
+	 */
 	public SensorDao sensors() {
 		return new SensorDao(this);
 	}
 
+	/**
+	 * @return a new Thing Dao.
+	 */
 	public ThingDao things() {
 		return new ThingDao(this);
 	}
 
+	/**
+	 * Create the given entity in this service. Executes a POST to the
+	 * Collection of the entity type. The entity will be updated with the ID of
+	 * the entity in the Service and it will be linked to the Service.
+	 *
+	 * @param <T> The type of entity to create. Inferred from the entity.
+	 * @param entity The entity to create in the service.
+	 * @throws ServiceFailureException in case the server rejects the POST.
+	 */
 	public <T extends Entity> void create(T entity) throws ServiceFailureException {
 		entity.getDao(this).create(entity);
 	}
 
+	/**
+	 * Patches the entity in the Service.
+	 *
+	 * @param <T> The type of entity to update. Inferred from the entity.
+	 * @param entity The entity to update in the service.
+	 * @throws ServiceFailureException in case the server rejects the PATCH.
+	 */
 	public <T extends Entity> void update(T entity) throws ServiceFailureException {
 		entity.getDao(this).update(entity);
 	}
 
+	/**
+	 * Deletes the given entity from the service.
+	 *
+	 * @param <T> The type of entity to delete. Inferred from the entity.
+	 * @param entity The entity to delete in the service.
+	 * @throws ServiceFailureException in case the server rejects the DELETE.
+	 */
 	public <T extends Entity> void delete(T entity) throws ServiceFailureException {
 		entity.getDao(this).delete(entity);
 	}
 
+	/**
+	 * Sets the TokenManager. Before each request is sent to the Service, the
+	 * TokenManager has the opportunity to modify the request and add any
+	 * headers required for Authentication and Authorisation.
+	 *
+	 * @param tokenManager The TokenManager to use.
+	 * @return This SensorThingsService.
+	 */
 	public SensorThingsService setTokenManager(TokenManager tokenManager) {
 		if (tokenManager.getHttpClient() == null) {
 			tokenManager.setHttpClient(client);
