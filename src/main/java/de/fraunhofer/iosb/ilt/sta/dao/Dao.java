@@ -13,7 +13,7 @@ import java.net.URI;
  *
  * @param <T> the entity's type
  */
-public interface Dao<T extends Entity> {
+public interface Dao<T extends Entity<T>> {
 
 	/**
 	 * Create a new entity.

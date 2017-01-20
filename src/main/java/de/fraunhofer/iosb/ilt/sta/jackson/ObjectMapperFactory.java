@@ -51,13 +51,13 @@ public final class ObjectMapperFactory {
 	 * {@link EntityList}s
 	 * @return the object mapper
 	 */
-	public static <T extends Entity> ObjectMapper getForEntityList(Class<T> entityType) {
-		final ObjectMapper mapper = get().copy();
+	public static <T extends Entity<T>> ObjectMapper getForEntityList(Class<T> entityType) {
+		final ObjectMapper localMapper = get().copy();
 
 		final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
 		m.addDeserializer(EntityList.class, new EntityListDeserializer<T>(entityType));
-		mapper.registerModule(m);
+		localMapper.registerModule(m);
 
-		return mapper;
+		return localMapper;
 	}
 }

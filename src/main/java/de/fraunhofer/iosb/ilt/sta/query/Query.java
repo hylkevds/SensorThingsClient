@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils Sommer, Hylke van der Schaaf
  * @param <T> The type of entity this query returns.
  */
-public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<T> {
+public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParameter<T> {
 
 	/**
 	 * The logger for this class.
@@ -74,7 +74,7 @@ public class Query<T extends Entity> implements QueryRequest<T>, QueryParameter<
 
 	@Override
 	public Query<T> skip(int n) {
-		this.params.add(new BasicNameValuePair("$skip", Integer.valueOf(n).toString()));
+		this.params.add(new BasicNameValuePair("$skip", Integer.toString(n)));
 
 		return this;
 	}

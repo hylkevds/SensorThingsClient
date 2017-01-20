@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.model.ext;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> the entity's type
  */
-public class EntityList<T extends Entity> implements EntityCollection<T> {
+public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityList.class.getName());
 
@@ -82,13 +83,14 @@ public class EntityList<T extends Entity> implements EntityCollection<T> {
 				HttpGet httpGet = new HttpGet(nextLink);
 				httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 				CloseableHttpResponse response = null;
-				EntityList nextList;
+				EntityList<T> nextList;
 				try {
 					LOGGER.info("Fetching: {}", httpGet.getURI());
 					response = service.execute(httpGet);
 					String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 					final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
-					nextList = mapper.readValue(json, EntityList.class);
+					JavaType type = mapper.getTypeFactory().constructParametricType(EntityList.class, entityClass);
+					nextList = mapper.readValue(json, type);
 					nextList.setService(service, entityClass);
 				} catch (IOException | ParseException e) {
 					LOGGER.error("Failed deserializing collection.", e);

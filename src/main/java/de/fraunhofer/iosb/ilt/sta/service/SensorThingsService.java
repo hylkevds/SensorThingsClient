@@ -184,7 +184,7 @@ public class SensorThingsService {
 	 * @param entity The entity to create in the service.
 	 * @throws ServiceFailureException in case the server rejects the POST.
 	 */
-	public <T extends Entity> void create(T entity) throws ServiceFailureException {
+	public <T extends Entity<T>> void create(T entity) throws ServiceFailureException {
 		entity.getDao(this).create(entity);
 	}
 
@@ -195,7 +195,7 @@ public class SensorThingsService {
 	 * @param entity The entity to update in the service.
 	 * @throws ServiceFailureException in case the server rejects the PATCH.
 	 */
-	public <T extends Entity> void update(T entity) throws ServiceFailureException {
+	public <T extends Entity<T>> void update(T entity) throws ServiceFailureException {
 		entity.getDao(this).update(entity);
 	}
 
@@ -206,7 +206,7 @@ public class SensorThingsService {
 	 * @param entity The entity to delete in the service.
 	 * @throws ServiceFailureException in case the server rejects the DELETE.
 	 */
-	public <T extends Entity> void delete(T entity) throws ServiceFailureException {
+	public <T extends Entity<T>> void delete(T entity) throws ServiceFailureException {
 		entity.getDao(this).delete(entity);
 	}
 
@@ -215,15 +215,22 @@ public class SensorThingsService {
 	 * TokenManager has the opportunity to modify the request and add any
 	 * headers required for Authentication and Authorisation.
 	 *
-	 * @param tokenManager The TokenManager to use.
+	 * @param tokenManager The TokenManager to use, can be null.
 	 * @return This SensorThingsService.
 	 */
 	public SensorThingsService setTokenManager(TokenManager tokenManager) {
-		if (tokenManager.getHttpClient() == null) {
+		if (tokenManager != null && tokenManager.getHttpClient() == null) {
 			tokenManager.setHttpClient(client);
 		}
 		this.tokenManager = tokenManager;
 		return this;
+	}
+
+	/**
+	 * @return The current TokenManager.
+	 */
+	public TokenManager getTokenManager() {
+		return tokenManager;
 	}
 
 }

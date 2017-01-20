@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> the entity's type
  */
-public abstract class BaseDao<T extends Entity> implements Dao<T> {
+public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 
 	/**
 	 * The logger for this class.

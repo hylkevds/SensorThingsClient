@@ -17,7 +17,7 @@ import java.util.Objects;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class Entity<T extends Entity> {
+public abstract class Entity<T extends Entity<T>> {
 
 	@JsonProperty("@iot.id")
 	protected Long id;

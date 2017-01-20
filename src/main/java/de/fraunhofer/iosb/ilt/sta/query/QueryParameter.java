@@ -9,7 +9,7 @@ import de.fraunhofer.iosb.ilt.sta.model.Entity;
  *
  * @param <T> the query's entity type
  */
-public interface QueryParameter<T extends Entity> {
+public interface QueryParameter<T extends Entity<T>> {
 
 	/**
 	 * Add the filter parameter as specified by the SensorThingsAPI

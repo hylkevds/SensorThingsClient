@@ -11,7 +11,7 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
  *
  * @param <T> the query's entity type
  */
-public interface QueryRequest<T extends Entity> {
+public interface QueryRequest<T extends Entity<T>> {
 
 	/**
 	 * Get the first instance of an entity collection.

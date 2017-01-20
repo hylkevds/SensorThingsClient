@@ -16,7 +16,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EntityListDeserializer<T extends Entity> extends StdDeserializer<EntityList<T>> {
+public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer<EntityList<T>> {
 
 	private static final long serialVersionUID = 8376494553925868647L;
 	private static final Logger logger = LoggerFactory.getLogger(EntityListDeserializer.class);
