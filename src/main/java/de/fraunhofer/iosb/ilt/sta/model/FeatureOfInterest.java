@@ -122,4 +122,9 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		copy.setId(id);
 		return copy;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + getName();
+	}
 }

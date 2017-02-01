@@ -226,4 +226,9 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 		copy.setId(id);
 		return copy;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + getName();
+	}
 }

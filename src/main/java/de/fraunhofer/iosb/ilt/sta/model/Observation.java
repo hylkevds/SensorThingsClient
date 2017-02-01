@@ -205,4 +205,9 @@ public class Observation extends Entity<Observation> {
 		return copy;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " " + getPhenomenonTime().toString() + " " + getResult().toString();
+	}
+
 }

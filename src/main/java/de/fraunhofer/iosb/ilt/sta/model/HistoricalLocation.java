@@ -95,4 +95,9 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
 		copy.setId(id);
 		return copy;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + time.toString();
+	}
 }

@@ -162,4 +162,9 @@ public class Thing extends Entity<Thing> {
 		return copy;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " " + getName();
+	}
+
 }

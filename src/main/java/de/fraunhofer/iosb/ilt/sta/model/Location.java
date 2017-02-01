@@ -141,4 +141,9 @@ public class Location extends Entity<Location> {
 		copy.setId(id);
 		return copy;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + getName();
+	}
 }

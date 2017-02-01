@@ -108,4 +108,13 @@ public abstract class Entity<T extends Entity<T>> {
 	 * @return a copy with only the ID field set.
 	 */
 	public abstract T withOnlyId();
+
+	@Override
+	public String toString() {
+		if (id == null) {
+			return "no id";
+		}
+		return id.toString();
+	}
+
 }
