@@ -54,7 +54,7 @@ public class SensorThingsService {
 	public SensorThingsService(URL endpoint, RequestConfig config) throws URISyntaxException {
 		this.endpoint = new URI(endpoint.toString() + "/").normalize();
 		this.config = config;
-		this.client = HttpClients.createDefault();
+		this.client = HttpClients.createSystem();
 	}
 
 	public URI getEndpoint() {
