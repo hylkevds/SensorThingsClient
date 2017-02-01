@@ -19,10 +19,10 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Entity<T extends Entity<T>> {
 
-	@JsonProperty("@iot.id")
+	@JsonProperty(value = "@iot.id")
 	protected Long id;
 
-	@JsonProperty("@iot.selfLink")
+	@JsonProperty(value = "@iot.selfLink", access = JsonProperty.Access.READ_ONLY)
 	protected URI selfLink;
 
 	/**
