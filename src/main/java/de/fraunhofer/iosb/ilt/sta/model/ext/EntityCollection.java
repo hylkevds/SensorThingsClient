@@ -25,6 +25,17 @@ public interface EntityCollection<T extends Entity> extends Collection<T> {
 	List<T> toList();
 
 	/**
+	 *
+	 * @return true if there is a nextLink to fetch more Entities.
+	 */
+	boolean hasNextLink();
+
+	/**
+	 * Use the nextLink to fetch more Entities.
+	 */
+	void fetchNext();
+
+	/**
 	 * Get the count value if available.
 	 *
 	 * @return the count value

@@ -132,6 +132,43 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
 	}
 
 	@Override
+	public boolean hasNextLink() {
+		return nextLink != null;
+	}
+
+	@Override
+	public void fetchNext() {
+		CloseableHttpResponse response = null;
+		try {
+			HttpGet httpGet = new HttpGet(nextLink);
+			LOGGER.debug("Fetching: {}", httpGet.getURI());
+			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+
+			response = service.execute(httpGet);
+			int code = response.getStatusLine().getStatusCode();
+			if (code < 200 || code >= 300) {
+				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+			}
+			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+			final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
+			EntityList nextList = mapper.readValue(json, EntityList.class);
+			nextList.setService(service, entityClass);
+			clear();
+			addAll(nextList);
+			setNextLink(nextList.getNextLink());
+		} catch (IOException ex) {
+			LOGGER.error("Failed to fetch list.", ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+			}
+		}
+	}
+
+	@Override
 	public Object[] toArray() {
 		return this.entities.toArray();
 	}
