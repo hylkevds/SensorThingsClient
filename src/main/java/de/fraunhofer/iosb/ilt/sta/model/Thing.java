@@ -118,6 +118,10 @@ public class Thing extends Entity<Thing> {
 		this.locations = locations;
 	}
 
+	public BaseDao<HistoricalLocation> historicalLocations() {
+		return getService().historicalLocations().setParent(this);
+	}
+
 	public EntityList<HistoricalLocation> getHistoricalLocations() {
 		return this.historicalLocations;
 	}
