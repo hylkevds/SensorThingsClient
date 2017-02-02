@@ -51,6 +51,14 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 		this.parent = parent;
 	}
 
+	public EntityType getEntityType() {
+		return plural;
+	}
+
+	public SensorThingsService getService() {
+		return service;
+	}
+
 	@Override
 	public Query<T> filter(String options) {
 		this.params.add(new BasicNameValuePair("$filter", options));
