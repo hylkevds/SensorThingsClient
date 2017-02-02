@@ -80,6 +80,9 @@ public class SensorThingsService {
 		if (!parent.getType().hasRelationTo(relation)) {
 			throw new IllegalArgumentException("Entity of type " + parent.getType() + " has no relation of type " + relation + ".");
 		}
+		if (parent.getId() == null) {
+			throw new IllegalArgumentException("Can not create a path with a parent without id.");
+		}
 		return String.format("%s(%d)/%s", EntityType.listForClass(parent.getClass()).getName(), parent.getId(), relation.getName());
 	}
 
