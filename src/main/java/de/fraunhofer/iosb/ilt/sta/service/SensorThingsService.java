@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,7 +29,6 @@ import org.apache.http.impl.client.HttpClients;
 public class SensorThingsService {
 
 	private final URI endpoint;
-	private RequestConfig config = null;
 	private CloseableHttpClient client;
 	private TokenManager tokenManager;
 
@@ -41,19 +39,7 @@ public class SensorThingsService {
 	 * @throws java.net.URISyntaxException when building the final url fails.
 	 */
 	public SensorThingsService(URL endpoint) throws URISyntaxException {
-		this(endpoint, null);
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param endpoint the base URI of the SensorThings service
-	 * @param config the config for the jersey client
-	 * @throws java.net.URISyntaxException when building the final url fails.
-	 */
-	public SensorThingsService(URL endpoint, RequestConfig config) throws URISyntaxException {
 		this.endpoint = new URI(endpoint.toString() + "/").normalize();
-		this.config = config;
 		this.client = HttpClients.createSystem();
 	}
 
@@ -109,10 +95,6 @@ public class SensorThingsService {
 			tokenManager.addAuthHeader(request);
 		}
 		return client.execute(request);
-	}
-
-	public RequestConfig getConfig() {
-		return config;
 	}
 
 	/**
@@ -234,6 +216,24 @@ public class SensorThingsService {
 	 */
 	public TokenManager getTokenManager() {
 		return tokenManager;
+	}
+
+	/**
+	 * Get the httpclient used for requests.
+	 *
+	 * @return the client
+	 */
+	public CloseableHttpClient getClient() {
+		return client;
+	}
+
+	/**
+	 * Set the httpclient used for requests.
+	 *
+	 * @param client the client to set
+	 */
+	public void setClient(CloseableHttpClient client) {
+		this.client = client;
 	}
 
 }
