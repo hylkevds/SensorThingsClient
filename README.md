@@ -108,6 +108,35 @@ Thing thing = service.things().find(1l,
 EntityList<Location> locations = thing.getLocations();
 ```
 
+### DataArray for Observation creation
+
+Using DataArrays for creating Observations is more efficient, since only one http request
+ is done, and the observations are more efficiently encoded in this request, so the request
+ is smaller than the sum of the separate, normal requests.
+
+```java
+Set<DataArrayValue.Property> properties = new HashSet<>();
+properties.add(DataArrayValue.Property.Result);
+properties.add(DataArrayValue.Property.PhenomenonTime);
+
+DataArrayValue dav1 = new DataArrayValue(datastream1, properties);
+dav1.addObservation(observation1);
+dav1.addObservation(observation2);
+dav1.addObservation(observation3);
+
+DataArrayValue dav2 = new DataArrayValue(multiDatastream1, properties);
+dav2.addObservation(observation4);
+dav2.addObservation(observation5);
+dav2.addObservation(observation6);
+
+DataArrayDocument dad = new DataArrayDocument();
+dad.addDataArrayValue(dav1);
+dad.addDataArrayValue(dav2);
+
+service.create(dad);
+
+```
+
 ## Background
 
 This library emerged from a practical work for a lecture at [KIT](http://www.kit.edu) in collaboration with the [Fraunhofer IOSB](http://iosb.fraunhofer.de). A [server implementation](https://github.com/FraunhoferIOSB/SensorThingsServer) of the SensorThingsAPI, developed by the Fraunhofer IOSB, is available on GitHub as well.

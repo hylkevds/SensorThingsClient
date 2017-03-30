@@ -4,7 +4,7 @@
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>SensorThingsClient</artifactId>
-	<version>0.8</version>
+	<version>0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>SensorThingsClient</name>

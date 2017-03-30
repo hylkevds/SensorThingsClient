@@ -245,4 +245,9 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 	private String entityPath(Long id) {
 		return String.format("%s(%d)", this.plural.getName(), id);
 	}
+
+	protected SensorThingsService getService() {
+		return service;
+	}
+
 }

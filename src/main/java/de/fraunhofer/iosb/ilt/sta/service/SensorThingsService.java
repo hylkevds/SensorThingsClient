@@ -12,10 +12,12 @@ import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
+import de.fraunhofer.iosb.ilt.sta.model.ext.DataArrayDocument;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -158,6 +160,16 @@ public class SensorThingsService {
 	 */
 	public ThingDao things() {
 		return new ThingDao(this);
+	}
+
+	/**
+	 *
+	 * @param dataArray The Observations to create.
+	 * @return The response of the service.
+	 * @throws ServiceFailureException in case the server rejects the POST.
+	 */
+	public List<String> create(DataArrayDocument dataArray) throws ServiceFailureException {
+		return new ObservationDao(this).create(dataArray);
 	}
 
 	/**
