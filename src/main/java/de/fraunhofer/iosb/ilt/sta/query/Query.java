@@ -55,6 +55,10 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 		return plural;
 	}
 
+	public Class<T> getEntityClass() {
+		return entityClass;
+	}
+
 	public SensorThingsService getService() {
 		return service;
 	}
