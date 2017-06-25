@@ -30,9 +30,17 @@ import org.apache.http.impl.client.HttpClients;
  */
 public class SensorThingsService {
 
-	private final URI endpoint;
+	private URI endpoint;
 	private CloseableHttpClient client;
 	private TokenManager tokenManager;
+
+	/**
+	 * Creates a new SensorThingsService without an endpoint url set. The
+	 * endpoint url MUST be set before the service can be used.
+	 */
+	public SensorThingsService() {
+		this.client = HttpClients.createSystem();
+	}
 
 	/**
 	 * Constructor.
@@ -45,7 +53,24 @@ public class SensorThingsService {
 		this.client = HttpClients.createSystem();
 	}
 
+	/**
+	 * Sets the endpoint URI. Once the endpoint URI is set it can not be
+	 * changed. The endpoint url MUST be set before the service can be used.
+	 *
+	 * @param endpoint The URL of the endpoint.
+	 * @throws java.net.URISyntaxException when building the final url fails.
+	 */
+	public void setEndpoint(URI endpoint) throws URISyntaxException {
+		if (this.endpoint != null) {
+			throw new IllegalStateException("endpoint URI already set.");
+		}
+		this.endpoint = new URI(endpoint.toString() + "/").normalize();
+	}
+
 	public URI getEndpoint() {
+		if (this.endpoint == null) {
+			throw new IllegalStateException("endpoint URI not set.");
+		}
 		return this.endpoint;
 	}
 
