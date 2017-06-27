@@ -31,7 +31,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 	private Sensor sensor;
 
 	@JsonProperty("ObservedProperties")
-	private EntityList<ObservedProperty> observedProperties;
+	private EntityList<ObservedProperty> observedProperties = new EntityList<>(EntityType.OBSERVED_PROPERTIES);
 
 	@JsonProperty("Observations")
 	private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);

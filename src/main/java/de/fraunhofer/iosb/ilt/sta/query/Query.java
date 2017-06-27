@@ -101,7 +101,11 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 	@Override
 	public T first() throws ServiceFailureException {
 		this.top(1);
-		return this.list().toList().get(0);
+		List<T> asList = this.list().toList();
+		if (asList.isEmpty()) {
+			return null;
+		}
+		return asList.get(0);
 	}
 
 	@SuppressWarnings("unchecked")
