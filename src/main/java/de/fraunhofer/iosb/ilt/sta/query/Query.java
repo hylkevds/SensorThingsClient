@@ -93,8 +93,17 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 
 	@Override
 	public Query<T> count() {
-		this.params.add(new BasicNameValuePair("$count", "true"));
+		params.add(new BasicNameValuePair("$count", "true"));
+		return this;
+	}
 
+	public Query<T> expand(Expansion expansion) {
+		params.add(new BasicNameValuePair("$expand", expansion.toString()));
+		return this;
+	}
+
+	public Query<T> expand(String expansion) {
+		params.add(new BasicNameValuePair("$expand", expansion));
 		return this;
 	}
 
@@ -127,8 +136,8 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
 			}
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
-			final ObjectMapper mapper = ObjectMapperFactory.<T>getForEntityList(entityClass);
-			list = mapper.readValue(json, EntityList.class);
+			final ObjectMapper mapper = ObjectMapperFactory.get();
+			list = mapper.readValue(json, plural.getTypeReference());
 		} catch (URISyntaxException | IOException ex) {
 			LOGGER.error("Failed to fetch list.", ex);
 		} finally {

@@ -1,5 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,26 +15,45 @@ import java.util.Set;
  *
  */
 public enum EntityType {
-	DATASTREAM(Datastream.class, "Datastream", false),
-	DATASTREAMS(Datastream.class, "Datastreams", true),
-	MULTIDATASTREAM(MultiDatastream.class, "MultiDatastream", false),
-	MULTIDATASTREAMS(MultiDatastream.class, "MultiDatastreams", true),
-	FEATURE_OF_INTEREST(FeatureOfInterest.class, "FeatureOfInterest", false),
-	FEATURES_OF_INTEREST(FeatureOfInterest.class, "FeaturesOfInterest", true),
-	HISTORICAL_LOCATION(HistoricalLocation.class, "HistoricalLocation", false),
-	HISTORICAL_LOCATIONS(HistoricalLocation.class, "HistoricalLocations", true),
-	LOCATION(Location.class, "Location", false),
-	LOCATIONS(Location.class, "Locations", true),
-	OBSERVATION(Observation.class, "Observation", false),
-	OBSERVATIONS(Observation.class, "Observations", true),
-	OBSERVED_PROPERTY(ObservedProperty.class, "ObservedProperty", false),
-	OBSERVED_PROPERTIES(ObservedProperty.class, "ObservedProperties", true),
-	SENSOR(Sensor.class, "Sensor", false),
-	SENSORS(Sensor.class, "Sensors", true),
-	THING(Thing.class, "Thing", false),
-	THINGS(Thing.class, "Things", true);
+	DATASTREAM(Datastream.class, new TypeReference<Datastream>() {
+	}, "Datastream", false),
+	DATASTREAMS(Datastream.class, new TypeReference<EntityList<Datastream>>() {
+	}, "Datastreams", true),
+	MULTIDATASTREAM(MultiDatastream.class, new TypeReference<MultiDatastream>() {
+	}, "MultiDatastream", false),
+	MULTIDATASTREAMS(MultiDatastream.class, new TypeReference<EntityList<MultiDatastream>>() {
+	}, "MultiDatastreams", true),
+	FEATURE_OF_INTEREST(FeatureOfInterest.class, new TypeReference<FeatureOfInterest>() {
+	}, "FeatureOfInterest", false),
+	FEATURES_OF_INTEREST(FeatureOfInterest.class, new TypeReference<EntityList<FeatureOfInterest>>() {
+	}, "FeaturesOfInterest", true),
+	HISTORICAL_LOCATION(HistoricalLocation.class, new TypeReference<HistoricalLocation>() {
+	}, "HistoricalLocation", false),
+	HISTORICAL_LOCATIONS(HistoricalLocation.class, new TypeReference<EntityList<HistoricalLocation>>() {
+	}, "HistoricalLocations", true),
+	LOCATION(Location.class, new TypeReference<Location>() {
+	}, "Location", false),
+	LOCATIONS(Location.class, new TypeReference<EntityList<Location>>() {
+	}, "Locations", true),
+	OBSERVATION(Observation.class, new TypeReference<Observation>() {
+	}, "Observation", false),
+	OBSERVATIONS(Observation.class, new TypeReference<EntityList<Observation>>() {
+	}, "Observations", true),
+	OBSERVED_PROPERTY(ObservedProperty.class, new TypeReference<ObservedProperty>() {
+	}, "ObservedProperty", false),
+	OBSERVED_PROPERTIES(ObservedProperty.class, new TypeReference<EntityList<ObservedProperty>>() {
+	}, "ObservedProperties", true),
+	SENSOR(Sensor.class, new TypeReference<Sensor>() {
+	}, "Sensor", false),
+	SENSORS(Sensor.class, new TypeReference<EntityList<Sensor>>() {
+	}, "Sensors", true),
+	THING(Thing.class, new TypeReference<Thing>() {
+	}, "Thing", false),
+	THINGS(Thing.class, new TypeReference<EntityList<Thing>>() {
+	}, "Things", true);
 
 	private final Class<? extends Entity> type;
+	private final TypeReference typeReference;
 	private final String name;
 	// Referenced as string instead of EntityType because we cannot access
 	// fields before they are created :(
@@ -70,8 +91,9 @@ public enum EntityType {
 		}
 	}
 
-	EntityType(Class<? extends Entity> type, String name, boolean isList) {
+	EntityType(Class<? extends Entity> type, TypeReference typeReference, String name, boolean isList) {
 		this.type = type;
+		this.typeReference = typeReference;
 		this.name = name;
 		this.isList = isList;
 		this.relations = new HashSet<>();
@@ -88,6 +110,16 @@ public enum EntityType {
 	 */
 	public Class<? extends Entity> getType() {
 		return this.type;
+	}
+
+	/**
+	 * Returns the typeReference used for this entity type. For plurals, it
+	 * returns the typeReference for the collection of the type.
+	 *
+	 * @return The type reference.
+	 */
+	public TypeReference getTypeReference() {
+		return typeReference;
 	}
 
 	/**

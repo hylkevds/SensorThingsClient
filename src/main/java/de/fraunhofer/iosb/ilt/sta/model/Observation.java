@@ -207,7 +207,7 @@ public class Observation extends Entity<Observation> {
 
 	@Override
 	public String toString() {
-		return super.toString() + " " + getPhenomenonTime().toString() + " " + getResult().toString();
+		return super.toString() + " " + getPhenomenonTime() + " " + getResult();
 	}
 
 }
