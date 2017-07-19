@@ -107,6 +107,15 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 		return this;
 	}
 
+	public Query<T> select(String... fields) {
+		StringBuilder selectValue = new StringBuilder();
+		for (String field : fields) {
+			selectValue.append(field).append(",");
+		}
+		params.add(new BasicNameValuePair("$select", selectValue.substring(0, selectValue.length() - 1)));
+		return this;
+	}
+
 	@Override
 	public T first() throws ServiceFailureException {
 		this.top(1);
