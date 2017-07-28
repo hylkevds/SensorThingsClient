@@ -84,7 +84,7 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
 				CloseableHttpResponse response = null;
 				EntityList<T> nextList;
 				try {
-					LOGGER.info("Fetching: {}", httpGet.getURI());
+					LOGGER.debug("Fetching: {}", httpGet.getURI());
 					response = service.execute(httpGet);
 					String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
 					final ObjectMapper mapper = ObjectMapperFactory.get();
