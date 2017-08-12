@@ -10,6 +10,7 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
@@ -65,8 +66,18 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 
 	@Override
 	public Query<T> filter(String options) {
-		this.params.add(new BasicNameValuePair("$filter", options));
+		for (Iterator<NameValuePair> it = params.iterator(); it.hasNext();) {
+			NameValuePair param = it.next();
+			if (param.getName().equals("$filter")) {
+				it.remove();
+				break;
+			}
+		}
+		if (options.isEmpty()) {
+			return this;
+		}
 
+		this.params.add(new BasicNameValuePair("$filter", options));
 		return this;
 	}
 
