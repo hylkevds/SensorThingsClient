@@ -153,6 +153,7 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 			response = service.execute(httpGet);
 			int code = response.getStatusLine().getStatusCode();
 			if (code < 200 || code >= 300) {
+				LOGGER.error("Failed on query: {}", uriBuilder.build());
 				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
 			}
 			String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);

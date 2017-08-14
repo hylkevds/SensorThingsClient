@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -36,6 +37,7 @@ public final class ObjectMapperFactory {
 			mapper.registerModule(new EntityModule());
 			// Write any date/time values as ISO-8601 formated strings.
 			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
 			final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
 			m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
