@@ -3,20 +3,44 @@ SensorThingsClient [![Build Status](https://travis-ci.org/FraunhoferIOSB/SensorT
 
 This library provides a Java-based client library for the [SensorThingsAPI](https://github.com/opengeospatial/sensorthings) and aims to simplify development of SensorThings enabled client applications.
 
-**Note:** This project is still under development and therefore lacks complete support of the SensorThingsAPI.
-
 ## Features
 
 * CRUD operations
 * Queries on entity sets
 * Loading of referenced entities
+* MultiDatastreams
+* dataArray (for creating observations)
 
 ## Unsupported
 
 * Batch requests
-* *$select*
-* dataArray
+* dataArray (for requesting observations)
 * MQTT
+
+## Using with maven
+
+Add the dependency:
+```xml
+<dependency>
+    <groupId>de.fraunhofer.iosb.ilt</groupId>
+    <artifactId>SensorThingsClient</artifactId>
+    <version>0.13</version>
+</dependency>
+
+```
+
+If you do not yet have the bintray jcenter repository, add:
+```xml
+<repositories>
+    <repository>
+        <id>bintray</id>
+        <url>https://jcenter.bintray.com</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </repository>
+</repositories>
+```
 
 ## API
 
@@ -34,14 +58,14 @@ SensorThingsService service = new SensorThingsService(serviceEndpoint);
 ```java
 Thing thing = new Thing();
 thing.setDescription("I'm a thing!");
-service.things().create(thing);
+service.create(thing);
 
 thing = service.things().find(1l);
 
 thing.setDescription("Things change...");
-service.things().update(thing);
+service.update(thing);
 
-service.things().delete(thing);
+service.delete(thing);
 ```
 
 ### Entity Sets
@@ -50,16 +74,17 @@ Entity Sets are represented by instances of `EntityList<>`. The query parameters
 
 ```java
 EntityList<Thing> things = service.things()
-							.query()
-							.count()
-							.orderBy("description")
-							.filter("")
-							.skip(5)
-							.top(10)
-							.list();
+                            .query()
+                            .count()
+                            .orderBy("description")
+                            .select("name","id","description")
+                            .filter("")
+                            .skip(5)
+                            .top(10)
+                            .list();
 
 for (Thing thing : things) {
-	System.out.println("So many things!");
+    System.out.println("So many things!");
 }
 ```
 
@@ -70,26 +95,28 @@ use the `EntityList.fullIterator();` Iterator.
 
 ```java
 EntityList<Observations> observations = service.observations()
-							.query()
-							.count()
-							.top(1000)
-							.list();
+                            .query()
+                            .count()
+                            .top(1000)
+                            .list();
 
 Iterator<Observation> i = observations.fullIterator();
 while (i.hasNext()) {
     Observation obs = i.next();
-	System.out.println("Observation " + obs.getId() + " has result " + obs.getResult());
+    System.out.println("Observation " + obs.getId() + " has result " + obs.getResult());
 }
 ```
 
 
 Related entity sets can also be queried.
 ```java
+// Get the thing with ID 1
 thing = service.things().find(1l);
 
+// Get the Datastreams of this Thing
 EntityList<Datastream> dataStreams = thing.datastreams().query().list();
 for (Datastream dataStream : dataStreams) {
-	Sensor sensor = dataStream.getSensor();
+    Sensor sensor = dataStream.getSensor();
     System.out.println("dataStream " + dataStream.getId() + " has Sensor " + sensor.getId());
 }
 
@@ -103,8 +130,8 @@ Loading referenced objects in one operation (and therefore in one request) is su
 
 ```java
 Thing thing = service.things().find(1l,
-				Expansion.of(EntityType.THING)
-				.with(ExpandedEntity.from(EntityType.LOCATIONS)));
+                Expansion.of(EntityType.THING)
+                .with(ExpandedEntity.from(EntityType.LOCATIONS)));
 EntityList<Location> locations = thing.getLocations();
 ```
 
