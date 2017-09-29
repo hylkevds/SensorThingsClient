@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.LocationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Map;
 import java.util.Objects;
 import org.geojson.GeoJsonObject;
 
@@ -14,6 +15,7 @@ public class Location extends Entity<Location> {
 	private String description;
 	private String encodingType;
 	private GeoJsonObject location;
+	private Map<String, Object> properties;
 
 	@JsonProperty("Things")
 	private EntityList<Thing> things = new EntityList<>(EntityType.THINGS);
@@ -57,6 +59,9 @@ public class Location extends Entity<Location> {
 		if (!Objects.equals(this.location, other.location)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		return super.equals(obj);
 	}
 
@@ -67,6 +72,7 @@ public class Location extends Entity<Location> {
 		hash = 59 * hash + Objects.hashCode(this.description);
 		hash = 59 * hash + Objects.hashCode(this.encodingType);
 		hash = 59 * hash + Objects.hashCode(this.location);
+		hash = 59 * hash + Objects.hashCode(this.properties);
 		return hash;
 	}
 
@@ -92,6 +98,14 @@ public class Location extends Entity<Location> {
 
 	public void setEncodingType(String encodingType) {
 		this.encodingType = encodingType;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public BaseDao<HistoricalLocation> historicalLocations() {

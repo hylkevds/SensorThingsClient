@@ -6,6 +6,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 
 public class ObservedProperty extends Entity<ObservedProperty> {
@@ -13,6 +14,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	private String name;
 	private String definition;
 	private String description;
+	private Map<String, Object> properties;
 
 	@JsonProperty("Datastreams")
 	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
@@ -52,6 +54,9 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 		if (!Objects.equals(this.description, other.description)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		return Objects.equals(this.definition, other.definition);
 	}
 
@@ -61,6 +66,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 		hash = 71 * hash + Objects.hashCode(this.name);
 		hash = 71 * hash + Objects.hashCode(this.definition);
 		hash = 71 * hash + Objects.hashCode(this.description);
+		hash = 71 * hash + Objects.hashCode(this.properties);
 		return hash;
 	}
 
@@ -86,6 +92,14 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public BaseDao<Datastream> datastreams() {

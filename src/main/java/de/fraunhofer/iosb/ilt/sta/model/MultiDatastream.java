@@ -9,6 +9,7 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.geojson.Polygon;
 import org.threeten.extra.Interval;
@@ -22,6 +23,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 	private List<UnitOfMeasurement> unitOfMeasurements;
 	private Polygon observedArea;
 	private Interval phenomenonTime;
+	private Map<String, Object> properties;
 	private Interval resultTime;
 
 	@JsonProperty("Thing")
@@ -79,6 +81,9 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 		if (!Objects.equals(this.unitOfMeasurements, other.unitOfMeasurements)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		if (!Objects.equals(this.resultTime, other.resultTime)) {
 			return false;
 		}
@@ -93,6 +98,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 		hash = 31 * hash + Objects.hashCode(this.observationType);
 		hash = 31 * hash + Objects.hashCode(this.multiObservationDataTypes);
 		hash = 31 * hash + Objects.hashCode(this.unitOfMeasurements);
+		hash = 31 * hash + Objects.hashCode(this.properties);
 		hash = 31 * hash + Objects.hashCode(this.resultTime);
 		return hash;
 	}
@@ -131,6 +137,14 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 
 	public void addMultiObservationDataTypes(String multiObservationDataType) {
 		this.multiObservationDataTypes.add(multiObservationDataType);
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public List<UnitOfMeasurement> getUnitOfMeasurements() {

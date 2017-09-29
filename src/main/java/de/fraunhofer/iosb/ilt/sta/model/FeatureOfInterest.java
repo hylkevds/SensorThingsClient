@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Map;
 import java.util.Objects;
 import org.geojson.GeoJsonObject;
 
@@ -14,6 +15,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 	private String description;
 	private String encodingType;
 	private GeoJsonObject feature;
+	private Map<String, Object> properties;
 
 	@JsonProperty("Observations")
 	private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
@@ -54,6 +56,9 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		if (!Objects.equals(this.feature, other.feature)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		return super.equals(obj);
 	}
 
@@ -64,6 +69,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 		hash = 47 * hash + Objects.hashCode(this.description);
 		hash = 47 * hash + Objects.hashCode(this.encodingType);
 		hash = 47 * hash + Objects.hashCode(this.feature);
+		hash = 47 * hash + Objects.hashCode(this.properties);
 		return hash;
 	}
 
@@ -97,6 +103,14 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 
 	public void setFeature(GeoJsonObject feature) {
 		this.feature = feature;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public BaseDao<Observation> observations() {

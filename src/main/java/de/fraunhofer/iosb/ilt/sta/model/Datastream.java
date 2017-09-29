@@ -7,6 +7,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Map;
 import java.util.Objects;
 import org.geojson.Polygon;
 import org.threeten.extra.Interval;
@@ -19,6 +20,7 @@ public class Datastream extends Entity<Datastream> {
 	private UnitOfMeasurement unitOfMeasurement;
 	private Polygon observedArea;
 	private Interval phenomenonTime;
+	private Map<String, Object> properties;
 	private Interval resultTime;
 
 	@JsonProperty("Thing")
@@ -69,6 +71,9 @@ public class Datastream extends Entity<Datastream> {
 		if (!Objects.equals(this.unitOfMeasurement, other.unitOfMeasurement)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		if (!Objects.equals(this.resultTime, other.resultTime)) {
 			return false;
 		}
@@ -82,6 +87,7 @@ public class Datastream extends Entity<Datastream> {
 		hash = 17 * hash + Objects.hashCode(this.description);
 		hash = 17 * hash + Objects.hashCode(this.observationType);
 		hash = 17 * hash + Objects.hashCode(this.unitOfMeasurement);
+		hash = 17 * hash + Objects.hashCode(this.properties);
 		hash = 17 * hash + Objects.hashCode(this.resultTime);
 		return hash;
 	}
@@ -108,6 +114,14 @@ public class Datastream extends Entity<Datastream> {
 
 	public void setObservationType(String observationType) {
 		this.observationType = observationType;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public UnitOfMeasurement getUnitOfMeasurement() {

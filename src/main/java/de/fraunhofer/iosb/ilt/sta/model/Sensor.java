@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.Map;
 import java.util.Objects;
 
 public class Sensor extends Entity<Sensor> {
@@ -13,6 +14,7 @@ public class Sensor extends Entity<Sensor> {
 	private String description;
 	private String encodingType;
 	private Object metadata;
+	private Map<String, Object> properties;
 
 	@JsonProperty("Datastreams")
 	private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
@@ -56,6 +58,9 @@ public class Sensor extends Entity<Sensor> {
 		if (!Objects.equals(this.metadata, other.metadata)) {
 			return false;
 		}
+		if (!Objects.equals(this.properties, other.properties)) {
+			return false;
+		}
 		return super.equals(obj);
 	}
 
@@ -66,6 +71,7 @@ public class Sensor extends Entity<Sensor> {
 		hash = 59 * hash + Objects.hashCode(this.description);
 		hash = 59 * hash + Objects.hashCode(this.encodingType);
 		hash = 59 * hash + Objects.hashCode(this.metadata);
+		hash = 59 * hash + Objects.hashCode(this.properties);
 		return hash;
 	}
 
@@ -99,6 +105,14 @@ public class Sensor extends Entity<Sensor> {
 
 	public void setMetadata(Object metadata) {
 		this.metadata = metadata;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	public BaseDao<Datastream> datastreams() {
