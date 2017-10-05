@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -8,7 +9,9 @@
 	<packaging>jar</packaging>
 
 	<name>SensorThingsClient</name>
-	<url>http://maven.apache.org</url>
+	<description>A client implementation of the OGC SensorThings API.</description>
+	<url>https://github.com/FraunhoferIOSB/SensorThingsClient</url>
+	<inceptionYear>2016</inceptionYear>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +20,45 @@
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>SensorThingsClient</bintray.package>
 	</properties>
+
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<comments>For more information see the LICENSE file included with the sources.</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Hylke van der Schaaf</name>
+			<email>hylke.vanderschaaf@iosb.fraunhofer.de</email>
+			<organization>Fraunhofer IOSB</organization>
+			<organizationUrl>https://www.iosb.fraunhofer.de</organizationUrl>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Fraunhofer IOSB</name>
+		<url>http://iosb.fraunhofer.de</url>
+	</organization>
+
+	<scm>
+		<connection>scm:git:git://github.com/FraunhoferIOSB/SensorThingsClient.git</connection>
+		<developerConnection>scm:git:ssh://github.com:FraunhoferIOSB/SensorThingsClient.git</developerConnection>
+		<url>https://github.com/FraunhoferIOSB/SensorThingsClient/tree/master</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/FraunhoferIOSB/SensorThingsClient/issues</url>
+	</issueManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>fraunhoferiosb-Maven</id>
+			<url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -64,13 +106,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>fraunhoferiosb-Maven</id>
-			<url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
-		</repository>
-	</distributionManagement>
 
 	<dependencies>
 		<dependency>
