@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ext.DataArrayDocument;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -39,7 +40,7 @@ public class ObservationDao extends BaseDao<Observation> {
 	 * The typereference for a list of Strings, used for type-safe json
 	 * deserialization.
 	 */
-	public static final TypeReference listOfString = new TypeReference<List<String>>() {
+	public static final TypeReference LIST_OF_STRING = new TypeReference<List<String>>() {
 		// Empty by design.
 	};
 
@@ -81,7 +82,7 @@ public class ObservationDao extends BaseDao<Observation> {
 				}
 			}
 			String jsonResponse = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
-			result = mapper.readValue(jsonResponse, listOfString);
+			result = mapper.readValue(jsonResponse, LIST_OF_STRING);
 			List<Observation> observations = dataArray.getObservations();
 			if (observations.size() != result.size()) {
 				LOGGER.error("Size of returned location list ({}) is not equal to number of sent Observations ({})!", result.size(), observations.size());
@@ -95,7 +96,7 @@ public class ObservationDao extends BaseDao<Observation> {
 					int pos1 = newLocation.indexOf('(') + 1;
 					int pos2 = newLocation.indexOf(')', pos1);
 					String stringId = newLocation.substring(pos1, pos2);
-					o.setId(Long.valueOf(stringId));
+					o.setId(Id.tryToParse(stringId));
 					o.setService(getService());
 				}
 				i++;

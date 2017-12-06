@@ -46,7 +46,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 						gen.writeFieldName(rawValue.getClass().getSimpleName());
 						gen.writeStartObject();
 						gen.writeFieldName("@iot.id");
-						gen.writeNumber(((Entity) rawValue).getId());
+						((Entity) rawValue).getId().writeTo(gen);
 						gen.writeEndObject();
 					} else {
 						gen.writeFieldName(rawValue.getClass().getSimpleName());
@@ -68,7 +68,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 							} else {
 								gen.writeStartObject();
 								gen.writeFieldName("@iot.id");
-								gen.writeNumber(subEntity.getId());
+								subEntity.getId().writeTo(gen);
 								gen.writeEndObject();
 							}
 						}

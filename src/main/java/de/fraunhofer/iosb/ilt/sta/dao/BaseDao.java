@@ -6,6 +6,7 @@ import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -107,7 +108,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 			int pos1 = newLocation.indexOf('(') + 1;
 			int pos2 = newLocation.indexOf(')', pos1);
 			String stringId = newLocation.substring(pos1, pos2);
-			entity.setId(Long.valueOf(stringId));
+			entity.setId(Id.tryToParse(stringId));
 			entity.setService(service);
 		} catch (JsonProcessingException | URISyntaxException e) {
 			throw new ServiceFailureException(e);
@@ -131,7 +132,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 	}
 
 	@Override
-	public T find(Long id) throws ServiceFailureException {
+	public T find(Id id) throws ServiceFailureException {
 		URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().resolve(entityPath(id)));
 		try {
 			return find(uriBuilder.build());
@@ -172,7 +173,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 	}
 
 	@Override
-	public T find(Long id, Expansion expansion) throws ServiceFailureException {
+	public T find(Id id, Expansion expansion) throws ServiceFailureException {
 		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(id)));
 		uriBuilder.addParameter("$expand", expansion.toString());
 		try {
@@ -242,8 +243,8 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 		return new Query<>(this.service, this.entityClass, this.parent);
 	}
 
-	private String entityPath(Long id) {
-		return String.format("%s(%d)", this.plural.getName(), id);
+	private String entityPath(Id id) {
+		return String.format("%s(%s)", this.plural.getName(), id.getUrl());
 	}
 
 	protected SensorThingsService getService() {

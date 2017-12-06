@@ -20,7 +20,7 @@ import java.util.Objects;
 public abstract class Entity<T extends Entity<T>> {
 
 	@JsonProperty(value = "@iot.id")
-	protected Long id;
+	protected Id id;
 
 	@JsonProperty(value = "@iot.selfLink", access = JsonProperty.Access.READ_ONLY)
 	protected URI selfLink;
@@ -40,7 +40,7 @@ public abstract class Entity<T extends Entity<T>> {
 		this.type = type;
 	}
 
-	public Entity(EntityType type, long id) {
+	public Entity(EntityType type, Id id) {
 		this.type = type;
 		this.id = id;
 	}
@@ -75,11 +75,11 @@ public abstract class Entity<T extends Entity<T>> {
 		return type;
 	}
 
-	public Long getId() {
+	public Id getId() {
 		return this.id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Id id) {
 		this.id = id;
 	}
 

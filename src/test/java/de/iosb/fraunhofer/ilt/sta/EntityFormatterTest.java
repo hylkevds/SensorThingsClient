@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
+import de.fraunhofer.iosb.ilt.sta.model.IdLong;
+import de.fraunhofer.iosb.ilt.sta.model.IdString;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
@@ -74,7 +76,33 @@ public class EntityFormatterTest {
 				+ "}\n"
 				+ "}";
 		Thing entity = new Thing();
-		entity.setId(1L);
+		entity.setId(new IdLong(1L));
+		entity.setName("This thing is an oven.");
+		entity.setDescription("This thing is an oven.");
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("owner", "John Doe");
+		properties.put("color", "Silver");
+		entity.setProperties(properties);
+
+		final ObjectMapper mapper = ObjectMapperFactory.get();
+		String json = mapper.writeValueAsString(entity);
+		assert (jsonEqual(expResult, json));
+	}
+
+	@Test
+	public void writeThing_Basic_StringId_Success() throws IOException {
+		String expResult
+				= "{\n"
+				+ "\"@iot.id\": \"aStringAsId\",\n"
+				+ "\"name\": \"This thing is an oven.\",\n"
+				+ "\"description\": \"This thing is an oven.\",\n"
+				+ "\"properties\": {\n"
+				+ "\"owner\": \"John Doe\",\n"
+				+ "\"color\": \"Silver\"\n"
+				+ "}\n"
+				+ "}";
+		Thing entity = new Thing();
+		entity.setId(new IdString("aStringAsId"));
 		entity.setName("This thing is an oven.");
 		entity.setDescription("This thing is an oven.");
 		Map<String, Object> properties = new HashMap<>();
@@ -112,13 +140,13 @@ public class EntityFormatterTest {
 				+ "]"
 				+ "}";
 		Thing entity = new Thing();
-		entity.setId(1L);
+		entity.setId(new IdLong(1L));
 		entity.setName("This thing is an oven.");
 		entity.setDescription("This thing is an oven.");
 		Map<String, Object> properties = new HashMap<>();
 		entity.setProperties(properties);
 		Location location = new Location();
-		location.setId(1L);
+		location.setId(new IdLong(1L));
 		entity.getLocations().add(location);
 
 		final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -136,7 +164,7 @@ public class EntityFormatterTest {
 				+ "	\"encodingType\": \"application/vnd.geo+json\""
 				+ "}";
 		Location entity = new Location();
-		entity.setId(1L);
+		entity.setId(new IdLong(1L));
 		entity.setName("OvenLocation");
 		entity.setDescription("The location of an oven.");
 		entity.setEncodingType("application/vnd.geo+json");
@@ -274,7 +302,7 @@ public class EntityFormatterTest {
 				+ "	\"result\": 70.40\n"
 				+ "}";
 		Observation entity = new Observation();
-		entity.setId(1L);
+		entity.setId(new IdLong(1L));
 		entity.setResult(new BigDecimal("70.40"));
 		entity.setPhenomenonTimeFrom(ZonedDateTime.parse("2014-12-31T11:59:59Z"));
 
@@ -296,7 +324,7 @@ public class EntityFormatterTest {
 				+ "	\"result\": 70.40\n"
 				+ "}";
 		Observation entity = new Observation();
-		entity.setId(1L);
+		entity.setId(new IdLong(1L));
 		entity.setResult(new BigDecimal("70.40"));
 		entity.setPhenomenonTimeFrom(Interval.parse("2014-12-31T11:59:59Z/2014-12-31T12:01:01Z"));
 

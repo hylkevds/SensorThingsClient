@@ -262,10 +262,7 @@ public class DataArrayValue {
 		if (!Objects.equals(this.components, other.components)) {
 			return false;
 		}
-		if (!Objects.equals(this.dataArray, other.dataArray)) {
-			return false;
-		}
-		return true;
+		return Objects.equals(this.dataArray, other.dataArray);
 	}
 
 	/**
@@ -273,7 +270,7 @@ public class DataArrayValue {
 	 * Observation must have a (Multi)Datastream that already exists in the
 	 * server (has an id).
 	 *
-	 * @param observation
+	 * @param observation the observation to generate a key for.
 	 * @return a key to use for the DataArray for the Observation.
 	 */
 	public static String dataArrayKeyFor(Observation observation) {

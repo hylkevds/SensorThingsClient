@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.dao;
 
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
 import java.net.URI;
@@ -40,7 +41,7 @@ public interface Dao<T extends Entity<T>> {
 	 * @return the entity
 	 * @throws ServiceFailureException the operation failed
 	 */
-	T find(Long id) throws ServiceFailureException;
+	T find(Id id) throws ServiceFailureException;
 
 	/**
 	 * Find an entity.
@@ -60,7 +61,7 @@ public interface Dao<T extends Entity<T>> {
 	 * @return the entity
 	 * @throws ServiceFailureException the operation failed
 	 */
-	T find(Long id, Expansion expansion) throws ServiceFailureException;
+	T find(Id id, Expansion expansion) throws ServiceFailureException;
 
 	/**
 	 * Update an entity.
