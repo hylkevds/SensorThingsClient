@@ -30,6 +30,11 @@ public class IdString implements Id {
 	}
 
 	@Override
+	public String getJson() {
+		return "\"" + value + "\"";
+	}
+
+	@Override
 	public void writeTo(JsonGenerator gen) throws IOException {
 		gen.writeString(value);
 	}

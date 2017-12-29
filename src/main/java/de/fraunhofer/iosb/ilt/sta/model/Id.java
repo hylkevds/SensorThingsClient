@@ -32,11 +32,20 @@ public interface Id {
 	public Object getValue();
 
 	/**
-	 * Get the value, formatted for use in a url.
+	 * Get the value, formatted for use in a url. String values will be quoted
+	 * with single quotes.
 	 *
 	 * @return the value, formatted for use in a url.
 	 */
 	public String getUrl();
+
+	/**
+	 * Get the value, formatted for use in a url. String values will be quoted
+	 * with double quotes.
+	 *
+	 * @return the value, formatted for use in a url.
+	 */
+	public String getJson();
 
 	/**
 	 * Write the value to the given JsonGenerator.

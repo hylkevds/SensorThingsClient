@@ -33,6 +33,14 @@ public class IdLong implements Id {
 	}
 
 	@Override
+	public String getJson() {
+		if (value == null) {
+			return "null";
+		}
+		return value.toString();
+	}
+
+	@Override
 	public void writeTo(JsonGenerator gen) throws IOException {
 		gen.writeNumber(value);
 	}
