@@ -96,7 +96,7 @@ public class SensorThingsService {
 		if (parent.getId() == null) {
 			throw new IllegalArgumentException("Can not create a path with a parent without id.");
 		}
-		return String.format("%s(%d)/%s", EntityType.listForClass(parent.getClass()).getName(), parent.getId(), relation.getName());
+		return String.format("%s(%s)/%s", EntityType.listForClass(parent.getClass()).getName(), parent.getId().getUrl(), relation.getName());
 	}
 
 	/**
