@@ -1,6 +1,4 @@
-
-# Unreleased
-These changes are available in the current branch
+# Release Version 0.14
 
 **Updates**
 * Support for non-integer ids.
@@ -8,14 +6,12 @@ These changes are available in the current branch
 
 
 # Release Version 0.13
-Version 0.13 was released on 2017-08-16.
 
 **Updates**
 * Use BigDecimal for floats so precision is maintained.
 
 
 # Release Version 0.12
-Version 0.12 was released on 2017-08-12.
 
 **Updates**
 * Allow filter on the query to be changed.
@@ -23,7 +19,6 @@ Version 0.12 was released on 2017-08-12.
 
 
 # Release Version 0.11
-Version 0.11 was released on 2017-07-19.
 
 **Updates**
 * Added $select option to Query.
@@ -31,7 +26,6 @@ Version 0.11 was released on 2017-07-19.
 
 
 # Release Version 0.10
-Version 0.10 was released on 2017-06-27.
 
 **Updates**
 * Fixed fetching first item of empty list.
@@ -39,7 +33,6 @@ Version 0.10 was released on 2017-06-27.
 
 
 # Release Version 0.9
-Version 0.9 was released on 2017-05-23.
 
 **Updates**
 * Added a getter for the entityClass of a Query.
@@ -47,7 +40,6 @@ Version 0.9 was released on 2017-05-23.
 
 
 # Release Version 0.8
-Version 0.8 was released on 2017-03-02.
 
 **Updates**
 * Allow overriding httpclient.
@@ -57,7 +49,6 @@ Version 0.8 was released on 2017-03-02.
 
 
 # Release Version 0.7
-Version 0.7 was released on 2017-02-01.
 
 **Updates**
 * Made httpClient use system settings (for proxy).
@@ -70,7 +61,6 @@ Version 0.7 was released on 2017-02-01.
 
 
 # Release Version 0.6
-Version 0.6 was released on 2016-11-17.
 
 **Updates**
 * Properly close http responses.
@@ -81,14 +71,12 @@ Version 0.6 was released on 2016-11-17.
 
 
 # Release Version 0.5
-Version 0.5 was released on 2016-11-01.
 
 **Updates**
 * Added missing name property to FeatureOfInterest.
 
 
 # Release Version 0.4
-Version 1.1 was released on 2016-10-12.
 
 **Updates**
 * Throw exception when server returns error when fetching lists.
@@ -96,7 +84,6 @@ Version 1.1 was released on 2016-10-12.
 
 
 # Release Version 0.3
-Version 0.3 was released on 2016-10-05.
 
 **Updates**
 * Fixed json serialisation.
@@ -104,14 +91,12 @@ Version 0.3 was released on 2016-10-05.
 
 
 # Release Version 0.2
-Version 0.2 was released on 2016-10-01.
 
 **Updates**
 * Tuning the build process: Added javadoc and sources.
 
 
 # Release Version 0.1
-Version 0.1 was released on 2016-09-30.
 
 **Updates**
 * Documentation update.
