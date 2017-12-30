@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>SensorThingsClient</artifactId>
-	<version>0.14-SNAPSHOT</version>
+	<version>0.14</version>
 	<packaging>jar</packaging>
 
 	<name>SensorThingsClient</name>
@@ -46,7 +45,8 @@
 		<url>https://github.com/FraunhoferIOSB/SensorThingsClient</url>
 		<connection>scm:git:git@github.com:FraunhoferIOSB/SensorThingsClient.git</connection>
 		<developerConnection>scm:git:git@github.com:FraunhoferIOSB/SensorThingsClient.git</developerConnection>
-	</scm>
+	  <tag>v0.14</tag>
+  </scm>
 
 	<issueManagement>
 		<system>GitHub</system>
