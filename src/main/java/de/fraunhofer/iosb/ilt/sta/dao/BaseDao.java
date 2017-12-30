@@ -7,6 +7,8 @@ import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.Id;
+import de.fraunhofer.iosb.ilt.sta.model.IdLong;
+import de.fraunhofer.iosb.ilt.sta.model.IdString;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -139,6 +141,30 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 		} catch (URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
 		}
+	}
+
+	/**
+	 * Find the entity with the given Long id. This is a shorthand for find(new
+	 * IdLong(id));
+	 *
+	 * @param id the entity's unique id
+	 * @return the entity
+	 * @throws ServiceFailureException the operation failed
+	 */
+	public T find(long id) throws ServiceFailureException {
+		return find(new IdLong(id));
+	}
+
+	/**
+	 * Find the entity with the given String id. This is a shorthand for
+	 * find(new IdLong(id));
+	 *
+	 * @param id the entity's unique id
+	 * @return the entity
+	 * @throws ServiceFailureException the operation failed
+	 */
+	public T find(String id) throws ServiceFailureException {
+		return find(new IdString(id));
 	}
 
 	@Override

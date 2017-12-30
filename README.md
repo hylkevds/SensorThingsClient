@@ -60,7 +60,10 @@ Thing thing = new Thing();
 thing.setDescription("I'm a thing!");
 service.create(thing);
 
-thing = service.things().find(1l);
+// get Thing with numeric id 1234
+thing = service.things().find(1234l);
+// get Thing with String id ab12cd
+thing = service.things().find("ab12cd");
 
 thing.setDescription("Things change...");
 service.update(thing);

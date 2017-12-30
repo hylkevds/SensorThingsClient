@@ -61,4 +61,9 @@ public class IdString implements Id {
 		return Objects.equals(this.value, other.value);
 	}
 
+	@Override
+	public String toString() {
+		return value;
+	}
+
 }

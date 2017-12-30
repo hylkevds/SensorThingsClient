@@ -67,4 +67,9 @@ public class IdLong implements Id {
 		return Objects.equals(this.value, other.value);
 	}
 
+	@Override
+	public String toString() {
+		return Long.toString(value);
+	}
+
 }
