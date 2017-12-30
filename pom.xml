@@ -44,7 +44,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/FraunhoferIOSB/SensorThingsClient.git</connection>
-		<developerConnection>scm:git:ssh://github.com:FraunhoferIOSB/SensorThingsClient.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:FraunhoferIOSB/SensorThingsClient.git</developerConnection>
 		<url>https://github.com/FraunhoferIOSB/SensorThingsClient/tree/master</url>
 	</scm>
 
