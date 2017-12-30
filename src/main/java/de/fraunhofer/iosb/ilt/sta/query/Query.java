@@ -64,61 +64,68 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 		return service;
 	}
 
-	@Override
-	public Query<T> filter(String options) {
+	private void removeAllParams(String key) {
 		for (Iterator<NameValuePair> it = params.iterator(); it.hasNext();) {
 			NameValuePair param = it.next();
-			if (param.getName().equals("$filter")) {
+			if (param.getName().equals(key)) {
 				it.remove();
 				break;
 			}
 		}
+	}
+
+	@Override
+	public Query<T> filter(String options) {
+		removeAllParams("$filter");
 		if (options.isEmpty()) {
 			return this;
 		}
-
-		this.params.add(new BasicNameValuePair("$filter", options));
+		params.add(new BasicNameValuePair("$filter", options));
 		return this;
 	}
 
 	@Override
 	public Query<T> top(int n) {
-		this.params.add(new BasicNameValuePair("$top", Integer.toString(n)));
-
+		removeAllParams("$top");
+		params.add(new BasicNameValuePair("$top", Integer.toString(n)));
 		return this;
 	}
 
 	@Override
 	public Query<T> orderBy(String clause) {
-		this.params.add(new BasicNameValuePair("$orderby", clause));
-
+		removeAllParams("$orderby");
+		params.add(new BasicNameValuePair("$orderby", clause));
 		return this;
 	}
 
 	@Override
 	public Query<T> skip(int n) {
-		this.params.add(new BasicNameValuePair("$skip", Integer.toString(n)));
-
+		removeAllParams("$skip");
+		params.add(new BasicNameValuePair("$skip", Integer.toString(n)));
 		return this;
 	}
 
 	@Override
 	public Query<T> count() {
+		removeAllParams("$count");
 		params.add(new BasicNameValuePair("$count", "true"));
 		return this;
 	}
 
 	public Query<T> expand(Expansion expansion) {
+		removeAllParams("$expand");
 		params.add(new BasicNameValuePair("$expand", expansion.toString()));
 		return this;
 	}
 
 	public Query<T> expand(String expansion) {
+		removeAllParams("$expand");
 		params.add(new BasicNameValuePair("$expand", expansion));
 		return this;
 	}
 
 	public Query<T> select(String... fields) {
+		removeAllParams("$select");
 		StringBuilder selectValue = new StringBuilder();
 		for (String field : fields) {
 			selectValue.append(field).append(",");
