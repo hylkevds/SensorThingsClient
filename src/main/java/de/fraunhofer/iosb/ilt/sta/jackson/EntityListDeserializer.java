@@ -15,9 +15,12 @@ import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +77,16 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
 
 			if (node.has("@iot.nextLink")) {
 				try {
-					URI nextLink = new URI(node.get("@iot.nextLink").asText());
-					entities.setNextLink(nextLink);
+				    // 
+				    // we can always expect 2 tokens
+				    String token[] = node.get("@iot.nextLink").asText().split("\\?");
+				    // the request uri (token[0]) 
+				    // the queryParameters (token[1])
+			        URIBuilder nextLinkBuilder = new URIBuilder(token[0]);
+			        // parse & add all query parameters
+			        nextLinkBuilder.addParameters(URLEncodedUtils.parse(token[1], Charset.defaultCharset()));
+			        // build the URI properly 
+					entities.setNextLink(nextLinkBuilder.build());
 				} catch (URISyntaxException e) {
 					logger.warn("@iot.nextLink field contains malformed URI", e);
 				}
