@@ -1,4 +1,4 @@
-# Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient)
+# Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/FROST-Client.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/FROST-Client)
 
 ![FROST-Client Logo](https://raw.githubusercontent.com/FraunhoferIOSB/FROST-Client/master/images/FROST-Client-darkgrey.png)
 

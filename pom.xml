@@ -16,9 +16,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+
 		<bintray.subject>fraunhoferiosb</bintray.subject>
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>FROST-Client</bintray.package>
+
 		<httpclient.version>4.5</httpclient.version>
 		<jackson.version>2.8.5</jackson.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
