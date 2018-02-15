@@ -1,6 +1,6 @@
 # Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/SensorThingsClient)
 
-![FROST-Client Logo](images/FROST-Client-darkgrey.png)
+![FROST-Client Logo](https://raw.githubusercontent.com/FraunhoferIOSB/FROST-Client/master/images/FROST-Client-darkgrey.png)
 
 The **FR**aunhofer **O**pensource **S**ensor**T**hings-Client is a Java-based client
 library for the [SensorThingsAPI](https://github.com/opengeospatial/sensorthings) and
@@ -26,8 +26,8 @@ Add the dependency:
 ```xml
 <dependency>
     <groupId>de.fraunhofer.iosb.ilt</groupId>
-    <artifactId>SensorThingsClient</artifactId>
-    <version>0.13</version>
+    <artifactId>FROST-Client</artifactId>
+    <version>0.15</version>
 </dependency>
 
 ```
