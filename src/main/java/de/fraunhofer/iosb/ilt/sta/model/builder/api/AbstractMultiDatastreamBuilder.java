@@ -34,11 +34,6 @@ public abstract class AbstractMultiDatastreamBuilder<U extends AbstractMultiData
         return super.build();
     }
 
-    @Override
-    protected MultiDatastream getBuildingInstance() {
-        return new MultiDatastream();
-    }
-
     public U name(final String name) {
         getBuildingInstance().setName(name);
         return getSelf();
