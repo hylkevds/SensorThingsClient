@@ -32,12 +32,12 @@ Add the dependency:
 
 ```
 
-If you do not yet have the bintray jcenter repository, add:
+If you do not yet have the FraunhoferIOSB bintray repository, add:
 ```xml
 <repositories>
     <repository>
-        <id>bintray</id>
-        <url>https://jcenter.bintray.com</url>
+        <id>bintray-fraunhoferiosb-Maven</id>
+        <url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
         <releases>
             <enabled>true</enabled>
         </releases>
