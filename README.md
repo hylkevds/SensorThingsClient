@@ -59,8 +59,9 @@ SensorThingsService service = new SensorThingsService(serviceEndpoint);
 ```
 
 ```java
-Thing thing = new Thing();
-thing.setDescription("I'm a thing!");
+Thing thing = ThingBuilder.builder()
+    .description("I'm a thing!")
+    .build();
 service.create(thing);
 
 // get Thing with numeric id 1234
