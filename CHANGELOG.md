@@ -1,4 +1,11 @@
 
+# Release Version 0.16
+
+**Updates**
+* Added Builder-pattern for creating entities. Thanks to Aurélien Bourdon!
+
+# Release Version 0.15
+
 **Updates**
 * We have a name: FROST-Client
 
