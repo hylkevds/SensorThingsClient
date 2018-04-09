@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link MultiDatastream}
+ * Base class for any {@link EntityBuilder} of {@link MultiDatastream}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractMultiDatastreamBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractMultiDatastreamBuilder<U extends AbstractMultiDatastreamBuilder<U>> extends AbstractEntityBuilder<MultiDatastream, U> {
+public abstract class AbstractMultiDatastreamBuilder<U extends AbstractMultiDatastreamBuilder<U>> extends EntityBuilder<MultiDatastream, U> {
 
     @Override
     protected MultiDatastream newBuildingInstance() {

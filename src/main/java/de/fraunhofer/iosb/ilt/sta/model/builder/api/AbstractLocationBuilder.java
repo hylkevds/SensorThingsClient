@@ -8,12 +8,12 @@ import org.geojson.GeoJsonObject;
 import java.util.List;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link Location}
+ * Base class for any {@link EntityBuilder} of {@link Location}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractLocationBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractLocationBuilder<U extends AbstractLocationBuilder<U>> extends AbstractEntityBuilder<Location, U> {
+public abstract class AbstractLocationBuilder<U extends AbstractLocationBuilder<U>> extends EntityBuilder<Location, U> {
 
     @Override
     protected Location newBuildingInstance() {

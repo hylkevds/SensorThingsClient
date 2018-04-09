@@ -7,7 +7,13 @@ import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public abstract class AbstractHistoricalLocationBuilder<U extends AbstractHistoricalLocationBuilder<U>> extends AbstractEntityBuilder<HistoricalLocation, U> {
+/**
+ * Base class for any {@link EntityBuilder} of {@link HistoricalLocation}
+ *
+ * @param <U> the type of the concrete class that extends this {@link AbstractHistoricalLocationBuilder}
+ * @author Aurelien Bourdon
+ */
+public abstract class AbstractHistoricalLocationBuilder<U extends AbstractHistoricalLocationBuilder<U>> extends EntityBuilder<HistoricalLocation, U> {
 
     @Override
     protected HistoricalLocation newBuildingInstance() {

@@ -12,12 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link Observation}
+ * Base class for any {@link EntityBuilder} of {@link Observation}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractObservationBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractObservationBuilder<U extends AbstractObservationBuilder<U>> extends AbstractEntityBuilder<Observation, U> {
+public abstract class AbstractObservationBuilder<U extends AbstractObservationBuilder<U>> extends EntityBuilder<Observation, U> {
 
     @Override
     protected Observation newBuildingInstance() {
