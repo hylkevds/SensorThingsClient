@@ -7,12 +7,12 @@ import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import java.util.List;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link Sensor}
+ * Base class for any {@link EntityBuilder} of {@link Sensor}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractSensorBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> extends AbstractEntityBuilder<Sensor, U> {
+public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> extends EntityBuilder<Sensor, U> {
 
     @Override
     protected Sensor newBuildingInstance() {

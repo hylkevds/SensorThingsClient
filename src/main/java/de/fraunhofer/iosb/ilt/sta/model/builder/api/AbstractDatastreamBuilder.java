@@ -13,12 +13,12 @@ import org.threeten.extra.Interval;
 import java.util.List;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link Datastream}
+ * Base class for any {@link EntityBuilder} of {@link Datastream}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractDatastreamBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractDatastreamBuilder<U extends AbstractDatastreamBuilder<U>> extends AbstractEntityBuilder<Datastream, U> {
+public abstract class AbstractDatastreamBuilder<U extends AbstractDatastreamBuilder<U>> extends EntityBuilder<Datastream, U> {
 
     @Override
     protected Datastream newBuildingInstance() {

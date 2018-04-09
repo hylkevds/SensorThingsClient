@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Base class for any {@link AbstractEntityBuilder} of {@link Thing}
+ * Base class for any {@link EntityBuilder} of {@link Thing}
  *
  * @param <U> the type of the concrete class that extends this {@link AbstractThingBuilder}
  * @author Aurelien Bourdon
  */
-public abstract class AbstractThingBuilder<U extends AbstractThingBuilder<U>> extends AbstractEntityBuilder<Thing, U> {
+public abstract class AbstractThingBuilder<U extends AbstractThingBuilder<U>> extends EntityBuilder<Thing, U> {
 
     @Override
     protected Thing newBuildingInstance() {

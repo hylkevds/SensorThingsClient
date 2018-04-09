@@ -1,12 +1,24 @@
 package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
+
+import java.net.URI;
 
 /**
- * Base type for any {@link Builder} of {@link Entity}
+ * Base class for any {@link Entity} builder.
+ * <p>
+ * Any {@link EntityBuilder} is an {@link ExtensibleBuilder}.
  *
- * @param <T> the {@link Entity} class type to build
+ * @param <T> the concrete {@link Entity} type to build
+ * @param <U> the concrete type of this {@link EntityBuilder}
  * @author Aurelien Bourdon
  */
-public interface EntityBuilder<T extends Entity<T>> extends Builder<T> {
+public abstract class EntityBuilder<T extends Entity<T>, U extends EntityBuilder<T, U>> extends ExtensibleBuilder<T, U> {
+
+    public U id(final Id id) {
+        getBuildingInstance().setId(id);
+        return getSelf();
+    }
+
 }
