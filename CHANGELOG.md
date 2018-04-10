@@ -1,8 +1,15 @@
 
+# Release Version 0.17
+
+**Updates**
+* add missing id() on entity builders.
+
+
 # Release Version 0.16
 
 **Updates**
 * Added Builder-pattern for creating entities. Thanks to Aurélien Bourdon!
+
 
 # Release Version 0.15
 
