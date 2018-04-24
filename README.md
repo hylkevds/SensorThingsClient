@@ -60,6 +60,7 @@ SensorThingsService service = new SensorThingsService(serviceEndpoint);
 
 ```java
 Thing thing = ThingBuilder.builder()
+    .name("Thingything")
     .description("I'm a thing!")
     .build();
 service.create(thing);
