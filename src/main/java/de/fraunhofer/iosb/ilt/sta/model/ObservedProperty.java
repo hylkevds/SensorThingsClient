@@ -34,6 +34,12 @@ public class ObservedProperty extends Entity<ObservedProperty> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		datastreams.setService(service, Datastream.class);
+		multiDatastreams.setService(service, MultiDatastream.class);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

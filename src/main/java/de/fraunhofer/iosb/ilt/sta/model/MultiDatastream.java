@@ -55,6 +55,18 @@ public class MultiDatastream extends Entity<MultiDatastream> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		if (thing != null) {
+			thing.setService(service);
+		}
+		if (sensor != null) {
+			sensor.setService(service);
+		}
+		observedProperties.setService(service, ObservedProperty.class);
+		observations.setService(service, Observation.class);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

@@ -50,6 +50,14 @@ public class Thing extends Entity<Thing> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		locations.setService(service, Location.class);
+		datastreams.setService(service, Datastream.class);
+		multiDatastreams.setService(service, MultiDatastream.class);
+		historicalLocations.setService(service, HistoricalLocation.class);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

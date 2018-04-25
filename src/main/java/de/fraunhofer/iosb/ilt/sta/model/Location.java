@@ -36,6 +36,12 @@ public class Location extends Entity<Location> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		things.setService(service, Thing.class);
+		historicalLocations.setService(service, HistoricalLocation.class);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

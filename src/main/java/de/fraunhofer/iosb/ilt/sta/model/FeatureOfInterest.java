@@ -33,6 +33,11 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		observations.setService(service, Observation.class);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

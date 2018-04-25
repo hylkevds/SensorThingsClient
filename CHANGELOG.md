@@ -1,3 +1,8 @@
+# Release Version 0.18
+
+**Updates**
+* Fixed service not being set on all enitites when using $expand.
+
 
 # Release Version 0.17
 

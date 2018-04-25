@@ -92,8 +92,13 @@ public abstract class Entity<T extends Entity<T>> {
 	}
 
 	public void setService(SensorThingsService service) {
-		this.service = service;
+		if (this.service != service) {
+			this.service = service;
+			ensureServiceOnChildren(service);
+		}
 	}
+
+	protected abstract void ensureServiceOnChildren(SensorThingsService service);
 
 	public SensorThingsService getService() {
 		return service;

@@ -48,6 +48,22 @@ public class Datastream extends Entity<Datastream> {
 	}
 
 	@Override
+	protected void ensureServiceOnChildren(SensorThingsService service) {
+		if (thing != null) {
+			thing.setService(service);
+		}
+		if (sensor != null) {
+			sensor.setService(service);
+		}
+		if (observedProperty != null) {
+			observedProperty.setService(service);
+		}
+		if (observations != null) {
+			observations.setService(service, Observation.class);
+		}
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
