@@ -1,20 +1,25 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.LocationDao;
+import de.fraunhofer.iosb.ilt.sta.jackson.LocationDeserializer;
+import de.fraunhofer.iosb.ilt.sta.jackson.LocationSerializer;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.Map;
 import java.util.Objects;
-import org.geojson.GeoJsonObject;
 
 public class Location extends Entity<Location> {
 
 	private String name;
 	private String description;
 	private String encodingType;
-	private GeoJsonObject location;
+	@JsonDeserialize(using = LocationDeserializer.class)
+	@JsonSerialize(using = LocationSerializer.class)
+	private Object location;
 	private Map<String, Object> properties;
 
 	@JsonProperty("Things")
@@ -27,7 +32,7 @@ public class Location extends Entity<Location> {
 		super(EntityType.LOCATION);
 	}
 
-	public Location(String name, String description, String encodingType, GeoJsonObject location) {
+	public Location(String name, String description, String encodingType, Object location) {
 		this();
 		this.name = name;
 		this.description = description;
@@ -126,11 +131,11 @@ public class Location extends Entity<Location> {
 		this.historicalLocations = historicalLocations;
 	}
 
-	public GeoJsonObject getLocation() {
+	public Object getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(GeoJsonObject location) {
+	public void setLocation(Object location) {
 		this.location = location;
 	}
 

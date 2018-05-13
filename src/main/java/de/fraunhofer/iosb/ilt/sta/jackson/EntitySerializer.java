@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EntitySerializer extends JsonSerializer<Entity> {
 
-	private static final Logger logger = LoggerFactory.getLogger(EntitySerializer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntitySerializer.class);
 
 	@Override
 	public void serialize(Entity entity, JsonGenerator gen, SerializerProvider serializers)
@@ -33,8 +35,9 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 		SerializationConfig config = serializers.getConfig();
 		final BasicBeanDescription beanDesc = config.introspect(serializers.constructType(entity.getClass()));
 
-		for (BeanPropertyDefinition def : beanDesc.findProperties()) {
-			Object rawValue = def.getAccessor().getValue(entity);
+		List<BeanPropertyDefinition> properties = beanDesc.findProperties();
+		for (BeanPropertyDefinition property : properties) {
+			Object rawValue = property.getAccessor().getValue(entity);
 			// TODO: Check if prop is collection
 
 			// Write field if not null.
@@ -76,21 +79,31 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 					gen.writeEndArray();
 					continue;
 				} else {
-					TypeSerializer typeSerializer = serializers.findTypeSerializer(serializers.constructType(def.getAccessor().getRawType()));
+					JsonSerialize annotation = property.getField().getAnnotation(JsonSerialize.class);
+					JsonSerializer serializer = null;
+					if (annotation != null) {
+						try {
+							Class<? extends JsonSerializer> using = annotation.using();
+							serializer = using.newInstance();
+						} catch (InstantiationException | IllegalAccessException ex) {
+							LOGGER.warn("Could not instantiate serialiser specified in annotation.", ex);
+						}
+					}
+					TypeSerializer typeSerializer = serializers.findTypeSerializer(serializers.constructType(property.getAccessor().getRawType()));
 					BeanPropertyWriter writer = new BeanPropertyWriter(
-							def,
-							def.getAccessor(),
+							property,
+							property.getAccessor(),
 							beanDesc.getClassAnnotations(),
-							def.getAccessor().getType(),
-							null, // will be searched automatically
+							property.getAccessor().getType(),
+							serializer,
 							typeSerializer, // will not be searched automatically
-							def.getAccessor().getType(),
+							property.getAccessor().getType(),
 							true, // ignore null values
 							null);
 					try {
 						writer.serializeAsField(entity, gen, serializers);
 					} catch (Exception e) {
-						logger.error("Failed to serialize entity.", e);
+						LOGGER.error("Failed to serialize entity.", e);
 					}
 				}
 			}

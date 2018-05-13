@@ -40,6 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geojson.Point;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -155,22 +156,52 @@ public class EntityFormatterTest {
 	}
 
 	@Test
-	public void writeLocation_Basic_Success() throws Exception {
+	public void writeLocation_GeoJson() throws Exception {
 		String expResult
 				= "{\n"
 				+ "	\"@iot.id\": 1,\n"
 				+ " \"name\": \"OvenLocation\",\n"
 				+ " \"description\": \"The location of an oven.\",\n"
-				+ "	\"encodingType\": \"application/vnd.geo+json\""
+				+ "	\"encodingType\": \"application/vnd.geo+json\","
+				+ "  \"location\": { \"type\": \"Point\", \"coordinates\": [-114.05, 51.05] }\n"
 				+ "}";
 		Location entity = new Location();
 		entity.setId(new IdLong(1L));
 		entity.setName("OvenLocation");
 		entity.setDescription("The location of an oven.");
 		entity.setEncodingType("application/vnd.geo+json");
+		entity.setLocation(new Point(-114.05, 51.05));
 		final ObjectMapper mapper = ObjectMapperFactory.get();
 		String json = mapper.writeValueAsString(entity);
 		assert (jsonEqual(expResult, json));
+
+		Location parsed = mapper.readValue(expResult, Location.class);
+		Assert.assertEquals(entity, parsed);
+	}
+
+	@Test
+	public void writeLocation_String() throws Exception {
+		String expResult
+				= "{\n"
+				+ "	\"@iot.id\": 1,\n"
+				+ " \"name\": \"OvenLocation\",\n"
+				+ " \"description\": \"The location of an oven.\",\n"
+				+ "	\"encodingType\": \"text/plain\","
+				+ "  \"location\": \"Third house on the left.\"\n"
+				+ "}";
+		Location entity = new Location();
+		entity.setId(new IdLong(1L));
+		entity.setName("OvenLocation");
+		entity.setDescription("The location of an oven.");
+		entity.setEncodingType("text/plain");
+		entity.setLocation("Third house on the left.");
+		final ObjectMapper mapper = ObjectMapperFactory.get();
+		String json = mapper.writeValueAsString(entity);
+
+		assert (jsonEqual(expResult, json));
+
+		Location parsed = mapper.readValue(expResult, Location.class);
+		Assert.assertEquals(entity, parsed);
 	}
 
 	@Test
@@ -291,6 +322,9 @@ public class EntityFormatterTest {
 		final ObjectMapper mapper = ObjectMapperFactory.get();
 		String json = mapper.writeValueAsString(thing);
 		assert (jsonEqual(expResult, json));
+
+		Thing parsed = mapper.readValue(expResult, Thing.class);
+		Assert.assertEquals(thing, parsed);
 	}
 
 	@Test
