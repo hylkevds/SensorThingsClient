@@ -2,6 +2,7 @@
 
 **Updates**
 * Fixed service not being set on all enitites when using $expand.
+* Allow Location.location to be any object type, not just geoJSON.
 
 
 # Release Version 0.17
