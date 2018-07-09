@@ -126,11 +126,21 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 
 	public Query<T> select(String... fields) {
 		removeAllParams("$select");
+		if (fields == null) {
+			return this;
+		}
 		StringBuilder selectValue = new StringBuilder();
 		for (String field : fields) {
 			selectValue.append(field).append(",");
 		}
-		params.add(new BasicNameValuePair("$select", selectValue.substring(0, selectValue.length() - 1)));
+		if (selectValue.length() == 0) {
+			return this;
+		}
+		String select = selectValue.substring(0, selectValue.length() - 1);
+		if (select.isEmpty()) {
+			return this;
+		}
+		params.add(new BasicNameValuePair("$select", select));
 		return this;
 	}
 
