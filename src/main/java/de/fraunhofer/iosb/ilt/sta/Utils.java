@@ -15,4 +15,11 @@ public class Utils {
 	public static String escapeForStringConstant(String in) {
 		return in.replaceAll("'", "''");
 	}
+
+	public static String quoteForUrl(Object in) {
+		if (in instanceof Number) {
+			return in.toString();
+		}
+		return "'" + escapeForStringConstant(in.toString()) + "'";
+	}
 }
