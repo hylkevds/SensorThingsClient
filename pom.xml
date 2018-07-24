@@ -169,5 +169,11 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j-api.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

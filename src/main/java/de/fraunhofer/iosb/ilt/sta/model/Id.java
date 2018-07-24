@@ -40,10 +40,11 @@ public interface Id {
 	public String getUrl();
 
 	/**
-	 * Get the value, formatted for use in a url. String values will be quoted
-	 * with double quotes.
+	 * Get the value, formatted for inserting into a JSON document. In general,
+	 * it is better to use a json mapper, and pass it the Object returned by
+	 * getValue().
 	 *
-	 * @return the value, formatted for use in a url.
+	 * @return the value, formatted for use in JSON.
 	 */
 	public String getJson();
 

@@ -40,7 +40,12 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
 	private final EntityType entityType;
 
 	public EntityList(EntityType entityType) {
-		this.entityType = entityType;
+		if (!entityType.isList()) {
+			LOGGER.warn("Trying to make a collection of a singular entity type {}, assuming the plural is wanted.", entityType);
+			this.entityType = entityType.getPlural();
+		} else {
+			this.entityType = entityType;
+		}
 	}
 
 	@Override

@@ -55,14 +55,35 @@ public enum EntityType {
 	private final Class<? extends Entity> type;
 	private final TypeReference typeReference;
 	private final String name;
-	// Referenced as string instead of EntityType because we cannot access
-	// fields before they are created :(
 	private final Set<EntityType> relations;
 	private final boolean isList;
+	/**
+	 * The other one of a singular/plural pair.
+	 */
+	private EntityType other;
 	private static final Map<Class<? extends Entity>, EntityType> listForClass = new HashMap<>();
 	private static final Map<Class<? extends Entity>, EntityType> singleForClass = new HashMap<>();
 
 	static {
+		DATASTREAM.setOther(DATASTREAMS);
+		DATASTREAMS.setOther(DATASTREAM);
+		MULTIDATASTREAM.setOther(MULTIDATASTREAMS);
+		MULTIDATASTREAMS.setOther(MULTIDATASTREAM);
+		FEATURE_OF_INTEREST.setOther(FEATURES_OF_INTEREST);
+		FEATURES_OF_INTEREST.setOther(FEATURE_OF_INTEREST);
+		HISTORICAL_LOCATION.setOther(HISTORICAL_LOCATIONS);
+		HISTORICAL_LOCATIONS.setOther(HISTORICAL_LOCATION);
+		LOCATION.setOther(LOCATIONS);
+		LOCATIONS.setOther(LOCATION);
+		OBSERVATION.setOther(OBSERVATIONS);
+		OBSERVATIONS.setOther(OBSERVATION);
+		OBSERVED_PROPERTY.setOther(OBSERVED_PROPERTIES);
+		OBSERVED_PROPERTIES.setOther(OBSERVED_PROPERTY);
+		SENSOR.setOther(SENSORS);
+		SENSORS.setOther(SENSOR);
+		THING.setOther(THINGS);
+		THINGS.setOther(THING);
+
 		DATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
 		DATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
 		MULTIDATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
@@ -133,6 +154,24 @@ public enum EntityType {
 
 	public boolean isList() {
 		return isList;
+	}
+
+	private void setOther(EntityType other) {
+		this.other = other;
+	}
+
+	public EntityType getPlural() {
+		if (isList) {
+			return this;
+		}
+		return other;
+	}
+
+	public EntityType getSingular() {
+		if (!isList) {
+			return this;
+		}
+		return other;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
+import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.IdString;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
@@ -29,6 +30,7 @@ import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -150,6 +152,35 @@ public class EntityFormatterTest {
 		location.setId(new IdLong(1L));
 		entity.getLocations().add(location);
 
+		final ObjectMapper mapper = ObjectMapperFactory.get();
+		String json = mapper.writeValueAsString(entity);
+		assert (jsonEqual(expResult, json));
+	}
+
+	@Test
+	public void testIncorrectCollection() throws IOException {
+		String expResult = "{\n"
+				+ "	\"name\": \"TestThing\",\n"
+				+ "	\"description\": \"A Thing for testing.\",\n"
+				+ "	\"Locations\": [\n"
+				+ "		{\n"
+				+ "			\"name\": \"TestLocation\",\n"
+				+ "			\"description\": \"The location of the TestThing\",\n"
+				+ "			\"encodingType\": \"application/vnd.geo+json\",\n"
+				+ "			\"location\": {\n"
+				+ "				\"type\": \"Point\",\n"
+				+ "				\"coordinates\": [8.8, 49.9]\n"
+				+ "			}\n"
+				+ "		}\n"
+				+ "	]\n"
+				+ "}\n"
+				+ "";
+
+		Thing entity = new Thing("TestThing", "A Thing for testing.");
+		Location location = new Location("TestLocation", "The location of the TestThing", "application/vnd.geo+json", new Point(8.8, 49.9));
+		EntityList<Location> locations = new EntityList<>(EntityType.LOCATION);
+		locations.add(location);
+		entity.setLocations(locations);
 		final ObjectMapper mapper = ObjectMapperFactory.get();
 		String json = mapper.writeValueAsString(entity);
 		assert (jsonEqual(expResult, json));
