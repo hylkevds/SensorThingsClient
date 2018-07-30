@@ -1,14 +1,11 @@
-# Release Version 0.19
-
-**Updates**
-* Fixed it being impossible to clear the select on a query.
-
-
 # Release Version 0.18
 
 **Updates**
+* Fixed it being impossible to clear the select on a query.
 * Fixed service not being set on all entities when using $expand.
 * Allow Location.location to be any object type, not just geoJSON.
+* Added quoteForUrl convenience method.
+* Added checks to ensure collections are not created with the singular entity type.
 
 
 # Release Version 0.17
