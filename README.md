@@ -32,6 +32,13 @@ Add the dependency:
 
 ```
 
+## Using with gradle
+
+Add the dependency:
+```gradle
+compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.18'
+```
+
 If you do not yet have the FraunhoferIOSB bintray repository, add:
 ```xml
 <repositories>
@@ -43,6 +50,15 @@ If you do not yet have the FraunhoferIOSB bintray repository, add:
         </releases>
     </repository>
 </repositories>
+```
+
+If you do not yet have the FraunhoferIOSB bintray repository, add:
+```json
+repositories {
+    maven {
+        url  "https://dl.bintray.com/fraunhoferiosb/Maven"
+    }
+}
 ```
 
 ## API
