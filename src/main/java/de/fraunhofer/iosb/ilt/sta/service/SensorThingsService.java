@@ -14,14 +14,15 @@ import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.DataArrayDocument;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.LoggerFactory;
 
 /**
  * A SensorThingsService represents the service endpoint of a server.
@@ -30,7 +31,12 @@ import org.apache.http.impl.client.HttpClients;
  */
 public class SensorThingsService {
 
-	private URI endpoint;
+	/**
+	 * The logger for this class.
+	 */
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SensorThingsService.class);
+
+	private URL endpoint;
 	private CloseableHttpClient client;
 	private TokenManager tokenManager;
 
@@ -46,30 +52,55 @@ public class SensorThingsService {
 	 * Constructor.
 	 *
 	 * @param endpoint the base URI of the SensorThings service
-	 * @throws java.net.URISyntaxException when building the final url fails.
+	 * @throws java.net.MalformedURLException when building the final url fails.
 	 */
-	public SensorThingsService(URL endpoint) throws URISyntaxException {
-		this.endpoint = new URI(endpoint.toString() + "/").normalize();
+	public SensorThingsService(URI endpoint) throws MalformedURLException {
+		this(endpoint.toURL());
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param endpoint the base URL of the SensorThings service
+	 * @throws java.net.MalformedURLException when building the final url fails.
+	 */
+	public SensorThingsService(URL endpoint) throws MalformedURLException {
+		setEndpoint(endpoint);
 		this.client = HttpClients.createSystem();
 	}
 
 	/**
-	 * Sets the endpoint URI. Once the endpoint URI is set it can not be
+	 * Sets the endpoint URL/URI. Once the endpoint URL/URI is set it can not be
+	 * changed. The endpoint url MUST be set before the service can be used.
+	 *
+	 * @param endpoint The URI of the endpoint.
+	 * @throws java.net.MalformedURLException when building the final url fails.
+	 */
+	public final void setEndpoint(URI endpoint) throws MalformedURLException {
+		setEndpoint(endpoint.toURL());
+	}
+
+	/**
+	 * Sets the endpoint URL/URI. Once the endpoint URL/URI is set it can not be
 	 * changed. The endpoint url MUST be set before the service can be used.
 	 *
 	 * @param endpoint The URL of the endpoint.
-	 * @throws java.net.URISyntaxException when building the final url fails.
+	 * @throws java.net.MalformedURLException when building the final url fails.
 	 */
-	public void setEndpoint(URI endpoint) throws URISyntaxException {
+	public final void setEndpoint(URL endpoint) throws MalformedURLException {
 		if (this.endpoint != null) {
-			throw new IllegalStateException("endpoint URI already set.");
+			throw new IllegalStateException("endpoint URL already set.");
 		}
-		this.endpoint = new URI(endpoint.toString() + "/").normalize();
+		if (!endpoint.toString().endsWith("/")) {
+			this.endpoint = new URL(endpoint.toString() + "/");
+		} else {
+			this.endpoint = endpoint;
+		}
 	}
 
-	public URI getEndpoint() {
+	public URL getEndpoint() {
 		if (this.endpoint == null) {
-			throw new IllegalStateException("endpoint URI not set.");
+			throw new IllegalStateException("endpoint URL not set.");
 		}
 		return this.endpoint;
 	}
@@ -105,9 +136,16 @@ public class SensorThingsService {
 	 * @param parent The entity holding the relation, can be null.
 	 * @param relation The relation or collection to get.
 	 * @return the full path to the entity or collection.
+	 * @throws de.fraunhofer.iosb.ilt.sta.ServiceFailureException If generating
+	 * the path fails.
 	 */
-	public URI getFullPath(Entity<?> parent, EntityType relation) {
-		return getEndpoint().resolve(getPath(parent, relation));
+	public URL getFullPath(Entity<?> parent, EntityType relation) throws ServiceFailureException {
+		try {
+			return new URL(getEndpoint().toString() + getPath(parent, relation));
+		} catch (MalformedURLException exc) {
+			LOGGER.error("Failed to generate URL.", exc);
+			throw new ServiceFailureException(exc);
+		}
 	}
 
 	/**

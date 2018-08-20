@@ -15,6 +15,7 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import org.apache.http.Consts;
 import org.apache.http.Header;
@@ -82,9 +83,8 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 		}
 
 		CloseableHttpResponse response = null;
-		URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural));
-
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural).toURI());
 			final ObjectMapper mapper = ObjectMapperFactory.get();
 			String json = mapper.writeValueAsString(entity);
 
@@ -129,14 +129,18 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 
 	@Override
 	public T find(Entity<?> parent) throws ServiceFailureException {
-		URI fullPath = service.getFullPath(parent, singular);
-		return find(fullPath);
+		try {
+			URL fullPath = service.getFullPath(parent, singular);
+			return find(fullPath.toURI());
+		} catch (URISyntaxException ex) {
+			throw new ServiceFailureException(ex);
+		}
 	}
 
 	@Override
 	public T find(Id id) throws ServiceFailureException {
-		URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().resolve(entityPath(id)));
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().toString() + this.entityPath(id));
 			return find(uriBuilder.build());
 		} catch (URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
@@ -200,9 +204,9 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 
 	@Override
 	public T find(Id id, Expansion expansion) throws ServiceFailureException {
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(id)));
-		uriBuilder.addParameter("$expand", expansion.toString());
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().toString() + this.entityPath(id));
+			uriBuilder.addParameter("$expand", expansion.toString());
 			return find(uriBuilder.build());
 		} catch (URISyntaxException ex) {
 			throw new ServiceFailureException(ex);
@@ -211,11 +215,10 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 
 	@Override
 	public void update(T entity) throws ServiceFailureException {
-		URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().resolve(entityPath(entity.getId())));
-
 		HttpPatch httpPatch;
 		CloseableHttpResponse response = null;
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().toString() + this.entityPath(entity.getId()));
 			final ObjectMapper mapper = ObjectMapperFactory.get();
 			String json = mapper.writeValueAsString(entity);
 
@@ -247,8 +250,8 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 	@Override
 	public void delete(T entity) throws ServiceFailureException {
 		CloseableHttpResponse response = null;
-		URIBuilder uriBuilder = new URIBuilder(this.service.getEndpoint().resolve(this.entityPath(entity.getId())));
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().toString() + this.entityPath(entity.getId()));
 			HttpDelete httpDelete = new HttpDelete(uriBuilder.build());
 			LOGGER.debug("Deleting: {}", httpDelete.getURI());
 			response = service.execute(httpDelete);

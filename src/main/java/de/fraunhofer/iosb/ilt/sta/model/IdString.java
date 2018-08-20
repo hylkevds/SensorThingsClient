@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import de.fraunhofer.iosb.ilt.sta.Utils;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -26,12 +27,16 @@ public class IdString implements Id {
 
 	@Override
 	public String getUrl() {
-		return "'" + value + "'";
+		return "'"
+				+ Utils.urlEncode(
+						Utils.escapeForStringConstant(value),
+						true)
+				+ "'";
 	}
 
 	@Override
 	public String getJson() {
-		return "\"" + value + "\"";
+		return '"' + value + '"';
 	}
 
 	@Override

@@ -159,10 +159,10 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 	public EntityList<T> list() throws ServiceFailureException {
 		EntityList<T> list = new EntityList<>(plural);
 
-		URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural));
-		uriBuilder.addParameters(params);
 		CloseableHttpResponse response = null;
 		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural).toURI());
+			uriBuilder.addParameters(params);
 			HttpGet httpGet = new HttpGet(uriBuilder.build());
 			LOGGER.debug("Fetching: {}", httpGet.getURI());
 			httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
