@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
@@ -191,4 +192,38 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
 		return list;
 	}
 
+	public void delete() throws ServiceFailureException {
+		removeAllParams("$top");
+		removeAllParams("$skip");
+		removeAllParams("$count");
+		removeAllParams("$select");
+		removeAllParams("$expand");
+
+		CloseableHttpResponse response = null;
+		try {
+			URIBuilder uriBuilder = new URIBuilder(service.getFullPath(parent, plural).toURI());
+			uriBuilder.addParameters(params);
+			HttpDelete httpDelete = new HttpDelete(uriBuilder.build());
+			LOGGER.debug("Deleting: {}", httpDelete.getURI());
+			httpDelete.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+
+			response = service.execute(httpDelete);
+			int code = response.getStatusLine().getStatusCode();
+			if (code < 200 || code >= 300) {
+				LOGGER.error("Failed on query: {}", uriBuilder.build());
+				throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+			}
+		} catch (URISyntaxException | IOException ex) {
+			LOGGER.error("Failed to fetch list.", ex);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ex) {
+				LOGGER.error("Exception closing response.", ex);
+			}
+		}
+
+	}
 }
