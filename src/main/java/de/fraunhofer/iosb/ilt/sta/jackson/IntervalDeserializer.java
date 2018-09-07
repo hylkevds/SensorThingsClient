@@ -17,18 +17,18 @@ import org.threeten.extra.Interval;
  */
 public class IntervalDeserializer extends StdDeserializer<Interval> {
 
-	private static final long serialVersionUID = 3674342381623629828L;
+    private static final long serialVersionUID = 3674342381623629828L;
 
-	public IntervalDeserializer() {
-		super(Interval.class);
-	}
+    public IntervalDeserializer() {
+        super(Interval.class);
+    }
 
-	// org.threeten.extra.Interval doesn't support time zone setups yet:
-	// https://github.com/ThreeTen/threeten-extra/issues/66
-	// Patch submitted.
-	@Override
-	public Interval deserialize(JsonParser parser, DeserializationContext context)
-			throws IOException, JsonProcessingException {
-		return Interval.parse(((JsonNode) parser.getCodec().readTree(parser)).asText());
-	}
+    // org.threeten.extra.Interval doesn't support time zone setups yet:
+    // https://github.com/ThreeTen/threeten-extra/issues/66
+    // Patch submitted.
+    @Override
+    public Interval deserialize(JsonParser parser, DeserializationContext context)
+            throws IOException, JsonProcessingException {
+        return Interval.parse(((JsonNode) parser.getCodec().readTree(parser)).asText());
+    }
 }

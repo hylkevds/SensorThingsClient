@@ -12,9 +12,9 @@ import java.io.IOException;
  */
 public class TimeObjectSerializer extends JsonSerializer<TimeObject> {
 
-	@Override
-	public void serialize(TimeObject value, JsonGenerator gen, SerializerProvider serializers)
-			throws IOException, JsonProcessingException {
-		gen.writeString(value.toString());
-	}
+    @Override
+    public void serialize(TimeObject value, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException, JsonProcessingException {
+        gen.writeString(value.toString());
+    }
 }

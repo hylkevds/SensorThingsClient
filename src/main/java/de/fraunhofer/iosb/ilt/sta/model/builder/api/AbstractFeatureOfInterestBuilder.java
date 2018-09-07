@@ -3,14 +3,14 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 import com.fasterxml.jackson.annotation.JsonValue;
 import de.fraunhofer.iosb.ilt.sta.model.FeatureOfInterest;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
-import org.geojson.GeoJsonObject;
-
 import java.util.List;
+import org.geojson.GeoJsonObject;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link FeatureOfInterest}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractFeatureOfInterestBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractFeatureOfInterestBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractFeatureOfInterestBuilder<U extends AbstractFeatureOfInterestBuilder<U>> extends EntityBuilder<FeatureOfInterest, U> {
@@ -37,8 +37,8 @@ public abstract class AbstractFeatureOfInterestBuilder<U extends AbstractFeature
 
     public U feature(final Object feature) {
         if (!(feature instanceof GeoJsonObject)) {
-            throw new BuildingException("Whereas the OGC SensorThings API specifies the FeatureOfInterest#feature as an Any type (so any Object can be used), " +
-                    "the FROST-Client only accepts GeoJSONObject type");
+            throw new BuildingException("Whereas the OGC SensorThings API specifies the FeatureOfInterest#feature as an Any type (so any Object can be used), "
+                    + "the FROST-Client only accepts GeoJSONObject type");
         }
         getBuildingInstance().setFeature((GeoJsonObject) feature);
         return getSelf();
@@ -55,7 +55,8 @@ public abstract class AbstractFeatureOfInterestBuilder<U extends AbstractFeature
     }
 
     /**
-     * All the possible values for a {@link FeatureOfInterest#encodingType} attribute
+     * All the possible values for a {@link FeatureOfInterest#encodingType}
+     * attribute
      *
      * @author Aurelien Bourdon
      */

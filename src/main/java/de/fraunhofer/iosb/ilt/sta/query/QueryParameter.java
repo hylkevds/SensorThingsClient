@@ -11,45 +11,45 @@ import de.fraunhofer.iosb.ilt.sta.model.Entity;
  */
 public interface QueryParameter<T extends Entity<T>> {
 
-	/**
-	 * Add the filter parameter as specified by the SensorThingsAPI
-	 * specification.
-	 *
-	 * @param options the filter options as a string
-	 * @return the updated instance of the query
-	 */
-	public Query<T> filter(String options);
+    /**
+     * Add the filter parameter as specified by the SensorThingsAPI
+     * specification.
+     *
+     * @param options the filter options as a string
+     * @return the updated instance of the query
+     */
+    public Query<T> filter(String options);
 
-	/**
-	 * Add the top parameter as specified by the SensorThingsAPI specification.
-	 *
-	 * @param n the limit
-	 * @return the updated instance of the query
-	 */
-	public Query<T> top(int n);
+    /**
+     * Add the top parameter as specified by the SensorThingsAPI specification.
+     *
+     * @param n the limit
+     * @return the updated instance of the query
+     */
+    public Query<T> top(int n);
 
-	/**
-	 * Add the orderBy parameter as specified by the SensorThingsAPI
-	 * specification.
-	 *
-	 * @param clause the order clause
-	 * @return the updated instance of the query
-	 */
-	public Query<T> orderBy(String clause);
+    /**
+     * Add the orderBy parameter as specified by the SensorThingsAPI
+     * specification.
+     *
+     * @param clause the order clause
+     * @return the updated instance of the query
+     */
+    public Query<T> orderBy(String clause);
 
-	/**
-	 * Add the skip parameter as specified by the SensorThingsAPI specification.
-	 *
-	 * @param n the number of entities to skip
-	 * @return the updated instance of the query
-	 */
-	public Query<T> skip(int n);
+    /**
+     * Add the skip parameter as specified by the SensorThingsAPI specification.
+     *
+     * @param n the number of entities to skip
+     * @return the updated instance of the query
+     */
+    public Query<T> skip(int n);
 
-	/**
-	 * Add the count parameter as specified by the SensorThingsAPI
-	 * specification.
-	 *
-	 * @return the updated instance of the query
-	 */
-	public Query<T> count();
+    /**
+     * Add the count parameter as specified by the SensorThingsAPI
+     * specification.
+     *
+     * @return the updated instance of the query
+     */
+    public Query<T> count();
 }

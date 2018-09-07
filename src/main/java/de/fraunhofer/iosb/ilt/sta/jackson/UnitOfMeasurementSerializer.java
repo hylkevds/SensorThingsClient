@@ -15,16 +15,16 @@ import java.io.IOException;
  */
 public class UnitOfMeasurementSerializer extends JsonSerializer<UnitOfMeasurement> {
 
-	@Override
-	public void serialize(UnitOfMeasurement value, JsonGenerator gen, SerializerProvider serializers)
-			throws IOException, JsonProcessingException {
-		gen.writeStartObject();
-		gen.writeFieldName("name");
-		gen.writeString(value.getName());
-		gen.writeFieldName("symbol");
-		gen.writeString(value.getSymbol());
-		gen.writeFieldName("definition");
-		gen.writeString(value.getDefinition());
-		gen.writeEndObject();
-	}
+    @Override
+    public void serialize(UnitOfMeasurement value, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException, JsonProcessingException {
+        gen.writeStartObject();
+        gen.writeFieldName("name");
+        gen.writeString(value.getName());
+        gen.writeFieldName("symbol");
+        gen.writeString(value.getSymbol());
+        gen.writeFieldName("definition");
+        gen.writeString(value.getDefinition());
+        gen.writeEndObject();
+    }
 }

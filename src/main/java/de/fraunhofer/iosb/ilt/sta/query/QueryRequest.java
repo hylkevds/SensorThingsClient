@@ -13,19 +13,19 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
  */
 public interface QueryRequest<T extends Entity<T>> {
 
-	/**
-	 * Get the first instance of an entity collection.
-	 *
-	 * @return the first instance
-	 * @throws ServiceFailureException the request failed
-	 */
-	T first() throws ServiceFailureException;
+    /**
+     * Get the first instance of an entity collection.
+     *
+     * @return the first instance
+     * @throws ServiceFailureException the request failed
+     */
+    T first() throws ServiceFailureException;
 
-	/**
-	 * Get an entity collection.
-	 *
-	 * @return the entity collection
-	 * @throws ServiceFailureException the request failed
-	 */
-	EntityList<T> list() throws ServiceFailureException;
+    /**
+     * Get an entity collection.
+     *
+     * @return the entity collection
+     * @throws ServiceFailureException the request failed
+     */
+    EntityList<T> list() throws ServiceFailureException;
 }

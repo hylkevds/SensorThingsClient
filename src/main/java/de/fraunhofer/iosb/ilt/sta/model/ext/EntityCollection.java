@@ -15,37 +15,37 @@ import java.util.List;
  */
 public interface EntityCollection<T extends Entity> extends Collection<T> {
 
-	public EntityType getType();
+    public EntityType getType();
 
-	/**
-	 * Convert the EntityCollection to a {@link List}.
-	 *
-	 * @return the list
-	 */
-	List<T> toList();
+    /**
+     * Convert the EntityCollection to a {@link List}.
+     *
+     * @return the list
+     */
+    List<T> toList();
 
-	/**
-	 *
-	 * @return true if there is a nextLink to fetch more Entities.
-	 */
-	boolean hasNextLink();
+    /**
+     *
+     * @return true if there is a nextLink to fetch more Entities.
+     */
+    boolean hasNextLink();
 
-	/**
-	 * Use the nextLink to fetch more Entities.
-	 */
-	void fetchNext();
+    /**
+     * Use the nextLink to fetch more Entities.
+     */
+    void fetchNext();
 
-	/**
-	 * Get the count value if available.
-	 *
-	 * @return the count value
-	 */
-	long getCount();
+    /**
+     * Get the count value if available.
+     *
+     * @return the count value
+     */
+    long getCount();
 
-	/**
-	 * Set the count value.
-	 *
-	 * @param count the count value
-	 */
-	void setCount(long count);
+    /**
+     * Set the count value.
+     *
+     * @param count the count value
+     */
+    void setCount(long count);
 }

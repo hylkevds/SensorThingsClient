@@ -16,9 +16,9 @@ import org.threeten.extra.Interval;
  */
 public class IntervalSerializer extends JsonSerializer<Interval> {
 
-	@Override
-	public void serialize(Interval interval, JsonGenerator gen, SerializerProvider serializers)
-			throws IOException, JsonProcessingException {
-		gen.writeString(interval.toString());
-	}
+    @Override
+    public void serialize(Interval interval, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException, JsonProcessingException {
+        gen.writeString(interval.toString());
+    }
 }

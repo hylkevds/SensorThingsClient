@@ -3,8 +3,6 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.Id;
 
-import java.net.URI;
-
 /**
  * Base class for any {@link Entity} builder.
  * <p>

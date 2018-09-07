@@ -27,20 +27,20 @@ import org.junit.Test;
  */
 public class UtilsTest {
 
-	public UtilsTest() {
-	}
+    public UtilsTest() {
+    }
 
-	@Test
-	public void testEscapeForStringConstant() {
-		Assert.assertEquals("abcdefg", Utils.escapeForStringConstant("abcdefg"));
-		Assert.assertEquals("''", Utils.escapeForStringConstant("'"));
-		Assert.assertEquals("''''", Utils.escapeForStringConstant("''"));
-	}
+    @Test
+    public void testEscapeForStringConstant() {
+        Assert.assertEquals("abcdefg", Utils.escapeForStringConstant("abcdefg"));
+        Assert.assertEquals("''", Utils.escapeForStringConstant("'"));
+        Assert.assertEquals("''''", Utils.escapeForStringConstant("''"));
+    }
 
-	@Test
-	public void testUrlEncode() {
-		Assert.assertEquals("http%3A//example.org/Things%5Bxyz%27xyz%5D", Utils.urlEncode("http://example.org/Things[xyz'xyz]", true));
-		Assert.assertEquals("http%3A%2F%2Fexample.org%2FThings%5Bxyz%27xyz%5D", Utils.urlEncode("http://example.org/Things[xyz'xyz]", false));
-	}
+    @Test
+    public void testUrlEncode() {
+        Assert.assertEquals("http%3A//example.org/Things%5Bxyz%27xyz%5D", Utils.urlEncode("http://example.org/Things[xyz'xyz]", true));
+        Assert.assertEquals("http%3A%2F%2Fexample.org%2FThings%5Bxyz%27xyz%5D", Utils.urlEncode("http://example.org/Things[xyz'xyz]", false));
+    }
 
 }

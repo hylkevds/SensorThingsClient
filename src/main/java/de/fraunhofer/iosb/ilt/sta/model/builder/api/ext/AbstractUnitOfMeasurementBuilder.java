@@ -6,7 +6,8 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 /**
  * Base class for any {@link UnitOfMeasurement} builder
  *
- * @param <T> the concrete type that extends this {@link AbstractUnitOfMeasurementBuilder}
+ * @param <T> the concrete type that extends this
+ * {@link AbstractUnitOfMeasurementBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractUnitOfMeasurementBuilder<T extends AbstractUnitOfMeasurementBuilder<T>> extends ExtensibleBuilder<UnitOfMeasurement, T> {

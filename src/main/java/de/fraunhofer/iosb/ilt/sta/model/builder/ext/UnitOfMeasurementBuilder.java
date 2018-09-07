@@ -3,7 +3,8 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.ext;
 import de.fraunhofer.iosb.ilt.sta.model.builder.api.ext.AbstractUnitOfMeasurementBuilder;
 
 /**
- * Default {@link de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement} {@link de.fraunhofer.iosb.ilt.sta.model.builder.api.Builder}
+ * Default
+ * {@link de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement} {@link de.fraunhofer.iosb.ilt.sta.model.builder.api.Builder}
  *
  * @author Aurelien Bourdon
  */

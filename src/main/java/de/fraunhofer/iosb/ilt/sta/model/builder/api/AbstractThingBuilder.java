@@ -5,7 +5,6 @@ import de.fraunhofer.iosb.ilt.sta.model.HistoricalLocation;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,8 @@ import java.util.Map;
 /**
  * Base class for any {@link EntityBuilder} of {@link Thing}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractThingBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractThingBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractThingBuilder<U extends AbstractThingBuilder<U>> extends EntityBuilder<Thing, U> {

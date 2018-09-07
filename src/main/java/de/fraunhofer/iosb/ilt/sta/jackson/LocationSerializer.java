@@ -13,17 +13,17 @@ import org.geojson.GeoJsonObject;
  */
 public class LocationSerializer extends StdSerializer<Object> {
 
-	public LocationSerializer() {
-		super(Object.class);
-	}
+    public LocationSerializer() {
+        super(Object.class);
+    }
 
-	@Override
-	public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers)
-			throws IOException, JsonProcessingException {
-		if (value instanceof GeoJsonObject) {
-			new ObjectMapper().writerFor(GeoJsonObject.class).writeValue(gen, value);
-		} else {
-			gen.writeObject(value);
-		}
-	}
+    @Override
+    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException, JsonProcessingException {
+        if (value instanceof GeoJsonObject) {
+            new ObjectMapper().writerFor(GeoJsonObject.class).writeValue(gen, value);
+        } else {
+            gen.writeObject(value);
+        }
+    }
 }

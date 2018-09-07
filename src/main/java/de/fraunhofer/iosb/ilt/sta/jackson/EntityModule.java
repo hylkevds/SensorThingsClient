@@ -17,17 +17,17 @@ import org.threeten.extra.Interval;
  */
 public class EntityModule extends SimpleModule {
 
-	private static final long serialVersionUID = -667555967846254500L;
+    private static final long serialVersionUID = -667555967846254500L;
 
-	public EntityModule() {
-		super(new Version(0, 0, 1, null, null, null));
-		addSerializer(Entity.class, new EntitySerializer());
-		addSerializer(UnitOfMeasurement.class, new UnitOfMeasurementSerializer());
-		addSerializer(Interval.class, new IntervalSerializer());
-		addSerializer(TimeObject.class, new TimeObjectSerializer());
+    public EntityModule() {
+        super(new Version(0, 0, 1, null, null, null));
+        addSerializer(Entity.class, new EntitySerializer());
+        addSerializer(UnitOfMeasurement.class, new UnitOfMeasurementSerializer());
+        addSerializer(Interval.class, new IntervalSerializer());
+        addSerializer(TimeObject.class, new TimeObjectSerializer());
 
-		addDeserializer(Id.class, new IdDeserializer());
-		addDeserializer(Interval.class, new IntervalDeserializer());
-		addDeserializer(TimeObject.class, new TimeObjectDeserializer());
-	}
+        addDeserializer(Id.class, new IdDeserializer());
+        addDeserializer(Interval.class, new IntervalDeserializer());
+        addDeserializer(TimeObject.class, new TimeObjectDeserializer());
+    }
 }

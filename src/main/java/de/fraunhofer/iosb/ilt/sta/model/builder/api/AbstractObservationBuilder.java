@@ -5,16 +5,16 @@ import de.fraunhofer.iosb.ilt.sta.model.FeatureOfInterest;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.TimeObject;
-import org.threeten.extra.Interval;
-
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.threeten.extra.Interval;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link Observation}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractObservationBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractObservationBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractObservationBuilder<U extends AbstractObservationBuilder<U>> extends EntityBuilder<Observation, U> {

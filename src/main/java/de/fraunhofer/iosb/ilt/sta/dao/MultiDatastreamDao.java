@@ -11,7 +11,7 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
  */
 public class MultiDatastreamDao extends BaseDao<MultiDatastream> {
 
-	public MultiDatastreamDao(SensorThingsService service) {
-		super(service, MultiDatastream.class);
-	}
+    public MultiDatastreamDao(SensorThingsService service) {
+        super(service, MultiDatastream.class);
+    }
 }

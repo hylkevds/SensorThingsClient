@@ -17,34 +17,34 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
  */
 public final class ObjectMapperFactory {
 
-	private static ObjectMapper mapper;
+    private static ObjectMapper mapper;
 
-	private ObjectMapperFactory() {
-	}
+    private ObjectMapperFactory() {
+    }
 
-	/**
-	 * Get a preconfigured, long living instance of {@link ObjectMapper} with
-	 * all custom modules needed.
-	 *
-	 * @return the object mapper
-	 */
-	public static ObjectMapper get() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
-			mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-			mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-			mapper.registerModule(new JavaTimeModule());
-			mapper.registerModule(new EntityModule());
-			// Write any date/time values as ISO-8601 formated strings.
-			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+    /**
+     * Get a preconfigured, long living instance of {@link ObjectMapper} with
+     * all custom modules needed.
+     *
+     * @return the object mapper
+     */
+    public static ObjectMapper get() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
+            mapper.registerModule(new JavaTimeModule());
+            mapper.registerModule(new EntityModule());
+            // Write any date/time values as ISO-8601 formated strings.
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
-			final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
-			m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
-			mapper.registerModule(m);
-		}
+            final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
+            m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
+            mapper.registerModule(m);
+        }
 
-		return mapper;
-	}
+        return mapper;
+    }
 
 }

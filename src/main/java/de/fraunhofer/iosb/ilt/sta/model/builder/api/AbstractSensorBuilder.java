@@ -3,13 +3,13 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
-
 import java.util.List;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link Sensor}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractSensorBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractSensorBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> extends EntityBuilder<Sensor, U> {

@@ -13,214 +13,214 @@ import org.threeten.extra.Interval;
 
 public class Observation extends Entity<Observation> {
 
-	private TimeObject phenomenonTime;
-	private Object result;
-	private ZonedDateTime resultTime;
-	private Object resultQuality; //DQ_Element
-	private Interval validTime;
-	private Map<String, Object> parameters;
+    private TimeObject phenomenonTime;
+    private Object result;
+    private ZonedDateTime resultTime;
+    private Object resultQuality; //DQ_Element
+    private Interval validTime;
+    private Map<String, Object> parameters;
 
-	@JsonProperty("Datastream")
-	private Datastream datastream;
+    @JsonProperty("Datastream")
+    private Datastream datastream;
 
-	@JsonProperty("MultiDatastream")
-	private MultiDatastream multiDatastream;
+    @JsonProperty("MultiDatastream")
+    private MultiDatastream multiDatastream;
 
-	@JsonProperty("FeatureOfInterest")
-	private FeatureOfInterest featureOfInterest;
+    @JsonProperty("FeatureOfInterest")
+    private FeatureOfInterest featureOfInterest;
 
-	public Observation() {
-		super(EntityType.OBSERVATION);
-	}
+    public Observation() {
+        super(EntityType.OBSERVATION);
+    }
 
-	public Observation(Object result, Datastream datastream) {
-		this();
-		this.result = result;
-		this.datastream = datastream;
-	}
+    public Observation(Object result, Datastream datastream) {
+        this();
+        this.result = result;
+        this.datastream = datastream;
+    }
 
-	public Observation(Object result, MultiDatastream multiDatastream) {
-		this();
-		this.result = result;
-		this.multiDatastream = multiDatastream;
-	}
+    public Observation(Object result, MultiDatastream multiDatastream) {
+        this();
+        this.result = result;
+        this.multiDatastream = multiDatastream;
+    }
 
-	public Observation(Object result, ZonedDateTime phenomenonTime) {
-		this();
-		this.result = result;
-		this.phenomenonTime = new TimeObject(phenomenonTime);
-	}
+    public Observation(Object result, ZonedDateTime phenomenonTime) {
+        this();
+        this.result = result;
+        this.phenomenonTime = new TimeObject(phenomenonTime);
+    }
 
-	public Observation(Object result, Interval phenomenonTime) {
-		this();
-		this.result = result;
-		this.phenomenonTime = new TimeObject(phenomenonTime);
-	}
+    public Observation(Object result, Interval phenomenonTime) {
+        this();
+        this.result = result;
+        this.phenomenonTime = new TimeObject(phenomenonTime);
+    }
 
-	@Override
-	protected void ensureServiceOnChildren(SensorThingsService service) {
-		if (datastream != null) {
-			datastream.setService(service);
-		}
-		if (multiDatastream != null) {
-			multiDatastream.setService(service);
-		}
-		if (featureOfInterest != null) {
-			featureOfInterest.setService(service);
-		}
-	}
+    @Override
+    protected void ensureServiceOnChildren(SensorThingsService service) {
+        if (datastream != null) {
+            datastream.setService(service);
+        }
+        if (multiDatastream != null) {
+            multiDatastream.setService(service);
+        }
+        if (featureOfInterest != null) {
+            featureOfInterest.setService(service);
+        }
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Observation other = (Observation) obj;
-		if (!Objects.equals(this.phenomenonTime, other.phenomenonTime)) {
-			return false;
-		}
-		if (!Objects.equals(this.result, other.result)) {
-			return false;
-		}
-		if (!Objects.equals(this.resultTime, other.resultTime)) {
-			return false;
-		}
-		if (!Objects.equals(this.resultQuality, other.resultQuality)) {
-			return false;
-		}
-		if (!Objects.equals(this.validTime, other.validTime)) {
-			return false;
-		}
-		if (!Objects.equals(this.parameters, other.parameters)) {
-			return false;
-		}
-		return super.equals(obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Observation other = (Observation) obj;
+        if (!Objects.equals(this.phenomenonTime, other.phenomenonTime)) {
+            return false;
+        }
+        if (!Objects.equals(this.result, other.result)) {
+            return false;
+        }
+        if (!Objects.equals(this.resultTime, other.resultTime)) {
+            return false;
+        }
+        if (!Objects.equals(this.resultQuality, other.resultQuality)) {
+            return false;
+        }
+        if (!Objects.equals(this.validTime, other.validTime)) {
+            return false;
+        }
+        if (!Objects.equals(this.parameters, other.parameters)) {
+            return false;
+        }
+        return super.equals(obj);
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = super.hashCode();
-		hash = 89 * hash + Objects.hashCode(this.phenomenonTime);
-		hash = 89 * hash + Objects.hashCode(this.result);
-		hash = 89 * hash + Objects.hashCode(this.resultTime);
-		hash = 89 * hash + Objects.hashCode(this.resultQuality);
-		hash = 89 * hash + Objects.hashCode(this.validTime);
-		hash = 89 * hash + Objects.hashCode(this.parameters);
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 89 * hash + Objects.hashCode(this.phenomenonTime);
+        hash = 89 * hash + Objects.hashCode(this.result);
+        hash = 89 * hash + Objects.hashCode(this.resultTime);
+        hash = 89 * hash + Objects.hashCode(this.resultQuality);
+        hash = 89 * hash + Objects.hashCode(this.validTime);
+        hash = 89 * hash + Objects.hashCode(this.parameters);
+        return hash;
+    }
 
-	public TimeObject getPhenomenonTime() {
-		return this.phenomenonTime;
-	}
+    public TimeObject getPhenomenonTime() {
+        return this.phenomenonTime;
+    }
 
-	@JsonIgnore
-	public void setPhenomenonTimeFrom(ZonedDateTime phenomenonTime) {
-		this.phenomenonTime = new TimeObject(phenomenonTime);
-	}
+    @JsonIgnore
+    public void setPhenomenonTimeFrom(ZonedDateTime phenomenonTime) {
+        this.phenomenonTime = new TimeObject(phenomenonTime);
+    }
 
-	@JsonIgnore
-	public void setPhenomenonTimeFrom(Interval phenomenonTime) {
-		this.phenomenonTime = new TimeObject(phenomenonTime);
-	}
+    @JsonIgnore
+    public void setPhenomenonTimeFrom(Interval phenomenonTime) {
+        this.phenomenonTime = new TimeObject(phenomenonTime);
+    }
 
-	public void setPhenomenonTime(TimeObject phenomenonTime) {
-		this.phenomenonTime = phenomenonTime;
-	}
+    public void setPhenomenonTime(TimeObject phenomenonTime) {
+        this.phenomenonTime = phenomenonTime;
+    }
 
-	public Object getResult() {
-		return this.result;
-	}
+    public Object getResult() {
+        return this.result;
+    }
 
-	public void setResult(Object result) {
-		this.result = result;
-	}
+    public void setResult(Object result) {
+        this.result = result;
+    }
 
-	public ZonedDateTime getResultTime() {
-		return this.resultTime;
-	}
+    public ZonedDateTime getResultTime() {
+        return this.resultTime;
+    }
 
-	public void setResultTime(ZonedDateTime resultTime) {
-		this.resultTime = resultTime;
-	}
+    public void setResultTime(ZonedDateTime resultTime) {
+        this.resultTime = resultTime;
+    }
 
-	public Object getResultQuality() {
-		return this.resultQuality;
-	}
+    public Object getResultQuality() {
+        return this.resultQuality;
+    }
 
-	public void setResultQuality(Object resultQuality) {
-		this.resultQuality = resultQuality;
-	}
+    public void setResultQuality(Object resultQuality) {
+        this.resultQuality = resultQuality;
+    }
 
-	public Interval getValidTime() {
-		return this.validTime;
-	}
+    public Interval getValidTime() {
+        return this.validTime;
+    }
 
-	public void setValidTime(Interval validTime) {
-		this.validTime = validTime;
-	}
+    public void setValidTime(Interval validTime) {
+        this.validTime = validTime;
+    }
 
-	public Map<String, Object> getParameters() {
-		return this.parameters;
-	}
+    public Map<String, Object> getParameters() {
+        return this.parameters;
+    }
 
-	public void setParameters(Map<String, Object> parameters) {
-		this.parameters = parameters;
-	}
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 
-	public Datastream getDatastream() throws ServiceFailureException {
-		if (datastream == null && getService() != null) {
-			datastream = getService().datastreams().find(this);
-		}
-		return datastream;
-	}
+    public Datastream getDatastream() throws ServiceFailureException {
+        if (datastream == null && getService() != null) {
+            datastream = getService().datastreams().find(this);
+        }
+        return datastream;
+    }
 
-	public void setDatastream(Datastream datastream) {
-		this.datastream = datastream;
-	}
+    public void setDatastream(Datastream datastream) {
+        this.datastream = datastream;
+    }
 
-	public MultiDatastream getMultiDatastream() throws ServiceFailureException {
-		if (multiDatastream == null && getService() != null) {
-			multiDatastream = getService().multiDatastreams().find(this);
-		}
-		return multiDatastream;
-	}
+    public MultiDatastream getMultiDatastream() throws ServiceFailureException {
+        if (multiDatastream == null && getService() != null) {
+            multiDatastream = getService().multiDatastreams().find(this);
+        }
+        return multiDatastream;
+    }
 
-	public void setMultiDatastream(MultiDatastream multiDatastream) {
-		this.multiDatastream = multiDatastream;
-	}
+    public void setMultiDatastream(MultiDatastream multiDatastream) {
+        this.multiDatastream = multiDatastream;
+    }
 
-	public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {
-		if (featureOfInterest == null && getService() != null) {
-			featureOfInterest = getService().featuresOfInterest().find(this);
-		}
-		return this.featureOfInterest;
-	}
+    public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {
+        if (featureOfInterest == null && getService() != null) {
+            featureOfInterest = getService().featuresOfInterest().find(this);
+        }
+        return this.featureOfInterest;
+    }
 
-	public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
-		this.featureOfInterest = featureOfInterest;
-	}
+    public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
+        this.featureOfInterest = featureOfInterest;
+    }
 
-	@Override
-	public BaseDao<Observation> getDao(SensorThingsService service) {
-		return new ObservationDao(service);
-	}
+    @Override
+    public BaseDao<Observation> getDao(SensorThingsService service) {
+        return new ObservationDao(service);
+    }
 
-	@Override
-	public Observation withOnlyId() {
-		Observation copy = new Observation();
-		copy.setId(id);
-		return copy;
-	}
+    @Override
+    public Observation withOnlyId() {
+        Observation copy = new Observation();
+        copy.setId(id);
+        return copy;
+    }
 
-	@Override
-	public String toString() {
-		return super.toString() + " " + getPhenomenonTime() + " " + getResult();
-	}
+    @Override
+    public String toString() {
+        return super.toString() + " " + getPhenomenonTime() + " " + getResult();
+    }
 
 }

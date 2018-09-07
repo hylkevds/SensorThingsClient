@@ -12,28 +12,28 @@ import org.apache.http.impl.client.CloseableHttpClient;
  */
 public interface TokenManager {
 
-	/**
-	 * Add any headers to the request that are required Authentication and
-	 * Authorisation.
-	 *
-	 * @param <T> The request type. Inferred from the Request.
-	 * @param request The request to modify.
-	 */
-	public <T extends HttpRequest> void addAuthHeader(T request);
+    /**
+     * Add any headers to the request that are required Authentication and
+     * Authorisation.
+     *
+     * @param <T> The request type. Inferred from the Request.
+     * @param request The request to modify.
+     */
+    public <T extends HttpRequest> void addAuthHeader(T request);
 
-	/**
-	 * Set the HTTP client this TokenManager uses to fetch tokens.
-	 *
-	 * @param client The CloseableHttpClient to use for fetching Tokens.
-	 * @return this TokenManager
-	 */
-	public TokenManager setHttpClient(CloseableHttpClient client);
+    /**
+     * Set the HTTP client this TokenManager uses to fetch tokens.
+     *
+     * @param client The CloseableHttpClient to use for fetching Tokens.
+     * @return this TokenManager
+     */
+    public TokenManager setHttpClient(CloseableHttpClient client);
 
-	/**
-	 * Get the HTTP client this TokenManager uses to fetch tokens.
-	 *
-	 * @return The HTTP client this TokenManager uses to fetch tokens.
-	 */
-	public CloseableHttpClient getHttpClient();
+    /**
+     * Get the HTTP client this TokenManager uses to fetch tokens.
+     *
+     * @return The HTTP client this TokenManager uses to fetch tokens.
+     */
+    public CloseableHttpClient getHttpClient();
 
 }

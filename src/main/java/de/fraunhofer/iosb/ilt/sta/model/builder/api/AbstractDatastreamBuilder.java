@@ -7,15 +7,15 @@ import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import java.util.List;
 import org.geojson.Polygon;
 import org.threeten.extra.Interval;
-
-import java.util.List;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link Datastream}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractDatastreamBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractDatastreamBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractDatastreamBuilder<U extends AbstractDatastreamBuilder<U>> extends EntityBuilder<Datastream, U> {
@@ -86,7 +86,8 @@ public abstract class AbstractDatastreamBuilder<U extends AbstractDatastreamBuil
     }
 
     /**
-     * All the possible values for a {@link Datastream#observationType} attribute
+     * All the possible values for a {@link Datastream#observationType}
+     * attribute
      *
      * @author Aurelien Bourdon
      */

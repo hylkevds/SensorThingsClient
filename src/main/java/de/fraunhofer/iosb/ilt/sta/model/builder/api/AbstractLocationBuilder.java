@@ -3,14 +3,14 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 import de.fraunhofer.iosb.ilt.sta.model.HistoricalLocation;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
-import org.geojson.GeoJsonObject;
-
 import java.util.List;
+import org.geojson.GeoJsonObject;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link Location}
  *
- * @param <U> the type of the concrete class that extends this {@link AbstractLocationBuilder}
+ * @param <U> the type of the concrete class that extends this
+ * {@link AbstractLocationBuilder}
  * @author Aurelien Bourdon
  */
 public abstract class AbstractLocationBuilder<U extends AbstractLocationBuilder<U>> extends EntityBuilder<Location, U> {
@@ -37,8 +37,8 @@ public abstract class AbstractLocationBuilder<U extends AbstractLocationBuilder<
 
     public U location(final Object location) {
         if (!(location instanceof GeoJsonObject)) {
-            throw new BuildingException("Whereas the OGC SensorThings API specifies the Location#location as an Any type (so any Object can be used), " +
-                    "the FROST-Client only accepts GeoJSONObject type");
+            throw new BuildingException("Whereas the OGC SensorThings API specifies the Location#location as an Any type (so any Object can be used), "
+                    + "the FROST-Client only accepts GeoJSONObject type");
         }
         getBuildingInstance().setLocation((GeoJsonObject) location);
         return getSelf();
