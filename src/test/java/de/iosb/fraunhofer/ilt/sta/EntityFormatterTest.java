@@ -20,6 +20,7 @@ package de.iosb.fraunhofer.ilt.sta;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
@@ -32,9 +33,11 @@ import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -400,6 +403,42 @@ public class EntityFormatterTest {
         Observation parsed = mapper.readValue(expResult, Observation.class);
         String json2 = mapper.writeValueAsString(parsed);
         assert (jsonEqual(expResult, json2));
+    }
+
+    @Test
+    public void writeObservationNull() throws IOException {
+        String expResult
+                = "{\n"
+                + "	\"@iot.id\": 1,\n"
+                + "	\"phenomenonTime\": \"2014-12-31T11:59:59Z\",\n"
+                + "	\"result\": null\n"
+                + "}";
+        Observation entity = new Observation();
+        entity.setId(new IdLong(1L));
+        entity.setResult(null);
+        entity.setPhenomenonTimeFrom(ZonedDateTime.parse("2014-12-31T11:59:59Z"));
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        Observation parsed = mapper.readValue(expResult, Observation.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void writeObservationNoResult() throws IOException {
+        Observation entity = new Observation();
+        entity.setId(new IdLong(1L));
+        entity.setPhenomenonTimeFrom(ZonedDateTime.parse("2014-12-31T11:59:59Z"));
+        SensorThingsService service = new SensorThingsService(new URL("http://localhost:8080/v1.0"));
+        try {
+            service.create(entity);
+        } catch (ServiceFailureException ex) {
+            Assert.fail("Expected IllegalArgumentException, not ServiceFailureException");
+        }
+        Assert.fail("Expeted IllegalArgumentException, got none");
     }
 
     private boolean jsonEqual(String string1, String string2) {

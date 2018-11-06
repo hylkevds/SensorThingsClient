@@ -48,6 +48,14 @@ public class ObservationDao extends BaseDao<Observation> {
         super(service, Observation.class);
     }
 
+    @Override
+    public void create(Observation entity) throws ServiceFailureException {
+        if (!entity.isResultSet()) {
+            throw new IllegalArgumentException("Result must be set on Observation.");
+        }
+        super.create(entity);
+    }
+
     /**
      *
      * @param dataArray The Observations to create.

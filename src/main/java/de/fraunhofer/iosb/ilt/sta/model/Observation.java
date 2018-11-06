@@ -1,6 +1,7 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
@@ -14,6 +15,8 @@ import org.threeten.extra.Interval;
 public class Observation extends Entity<Observation> {
 
     private TimeObject phenomenonTime;
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private Object result;
     private ZonedDateTime resultTime;
     private Object resultQuality; //DQ_Element
@@ -29,6 +32,9 @@ public class Observation extends Entity<Observation> {
     @JsonProperty("FeatureOfInterest")
     private FeatureOfInterest featureOfInterest;
 
+    @JsonIgnore
+    private boolean resultSet = false;
+
     public Observation() {
         super(EntityType.OBSERVATION);
     }
@@ -37,24 +43,28 @@ public class Observation extends Entity<Observation> {
         this();
         this.result = result;
         this.datastream = datastream;
+        resultSet = true;
     }
 
     public Observation(Object result, MultiDatastream multiDatastream) {
         this();
         this.result = result;
         this.multiDatastream = multiDatastream;
+        resultSet = true;
     }
 
     public Observation(Object result, ZonedDateTime phenomenonTime) {
         this();
         this.result = result;
         this.phenomenonTime = new TimeObject(phenomenonTime);
+        resultSet = true;
     }
 
     public Observation(Object result, Interval phenomenonTime) {
         this();
         this.result = result;
         this.phenomenonTime = new TimeObject(phenomenonTime);
+        resultSet = true;
     }
 
     @Override
@@ -139,6 +149,12 @@ public class Observation extends Entity<Observation> {
 
     public void setResult(Object result) {
         this.result = result;
+        resultSet = true;
+    }
+
+    @JsonIgnore
+    public boolean isResultSet() {
+        return resultSet;
     }
 
     public ZonedDateTime getResultTime() {

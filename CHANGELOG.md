@@ -4,6 +4,7 @@
 * Improved handling of StringIDs, when those IDs are urls.
 * Added support for Delete on Collections using $filter, See https://github.com/opengeospatial/sensorthings/issues/44
   `service.observations().query().filter("phenomenonTime lt 2018-01-01T12:00:00Z").delete();`
+* Added support for Observations with result explicitly set to null.
 
 
 # Release Version 0.18

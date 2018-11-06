@@ -75,37 +75,25 @@ public class Datastream extends Entity<Datastream> {
             return false;
         }
         final Datastream other = (Datastream) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.observationType, other.observationType)) {
-            return false;
-        }
-        if (!Objects.equals(this.unitOfMeasurement, other.unitOfMeasurement)) {
-            return false;
-        }
-        if (!Objects.equals(this.properties, other.properties)) {
-            return false;
-        }
-        if (!Objects.equals(this.resultTime, other.resultTime)) {
-            return false;
-        }
-        return super.equals(obj);
+        return Objects.equals(this.name, other.name)
+                && Objects.equals(this.description, other.description)
+                && Objects.equals(this.observationType, other.observationType)
+                && Objects.equals(this.unitOfMeasurement, other.unitOfMeasurement)
+                && Objects.equals(this.properties, other.properties)
+                && Objects.equals(this.resultTime, other.resultTime)
+                && super.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
-        hash = 17 * hash + Objects.hashCode(this.name);
-        hash = 17 * hash + Objects.hashCode(this.description);
-        hash = 17 * hash + Objects.hashCode(this.observationType);
-        hash = 17 * hash + Objects.hashCode(this.unitOfMeasurement);
-        hash = 17 * hash + Objects.hashCode(this.properties);
-        hash = 17 * hash + Objects.hashCode(this.resultTime);
-        return hash;
+        return Objects.hash(
+                super.hashCode(),
+                name,
+                description,
+                observationType,
+                unitOfMeasurement,
+                properties,
+                resultTime);
     }
 
     public String getName() {
