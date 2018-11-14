@@ -1,3 +1,9 @@
+# Release Version 0.20
+
+**Updates**
+* Improved error handling.
+
+
 # Release Version 0.19
 
 **Updates**

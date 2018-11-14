@@ -1,8 +1,12 @@
 package de.fraunhofer.iosb.ilt.sta;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import org.apache.http.Consts;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,4 +94,29 @@ public class Utils {
         return string;
     }
 
+    /**
+     * Throws a StatusCodeException if the given response did not have status
+     * code 2xx
+     *
+     * @param response The response to check the status code of.
+     * @throws StatusCodeException If the response was not 2xx.
+     */
+    public static void throwIfNotOk(CloseableHttpResponse response) throws StatusCodeException {
+        final int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode < 200 || statusCode >= 300) {
+            String returnContent = null;
+            try {
+                returnContent = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+            } catch (IOException exc) {
+                LOGGER.warn("Failed to get content from error response.", exc);
+            }
+            if (statusCode == 401) {
+                throw new NotAuthorizedException(response.getStatusLine().getReasonPhrase(), returnContent);
+            }
+            if (statusCode == 404) {
+                throw new NotFoundException(response.getStatusLine().getReasonPhrase(), returnContent);
+            }
+            throw new StatusCodeException(statusCode, response.getStatusLine().getReasonPhrase(), returnContent);
+        }
+    }
 }

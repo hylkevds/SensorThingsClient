@@ -1,6 +1,8 @@
 package de.fraunhofer.iosb.ilt.sta.model.ext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iosb.ilt.sta.StatusCodeException;
+import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
@@ -91,12 +93,19 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
                 try {
                     LOGGER.debug("Fetching: {}", httpGet.getURI());
                     response = service.execute(httpGet);
+                    Utils.throwIfNotOk(response);
+
                     String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
                     final ObjectMapper mapper = ObjectMapperFactory.get();
                     nextList = mapper.readValue(json, EntityType.listForClass(entityClass).getTypeReference());
                     nextList.setService(service, entityClass);
-                } catch (IOException | ParseException e) {
-                    LOGGER.error("Failed deserializing collection.", e);
+                } catch (IOException | ParseException exc) {
+                    LOGGER.error("Failed deserializing collection.", exc);
+                    currentIterator = null;
+                    nextLink = null;
+                    return;
+                } catch (StatusCodeException exc) {
+                    LOGGER.error("Failed follow nextlink.", exc);
                     currentIterator = null;
                     nextLink = null;
                     return;
@@ -140,7 +149,7 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
     }
 
     @Override
-    public void fetchNext() {
+    public void fetchNext() throws StatusCodeException {
         CloseableHttpResponse response = null;
         try {
             HttpGet httpGet = new HttpGet(nextLink);
@@ -148,10 +157,8 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
             httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpGet);
-            int code = response.getStatusLine().getStatusCode();
-            if (code < 200 || code >= 300) {
-                throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
-            }
+            Utils.throwIfNotOk(response);
+
             String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             final ObjectMapper mapper = ObjectMapperFactory.get();
             EntityList<T> nextList = mapper.readValue(json, EntityType.listForClass(entityClass).getTypeReference());

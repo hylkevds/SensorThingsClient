@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.model.ext;
 
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import java.util.Collection;
@@ -32,8 +33,11 @@ public interface EntityCollection<T extends Entity> extends Collection<T> {
 
     /**
      * Use the nextLink to fetch more Entities.
+     *
+     * @throws de.fraunhofer.iosb.ilt.sta.ServiceFailureException If there is a
+     * problem following the nextLink.
      */
-    void fetchNext();
+    void fetchNext() throws ServiceFailureException;
 
     /**
      * Get the count value if available.

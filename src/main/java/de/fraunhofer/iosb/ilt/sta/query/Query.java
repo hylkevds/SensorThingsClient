@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.query;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
+import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
@@ -169,16 +170,13 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
             httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpGet);
-            int code = response.getStatusLine().getStatusCode();
-            if (code < 200 || code >= 300) {
-                LOGGER.error("Failed on query: {}", uriBuilder.build());
-                throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
-            }
+            Utils.throwIfNotOk(response);
+
             String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             final ObjectMapper mapper = ObjectMapperFactory.get();
             list = mapper.readValue(json, plural.getTypeReference());
-        } catch (URISyntaxException | IOException ex) {
-            LOGGER.error("Failed to fetch list.", ex);
+        } catch (URISyntaxException | IOException exc) {
+            throw new ServiceFailureException("Failed to fetch entities from query.", exc);
         } finally {
             try {
                 if (response != null) {
@@ -208,20 +206,17 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
             httpDelete.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpDelete);
-            int code = response.getStatusLine().getStatusCode();
-            if (code < 200 || code >= 300) {
-                LOGGER.error("Failed on query: {}", uriBuilder.build());
-                throw new IllegalArgumentException(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
-            }
-        } catch (URISyntaxException | IOException ex) {
-            LOGGER.error("Failed to fetch list.", ex);
+            Utils.throwIfNotOk(response);
+
+        } catch (URISyntaxException | IOException exc) {
+            throw new ServiceFailureException("Failed to delete from query.", exc);
         } finally {
             try {
                 if (response != null) {
                     response.close();
                 }
-            } catch (IOException ex) {
-                LOGGER.error("Exception closing response.", ex);
+            } catch (IOException exc) {
+                LOGGER.error("Exception closing response.", exc);
             }
         }
 
