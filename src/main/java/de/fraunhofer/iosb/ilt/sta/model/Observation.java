@@ -3,6 +3,7 @@ package de.fraunhofer.iosb.ilt.sta.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.NotFoundException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
@@ -10,9 +11,16 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.threeten.extra.Interval;
 
 public class Observation extends Entity<Observation> {
+
+    /**
+     * The logger for this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Observation.class);
 
     private TimeObject phenomenonTime;
 
@@ -191,7 +199,11 @@ public class Observation extends Entity<Observation> {
 
     public Datastream getDatastream() throws ServiceFailureException {
         if (datastream == null && getService() != null) {
-            datastream = getService().datastreams().find(this);
+            try {
+                datastream = getService().datastreams().find(this);
+            } catch (NotFoundException ex) {
+                LOGGER.trace("Observation has no Datastream.", ex);
+            }
         }
         return datastream;
     }
@@ -202,7 +214,11 @@ public class Observation extends Entity<Observation> {
 
     public MultiDatastream getMultiDatastream() throws ServiceFailureException {
         if (multiDatastream == null && getService() != null) {
-            multiDatastream = getService().multiDatastreams().find(this);
+            try {
+                multiDatastream = getService().multiDatastreams().find(this);
+            } catch (NotFoundException ex) {
+                LOGGER.trace("Observation has no MultiDatastream.", ex);
+            }
         }
         return multiDatastream;
     }
