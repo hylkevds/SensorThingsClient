@@ -27,7 +27,7 @@ public interface TokenManager {
      * @param client The CloseableHttpClient to use for fetching Tokens.
      * @return this TokenManager
      */
-    public TokenManager setHttpClient(CloseableHttpClient client);
+    public <T extends TokenManager> T setHttpClient(CloseableHttpClient client);
 
     /**
      * Get the HTTP client this TokenManager uses to fetch tokens.

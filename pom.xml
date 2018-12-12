@@ -22,6 +22,7 @@
 		<bintray.package>FROST-Client</bintray.package>
 
 		<httpclient.version>4.5</httpclient.version>
+		<jaxb-api.version>2.3.1</jaxb-api.version>
 		<jackson.version>2.8.5</jackson.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.7.0</jjwt.version>
@@ -128,6 +129,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
