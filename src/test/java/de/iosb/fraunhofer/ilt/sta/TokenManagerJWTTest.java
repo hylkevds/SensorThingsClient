@@ -13,7 +13,7 @@ import org.junit.rules.ExpectedException;
 import java.net.URI;
 import java.net.URL;
 
-public class AuthTest {
+public class TokenManagerJWTTest {
     private String staRootUrl;
     private String authUrl;
     private String jwtId;
