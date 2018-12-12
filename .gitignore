@@ -2,6 +2,7 @@
 .project
 .classpath
 target/
+.idea/
 *.iml
 *~
 pom.xml.releaseBackup
