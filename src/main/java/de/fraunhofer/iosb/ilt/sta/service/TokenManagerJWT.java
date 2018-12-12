@@ -16,6 +16,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Calendar;
 
+/**
+ * A TokenManager for stateless JsonWebToken authentication as implemented by Kinota Server
+ * @see <a href="https://github.com/kinota/kinota-server">Kinota Server</a>
+ */
 public class TokenManagerJWT implements TokenManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenManagerJWT.class);
