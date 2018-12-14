@@ -4,11 +4,24 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.http.Consts;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 
 /**
  *
@@ -118,5 +131,19 @@ public class Utils {
             }
             throw new StatusCodeException(statusCode, response.getStatusLine().getReasonPhrase(), returnContent);
         }
+    }
+
+    public static CloseableHttpClient createInsecureHttpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        SSLContext sslContext = SSLContextBuilder
+                .create()
+                .loadTrustMaterial(new TrustSelfSignedStrategy())
+                .build();
+        HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
+        SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, allowAllHosts);
+        return HttpClients
+                .custom()
+                .useSystemProperties()
+                .setSSLSocketFactory(connectionFactory)
+                .build();
     }
 }

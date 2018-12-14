@@ -1,5 +1,6 @@
 package de.iosb.fraunhofer.ilt.sta;
 
+import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservedPropertyBuilder;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -44,7 +45,8 @@ public class TokenManagerJWTTest {
     public void testJwtAuth() throws Exception {
         if (configured) {
             URL serviceEndpoint = new URL(staRootUrl);
-            SensorThingsService service = new SensorThingsService(true);
+            SensorThingsService service = new SensorThingsService();
+            service.setClient(Utils.createInsecureHttpClient());
             service.setEndpoint(serviceEndpoint);
             TokenManagerJWT tokenMgr = new TokenManagerJWT()
                     .setJwtId(jwtId)
