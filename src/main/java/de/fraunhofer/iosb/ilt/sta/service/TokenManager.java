@@ -9,17 +9,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
  * required for Authentication and Authorisation.
  *
  * @author scf
+ * @param <T> The exact type of this token manager.
  */
-public interface TokenManager {
+public interface TokenManager<T extends TokenManager> {
 
     /**
      * Add any headers to the request that are required Authentication and
      * Authorisation.
      *
-     * @param <T> The request type. Inferred from the Request.
      * @param request The request to modify.
      */
-    public <T extends HttpRequest> void addAuthHeader(T request);
+    public void addAuthHeader(HttpRequest request);
 
     /**
      * Set the HTTP client this TokenManager uses to fetch tokens.
@@ -27,7 +27,7 @@ public interface TokenManager {
      * @param client The CloseableHttpClient to use for fetching Tokens.
      * @return this TokenManager
      */
-    public <T extends TokenManager> T setHttpClient(CloseableHttpClient client);
+    public T setHttpClient(CloseableHttpClient client);
 
     /**
      * Get the HTTP client this TokenManager uses to fetch tokens.

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author scf
  */
-public class TokenManagerOpenIDConnect implements TokenManager {
+public class TokenManagerOpenIDConnect implements TokenManager<TokenManagerOpenIDConnect> {
 
     /**
      * The logger for this class.
@@ -67,7 +67,7 @@ public class TokenManagerOpenIDConnect implements TokenManager {
     }
 
     @Override
-    public <T extends HttpRequest> void addAuthHeader(T request) {
+    public void addAuthHeader(HttpRequest request) {
         request.addHeader("Authorization", "Bearer " + getToken());
     }
 

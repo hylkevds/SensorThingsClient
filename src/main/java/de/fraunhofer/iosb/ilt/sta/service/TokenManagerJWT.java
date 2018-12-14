@@ -2,6 +2,8 @@ package de.fraunhofer.iosb.ilt.sta.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Calendar;
 import org.apache.http.Consts;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,18 +11,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.Calendar;
-
 /**
- * A TokenManager for stateless JsonWebToken authentication as implemented by Kinota Server
+ * A TokenManager for stateless JsonWebToken authentication as implemented by
+ * Kinota Server
+ *
  * @see <a href="https://github.com/kinota/kinota-server">Kinota Server</a>
  */
-public class TokenManagerJWT implements TokenManager {
+public class TokenManagerJWT implements TokenManager<TokenManagerJWT> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenManagerJWT.class);
 
@@ -43,11 +43,13 @@ public class TokenManagerJWT implements TokenManager {
      * @param request The request to modify.
      */
     @Override
-    public <T extends HttpRequest> void addAuthHeader(T request) {
+    public void addAuthHeader(HttpRequest request) {
         request.addHeader("Authorization", "Bearer " + getToken());
     }
 
-    public boolean isExpired() { return expireTime.before(Calendar.getInstance()); }
+    public boolean isExpired() {
+        return expireTime.before(Calendar.getInstance());
+    }
 
     private String fetchToken() {
         String json = null;
