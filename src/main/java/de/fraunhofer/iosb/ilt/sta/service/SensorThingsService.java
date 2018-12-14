@@ -59,34 +59,6 @@ public class SensorThingsService {
     }
 
     /**
-     * Creates a new SensorThingsService without an endpoint url set. The
-     * endpoint url MUST be set before the service can be used.
-     * WARNING: THIS SHOULD ONLY BE USED FOR TESTING PURPOSES!!!
-     * @param insecure If set, HTTP client will ignore SSL certificate trust store verification and hostname
-     *                 verification errors.
-     * @throws KeyManagementException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     */
-    public SensorThingsService(boolean insecure) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-        if (insecure) {
-            // Allow self-signed certs
-            SSLContext sslContext = SSLContextBuilder
-                    .create()
-                    .loadTrustMaterial(new TrustSelfSignedStrategy())
-                    .build();
-            HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
-            SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, allowAllHosts);
-            this.client = HttpClients
-                    .custom()
-                    .setSSLSocketFactory(connectionFactory)
-                    .build();
-        } else {
-            this.client = HttpClients.createSystem();
-        }
-    }
-
-    /**
      * Constructor.
      *
      * @param endpoint the base URI of the SensorThings service
