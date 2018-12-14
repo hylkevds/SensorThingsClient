@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.service;
 
+import com.github.fge.jsonpatch.JsonPatchOperation;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
@@ -267,6 +268,19 @@ public class SensorThingsService {
      */
     public <T extends Entity<T>> void update(T entity) throws ServiceFailureException {
         entity.getDao(this).update(entity);
+    }
+
+    /**
+     * Update the given entity with the given patch. Does not update the entity
+     * object itself. To see the result, fetch it anew from the server.
+     *
+     * @param <T> The type of entity to update. Inferred from the entity.
+     * @param entity The entity to update on the server.
+     * @param patch The patch to apply to the entity.
+     * @throws ServiceFailureException in case the server rejects the PATCH.
+     */
+    public <T extends Entity<T>> void patch(T entity, List<JsonPatchOperation> patch) throws ServiceFailureException {
+        entity.getDao(this).patch(entity, patch);
     }
 
     /**

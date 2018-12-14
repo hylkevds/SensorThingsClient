@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatchOperation;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.ParseException;
@@ -43,6 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
 
+    public static final ContentType APPLICATION_JSON_PATCH = ContentType.create("application/json-patch+json", Consts.UTF_8);
     /**
      * The logger for this class.
      */
@@ -229,7 +232,36 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             } catch (IOException ex) {
             }
         }
+    }
 
+    @Override
+    public void patch(T entity, List<JsonPatchOperation> patch) throws ServiceFailureException {
+        HttpPatch httpPatch;
+        CloseableHttpResponse response = null;
+        try {
+            URIBuilder uriBuilder = new URIBuilder(service.getEndpoint().toString() + this.entityPath(entity.getId()));
+            final ObjectMapper mapper = ObjectMapperFactory.get();
+            String json = mapper.writeValueAsString(patch);
+
+            httpPatch = new HttpPatch(uriBuilder.build());
+            LOGGER.debug("Patching: {} with patch {}", httpPatch.getURI(), patch);
+            httpPatch.setEntity(new StringEntity(json, APPLICATION_JSON_PATCH));
+
+            response = service.execute(httpPatch);
+            Utils.throwIfNotOk(response);
+
+        } catch (JsonProcessingException | URISyntaxException ex) {
+            throw new ServiceFailureException(ex);
+        } catch (IOException ex) {
+            throw new ServiceFailureException(ex);
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException ex) {
+            }
+        }
     }
 
     @Override

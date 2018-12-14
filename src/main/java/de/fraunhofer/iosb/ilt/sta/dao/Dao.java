@@ -1,11 +1,13 @@
 package de.fraunhofer.iosb.ilt.sta.dao;
 
+import com.github.fge.jsonpatch.JsonPatchOperation;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
 import java.net.URI;
+import java.util.List;
 
 /**
  * CRUD operations for data access objects (Daos).
@@ -70,6 +72,16 @@ public interface Dao<T extends Entity<T>> {
      * @throws ServiceFailureException the operation failed
      */
     void update(T entity) throws ServiceFailureException;
+
+    /**
+     * Update the given entity with the given patch. Does not update the entity
+     * object itself. To see the result, fetch it anew from the server.
+     *
+     * @param entity The entity to update on the server.
+     * @param patch The patch to apply to the entity.
+     * @throws ServiceFailureException the operation failed
+     */
+    void patch(T entity, List<JsonPatchOperation> patch) throws ServiceFailureException;
 
     /**
      * Delete an entity.

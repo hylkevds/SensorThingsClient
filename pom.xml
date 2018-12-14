@@ -26,6 +26,7 @@
 		<jackson.version>2.8.5</jackson.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.7.0</jjwt.version>
+		<json-patch.version>1.9</json-patch.version>
 		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<threeten-extra.version>1.0</threeten-extra.version>
@@ -70,6 +71,18 @@
 			<url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
 		</repository>
 	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>SUREFIRE-1588</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -169,6 +182,11 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.fge</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>${json-patch.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
