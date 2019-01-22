@@ -1,12 +1,18 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An abstract representation of an entity. Entities are considered equal when
@@ -18,6 +24,11 @@ import java.util.Objects;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Entity<T extends Entity<T>> {
+
+    /**
+     * The logger for this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Entity.class);
 
     @JsonProperty(value = "@iot.id")
     protected Id id;
@@ -43,6 +54,50 @@ public abstract class Entity<T extends Entity<T>> {
     public Entity(EntityType type, Id id) {
         this.type = type;
         this.id = id;
+    }
+
+    @JsonAnySetter
+    public void handleNamespacedProperties(String name, Object value) {
+        String[] split = name.split("@", 2);
+        if (split.length < 2) {
+            LOGGER.info("Ignoring unknown property {}.", name);
+            return;
+        }
+        if ("iot.selfLink".equals(split[1])) {
+            setSelfLink(value.toString());
+            return;
+        }
+        EntityType entityType = EntityType.byName(split[0]);
+        if (entityType == null) {
+            LOGGER.info("Unknown entity type '{}' for property '{}'", entityType, name);
+            return;
+        }
+        try {
+            Method method = getClass().getMethod("get" + entityType.getName(), (Class<?>[]) null);
+            Object linkedEntity = method.invoke(this, (Object[]) null);
+            if (linkedEntity instanceof EntityList) {
+                EntityList entityList = (EntityList) linkedEntity;
+                switch (split[1]) {
+                    case "iot.count":
+                        if (value instanceof Number) {
+                            entityList.setCount(((Number) value).longValue());
+                        } else {
+                            LOGGER.error("{} should have numeric value, not {}", name, value);
+                        }
+                        break;
+
+                    case "iot.nextLink":
+                        entityList.setNextLink(URI.create(value.toString()));
+                        break;
+
+                    case "iot.navigationLink":
+                        // ignored
+                        break;
+                }
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            LOGGER.info("Unknown entity type '{}' for property '{}'", entityType, name);
+        }
     }
 
     @Override
@@ -85,6 +140,14 @@ public abstract class Entity<T extends Entity<T>> {
 
     public URI getSelfLink() {
         return this.selfLink;
+    }
+
+    public void setSelfLink(String selfLink) {
+        try {
+            this.selfLink = URI.create(selfLink);
+        } catch (IllegalArgumentException e) {
+            LOGGER.warn("Invalid selflink: {}", selfLink);
+        }
     }
 
     public void setSelfLink(URI selfLink) {

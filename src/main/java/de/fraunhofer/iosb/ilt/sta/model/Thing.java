@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,16 +16,16 @@ public class Thing extends Entity<Thing> {
     private Map<String, Object> properties;
 
     @JsonProperty("Locations")
-    private EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
+    private final EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
 
     @JsonProperty("HistoricalLocations")
-    private EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
+    private final EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
 
     @JsonProperty("Datastreams")
-    private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
+    private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
     @JsonProperty("MultiDatastreams")
-    private EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
+    private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
     public Thing() {
         super(EntityType.THING);
@@ -41,12 +42,12 @@ public class Thing extends Entity<Thing> {
         this.properties = properties;
     }
 
-    public Thing(String name, String description, Map<String, Object> properties, EntityList<Location> locations,
-            EntityList<HistoricalLocation> historicalLocations, EntityList<Datastream> datastreams) {
+    public Thing(String name, String description, Map<String, Object> properties, List<Location> locations,
+            List<HistoricalLocation> historicalLocations, List<Datastream> datastreams) {
         this(name, description, properties);
-        this.locations = locations;
-        this.historicalLocations = historicalLocations;
-        this.datastreams = datastreams;
+        this.locations.addAll(locations);
+        this.historicalLocations.addAll(historicalLocations);
+        this.datastreams.addAll(datastreams);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class Thing extends Entity<Thing> {
     }
 
     public void setLocations(EntityList<Location> locations) {
-        this.locations = locations;
+        this.locations.replaceAll(locations);
     }
 
     public BaseDao<HistoricalLocation> historicalLocations() {
@@ -135,7 +136,7 @@ public class Thing extends Entity<Thing> {
     }
 
     public void setHistoricalLocations(EntityList<HistoricalLocation> historicalLocations) {
-        this.historicalLocations = historicalLocations;
+        this.historicalLocations.replaceAll(historicalLocations);
     }
 
     public BaseDao<Datastream> datastreams() {
@@ -147,7 +148,7 @@ public class Thing extends Entity<Thing> {
     }
 
     public void setDatastreams(EntityList<Datastream> datastreams) {
-        this.datastreams = datastreams;
+        this.datastreams.replaceAll(datastreams);
     }
 
     public BaseDao<MultiDatastream> multiDatastreams() {
@@ -159,7 +160,7 @@ public class Thing extends Entity<Thing> {
     }
 
     public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
-        this.multiDatastreams = multiDatastreams;
+        this.multiDatastreams.replaceAll(multiDatastreams);
     }
 
     @Override

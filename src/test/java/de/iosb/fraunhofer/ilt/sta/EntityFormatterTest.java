@@ -427,6 +427,26 @@ public class EntityFormatterTest {
         assert (jsonEqual(expResult, json2));
     }
 
+    @Test
+    public void writeObservationZero() throws IOException {
+        String expResult
+                = "{\n"
+                + "	\"result\": 0.0\n"
+                + "}";
+        Observation entity = new Observation();
+        entity.setResult(new BigDecimal("0.0"));
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        Observation parsed = mapper.readValue(expResult, Observation.class);
+        Assert.assertEquals(entity.getResult(), parsed.getResult());
+
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void writeObservationNoResult() throws IOException {
         Observation entity = new Observation();
@@ -442,7 +462,7 @@ public class EntityFormatterTest {
     }
 
     private boolean jsonEqual(String string1, String string2) {
-        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
+        ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
         try {
             JsonNode json1 = mapper.readTree(string1);
             JsonNode json2 = mapper.readTree(string2);

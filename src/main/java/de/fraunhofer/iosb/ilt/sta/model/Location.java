@@ -23,10 +23,10 @@ public class Location extends Entity<Location> {
     private Map<String, Object> properties;
 
     @JsonProperty("Things")
-    private EntityList<Thing> things = new EntityList<>(EntityType.THINGS);
+    private final EntityList<Thing> things = new EntityList<>(EntityType.THINGS);
 
     @JsonProperty("HistoricalLocations")
-    private EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
+    private final EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
 
     public Location() {
         super(EntityType.LOCATION);
@@ -128,7 +128,7 @@ public class Location extends Entity<Location> {
     }
 
     public void setHistoricalLocations(EntityList<HistoricalLocation> historicalLocations) {
-        this.historicalLocations = historicalLocations;
+        this.historicalLocations.replaceAll(historicalLocations);
     }
 
     public Object getLocation() {
@@ -144,15 +144,11 @@ public class Location extends Entity<Location> {
     }
 
     public EntityList<Thing> getThings() {
-        if (this.things == null) {
-            this.things = new EntityList<>(EntityType.THINGS);
-
-        }
         return this.things;
     }
 
     public void setThings(EntityList<Thing> things) {
-        this.things = things;
+        this.things.replaceAll(things);
     }
 
     @Override

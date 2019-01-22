@@ -17,10 +17,10 @@ public class Sensor extends Entity<Sensor> {
     private Map<String, Object> properties;
 
     @JsonProperty("Datastreams")
-    private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
+    private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
     @JsonProperty("MultiDatastreams")
-    private EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
+    private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
     public Sensor() {
         super(EntityType.SENSOR);
@@ -130,7 +130,7 @@ public class Sensor extends Entity<Sensor> {
     }
 
     public void setDatastreams(EntityList<Datastream> datastreams) {
-        this.datastreams = datastreams;
+        this.datastreams.replaceAll(datastreams);
     }
 
     public BaseDao<MultiDatastream> multiDatastreams() {
@@ -142,7 +142,7 @@ public class Sensor extends Entity<Sensor> {
     }
 
     public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
-        this.multiDatastreams = multiDatastreams;
+        this.multiDatastreams.replaceAll(multiDatastreams);
     }
 
     @Override

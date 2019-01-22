@@ -14,7 +14,7 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
     private ZonedDateTime time;
 
     @JsonProperty("Locations")
-    private EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
+    private final EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
 
     @JsonProperty("Thing")
     private Thing thing;
@@ -78,7 +78,7 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
     }
 
     public void setLocations(EntityList<Location> locations) {
-        this.locations = locations;
+        this.locations.replaceAll(locations);
     }
 
     public Thing getThing() throws ServiceFailureException {

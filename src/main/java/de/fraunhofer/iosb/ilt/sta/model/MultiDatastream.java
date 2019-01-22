@@ -33,10 +33,10 @@ public class MultiDatastream extends Entity<MultiDatastream> {
     private Sensor sensor;
 
     @JsonProperty("ObservedProperties")
-    private EntityList<ObservedProperty> observedProperties = new EntityList<>(EntityType.OBSERVED_PROPERTIES);
+    private final EntityList<ObservedProperty> observedProperties = new EntityList<>(EntityType.OBSERVED_PROPERTIES);
 
     @JsonProperty("Observations")
-    private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
+    private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
     public MultiDatastream() {
         super(EntityType.MULTIDATASTREAM);
@@ -226,7 +226,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
     }
 
     public void setObservedProperties(EntityList<ObservedProperty> observedProperties) {
-        this.observedProperties = observedProperties;
+        this.observedProperties.replaceAll(observedProperties);
     }
 
     public BaseDao<Observation> observations() {
@@ -238,7 +238,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
     }
 
     public void setObservations(EntityList<Observation> observations) {
-        this.observations = observations;
+        this.observations.replaceAll(observations);
     }
 
     @Override

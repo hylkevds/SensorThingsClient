@@ -216,6 +216,10 @@ public enum EntityType {
                 return LOCATION;
             case "Locations":
                 return LOCATIONS;
+            case "MultiDatastream":
+                return MULTIDATASTREAM;
+            case "MultiDatastreams":
+                return MULTIDATASTREAMS;
             case "Observation":
                 return OBSERVATION;
             case "Observations":

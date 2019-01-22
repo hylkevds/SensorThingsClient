@@ -18,7 +18,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
     private Map<String, Object> properties;
 
     @JsonProperty("Observations")
-    private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
+    private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
     public FeatureOfInterest() {
         super(EntityType.FEATURE_OF_INTEREST);
@@ -127,7 +127,7 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
     }
 
     public void setObservations(EntityList<Observation> observations) {
-        this.observations = observations;
+        this.observations.replaceAll(observations);
     }
 
     @Override

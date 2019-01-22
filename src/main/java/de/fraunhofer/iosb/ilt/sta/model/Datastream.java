@@ -202,7 +202,7 @@ public class Datastream extends Entity<Datastream> {
     }
 
     public void setObservations(EntityList<Observation> observations) {
-        this.observations = observations;
+        this.observations.replaceAll(observations);
     }
 
     @Override

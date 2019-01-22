@@ -17,10 +17,10 @@ public class ObservedProperty extends Entity<ObservedProperty> {
     private Map<String, Object> properties;
 
     @JsonProperty("Datastreams")
-    private EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
+    private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
 
     @JsonProperty("MultiDatastreams")
-    private EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
+    private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
     public ObservedProperty() {
         super(EntityType.OBSERVED_PROPERTY);
@@ -117,7 +117,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
     }
 
     public void setDatastreams(EntityList<Datastream> datastreams) {
-        this.datastreams = datastreams;
+        this.datastreams.replaceAll(datastreams);
     }
 
     public BaseDao<MultiDatastream> multiDatastreams() {
@@ -129,7 +129,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
     }
 
     public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
-        this.multiDatastreams = multiDatastreams;
+        this.multiDatastreams.replaceAll(multiDatastreams);
     }
 
     @Override
