@@ -22,11 +22,15 @@ import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
+import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
+import de.fraunhofer.iosb.ilt.sta.model.TimeObject;
+import de.fraunhofer.iosb.ilt.sta.model.builder.ObservationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -50,6 +54,30 @@ public class EntityReaderTest {
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void readEntity() throws IOException {
+        String json = "{\n"
+                + "\"phenomenonTime\": \"2016-01-07T02:00:00.000Z\",\n"
+                + "\"resultTime\": null,\n"
+                + "\"result\": 0.15,\n"
+                + "\"Datastream@iot.navigationLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)/Datastream\",\n"
+                + "\"FeatureOfInterest@iot.navigationLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)/FeatureOfInterest\",\n"
+                + "\"@iot.id\": 7179373,\n"
+                + "\"@iot.selfLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)\"\n"
+                + "}";
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        Observation observation = mapper.readValue(json, Observation.class);
+
+        Observation expected = ObservationBuilder.builder()
+                .phenomenonTime(new TimeObject(ZonedDateTime.parse("2016-01-07T02:00:00.000Z")))
+                .result(BigDecimal.valueOf(0.15))
+                .id(new IdLong(7179373L))
+                .build();
+        expected.setSelfLink("https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)");
+
+        Assert.assertEquals(expected, observation);
     }
 
     @Test

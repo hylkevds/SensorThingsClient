@@ -33,7 +33,6 @@ public abstract class Entity<T extends Entity<T>> {
     @JsonProperty(value = "@iot.id")
     protected Id id;
 
-    @JsonProperty(value = "@iot.selfLink", access = JsonProperty.Access.READ_ONLY)
     protected URI selfLink;
 
     /**
@@ -142,6 +141,7 @@ public abstract class Entity<T extends Entity<T>> {
         return this.selfLink;
     }
 
+    @JsonProperty
     public void setSelfLink(String selfLink) {
         try {
             this.selfLink = URI.create(selfLink);
