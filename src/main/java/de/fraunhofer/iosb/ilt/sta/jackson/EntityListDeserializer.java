@@ -35,6 +35,7 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
         this.type = type;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) throws JsonMappingException {
         final JavaType wrapperType;
@@ -45,8 +46,7 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
         }
 
         JavaType valueType = wrapperType.containedType(0);
-        EntityListDeserializer deserializer = new EntityListDeserializer(valueType.getRawClass());
-        return deserializer;
+        return new EntityListDeserializer(valueType.getRawClass());
     }
 
     @Override

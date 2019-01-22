@@ -21,13 +21,18 @@
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>FROST-Client</bintray.package>
 
-		<httpclient.version>4.5</httpclient.version>
+		<httpclient.version>4.5.6</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
 		<jackson.version>2.9.8</jackson.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.7.0</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
 		<junit.version>4.12</junit.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<threeten-extra.version>1.0</threeten-extra.version>
 	</properties>
@@ -89,17 +94,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<compilerArgument>-Xlint:unchecked</compilerArgument>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<compilerArguments>
+						<Xlint:unchecked/>
+						<Xlint:deprecation/>
+					</compilerArguments>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${maven-source-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -113,7 +121,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
+				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -126,7 +134,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>${maven-release-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>

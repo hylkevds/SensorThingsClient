@@ -15,7 +15,9 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,15 +79,14 @@ public class EntitySerializer extends JsonSerializer<Entity> {
                     }
                 }
                 gen.writeEndArray();
-                continue;
             } else {
                 JsonSerialize annotation = property.getField().getAnnotation(JsonSerialize.class);
                 JsonSerializer serializer = null;
                 if (annotation != null) {
                     try {
                         Class<? extends JsonSerializer> using = annotation.using();
-                        serializer = using.newInstance();
-                    } catch (InstantiationException | IllegalAccessException ex) {
+                        serializer = using.getConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
                         LOGGER.warn("Could not instantiate serialiser specified in annotation.", ex);
                     }
                 }
@@ -104,7 +105,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
                         typeSerializer, // will not be searched automatically
                         property.getAccessor().getType(),
                         suppressNulls, // ignore null values
-                        null);
+                        null, null);
                 if (!suppressNulls && rawValue == null) {
                     writer.assignNullSerializer(NullSerializer.instance);
                 }

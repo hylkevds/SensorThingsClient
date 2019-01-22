@@ -32,7 +32,6 @@ public final class ObjectMapperFactory {
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-            mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new EntityModule());
             // Write any date/time values as ISO-8601 formated strings.
