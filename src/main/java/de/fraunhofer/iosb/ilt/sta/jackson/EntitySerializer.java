@@ -17,7 +17,6 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

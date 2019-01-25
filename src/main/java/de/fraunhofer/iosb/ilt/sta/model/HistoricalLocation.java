@@ -7,13 +7,13 @@ import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class HistoricalLocation extends Entity<HistoricalLocation> {
 
     private ZonedDateTime time;
 
-    @JsonProperty("Locations")
     private final EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
 
     @JsonProperty("Thing")
@@ -73,11 +73,13 @@ public class HistoricalLocation extends Entity<HistoricalLocation> {
         return getService().locations().setParent(this);
     }
 
+    @JsonProperty("Locations")
     public EntityList<Location> getLocations() {
         return this.locations;
     }
 
-    public void setLocations(EntityList<Location> locations) {
+    @JsonProperty("Locations")
+    public void setLocations(List<Location> locations) {
         this.locations.replaceAll(locations);
     }
 

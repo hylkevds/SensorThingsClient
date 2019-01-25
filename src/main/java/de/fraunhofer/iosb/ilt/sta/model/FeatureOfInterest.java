@@ -5,6 +5,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.geojson.GeoJsonObject;
@@ -17,7 +18,6 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
     private GeoJsonObject feature;
     private Map<String, Object> properties;
 
-    @JsonProperty("Observations")
     private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
     public FeatureOfInterest() {
@@ -122,11 +122,13 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
         return getService().observations().setParent(this);
     }
 
+    @JsonProperty("Observations")
     public EntityList<Observation> getObservations() {
         return this.observations;
     }
 
-    public void setObservations(EntityList<Observation> observations) {
+    @JsonProperty("Observations")
+    public void setObservations(List<Observation> observations) {
         this.observations.replaceAll(observations);
     }
 

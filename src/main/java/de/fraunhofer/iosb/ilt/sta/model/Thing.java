@@ -15,16 +15,9 @@ public class Thing extends Entity<Thing> {
     private String description;
     private Map<String, Object> properties;
 
-    @JsonProperty("Locations")
     private final EntityList<Location> locations = new EntityList<>(EntityType.LOCATIONS);
-
-    @JsonProperty("HistoricalLocations")
     private final EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
-
-    @JsonProperty("Datastreams")
     private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
-
-    @JsonProperty("MultiDatastreams")
     private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
     public Thing() {
@@ -119,11 +112,13 @@ public class Thing extends Entity<Thing> {
         return getService().locations().setParent(this);
     }
 
+    @JsonProperty("Locations")
     public EntityList<Location> getLocations() {
         return this.locations;
     }
 
-    public void setLocations(EntityList<Location> locations) {
+    @JsonProperty("Locations")
+    public void setLocations(List<Location> locations) {
         this.locations.replaceAll(locations);
     }
 
@@ -131,11 +126,13 @@ public class Thing extends Entity<Thing> {
         return getService().historicalLocations().setParent(this);
     }
 
+    @JsonProperty("HistoricalLocations")
     public EntityList<HistoricalLocation> getHistoricalLocations() {
         return this.historicalLocations;
     }
 
-    public void setHistoricalLocations(EntityList<HistoricalLocation> historicalLocations) {
+    @JsonProperty("HistoricalLocations")
+    public void setHistoricalLocations(List<HistoricalLocation> historicalLocations) {
         this.historicalLocations.replaceAll(historicalLocations);
     }
 
@@ -143,11 +140,13 @@ public class Thing extends Entity<Thing> {
         return getService().datastreams().setParent(this);
     }
 
+    @JsonProperty("Datastreams")
     public EntityList<Datastream> getDatastreams() {
         return this.datastreams;
     }
 
-    public void setDatastreams(EntityList<Datastream> datastreams) {
+    @JsonProperty("Datastreams")
+    public void setDatastreams(List<Datastream> datastreams) {
         this.datastreams.replaceAll(datastreams);
     }
 
@@ -155,11 +154,13 @@ public class Thing extends Entity<Thing> {
         return getService().multiDatastreams().setParent(this);
     }
 
+    @JsonProperty("MultiDatastreams")
     public EntityList<MultiDatastream> getMultiDatastreams() {
         return this.multiDatastreams;
     }
 
-    public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
+    @JsonProperty("MultiDatastreams")
+    public void setMultiDatastreams(List<MultiDatastream> multiDatastreams) {
         this.multiDatastreams.replaceAll(multiDatastreams);
     }
 

@@ -9,6 +9,7 @@ import de.fraunhofer.iosb.ilt.sta.jackson.LocationDeserializer;
 import de.fraunhofer.iosb.ilt.sta.jackson.LocationSerializer;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,10 +23,7 @@ public class Location extends Entity<Location> {
     private Object location;
     private Map<String, Object> properties;
 
-    @JsonProperty("Things")
     private final EntityList<Thing> things = new EntityList<>(EntityType.THINGS);
-
-    @JsonProperty("HistoricalLocations")
     private final EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
 
     public Location() {
@@ -123,11 +121,13 @@ public class Location extends Entity<Location> {
         return getService().historicalLocations().setParent(this);
     }
 
+    @JsonProperty("HistoricalLocations")
     public EntityList<HistoricalLocation> getHistoricalLocations() {
         return this.historicalLocations;
     }
 
-    public void setHistoricalLocations(EntityList<HistoricalLocation> historicalLocations) {
+    @JsonProperty("HistoricalLocations")
+    public void setHistoricalLocations(List<HistoricalLocation> historicalLocations) {
         this.historicalLocations.replaceAll(historicalLocations);
     }
 
@@ -143,11 +143,13 @@ public class Location extends Entity<Location> {
         return getService().things().setParent(this);
     }
 
+    @JsonProperty("Things")
     public EntityList<Thing> getThings() {
         return this.things;
     }
 
-    public void setThings(EntityList<Thing> things) {
+    @JsonProperty("Things")
+    public void setThings(List<Thing> things) {
         this.things.replaceAll(things);
     }
 

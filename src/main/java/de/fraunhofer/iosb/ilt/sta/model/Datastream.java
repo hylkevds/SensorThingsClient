@@ -7,6 +7,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.geojson.Polygon;
@@ -32,8 +33,7 @@ public class Datastream extends Entity<Datastream> {
     @JsonProperty("ObservedProperty")
     private ObservedProperty observedProperty;
 
-    @JsonProperty("Observations")
-    private EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
+    private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
     public Datastream() {
         super(EntityType.DATASTREAM);
@@ -197,11 +197,13 @@ public class Datastream extends Entity<Datastream> {
         return getService().observations().setParent(this);
     }
 
+    @JsonProperty("Observations")
     public EntityList<Observation> getObservations() {
         return this.observations;
     }
 
-    public void setObservations(EntityList<Observation> observations) {
+    @JsonProperty("Observations")
+    public void setObservations(List<Observation> observations) {
         this.observations.replaceAll(observations);
     }
 

@@ -39,7 +39,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -181,7 +183,7 @@ public class EntityFormatterTest {
 
         Thing entity = new Thing("TestThing", "A Thing for testing.");
         Location location = new Location("TestLocation", "The location of the TestThing", "application/vnd.geo+json", new Point(8.8, 49.9));
-        EntityList<Location> locations = new EntityList<>(EntityType.LOCATION);
+        List<Location> locations = new ArrayList<>();
         locations.add(location);
         entity.setLocations(locations);
         final ObjectMapper mapper = ObjectMapperFactory.get();

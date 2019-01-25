@@ -32,10 +32,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
     @JsonProperty("Sensor")
     private Sensor sensor;
 
-    @JsonProperty("ObservedProperties")
     private final EntityList<ObservedProperty> observedProperties = new EntityList<>(EntityType.OBSERVED_PROPERTIES);
-
-    @JsonProperty("Observations")
     private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
 
     public MultiDatastream() {
@@ -221,11 +218,13 @@ public class MultiDatastream extends Entity<MultiDatastream> {
         return getService().observedProperties().setParent(this);
     }
 
+    @JsonProperty("ObservedProperties")
     public EntityList<ObservedProperty> getObservedProperties() {
         return observedProperties;
     }
 
-    public void setObservedProperties(EntityList<ObservedProperty> observedProperties) {
+    @JsonProperty("ObservedProperties")
+    public void setObservedProperties(List<ObservedProperty> observedProperties) {
         this.observedProperties.replaceAll(observedProperties);
     }
 
@@ -233,11 +232,13 @@ public class MultiDatastream extends Entity<MultiDatastream> {
         return getService().observations().setParent(this);
     }
 
+    @JsonProperty("Observations")
     public EntityList<Observation> getObservations() {
         return this.observations;
     }
 
-    public void setObservations(EntityList<Observation> observations) {
+    @JsonProperty("Observations")
+    public void setObservations(List<Observation> observations) {
         this.observations.replaceAll(observations);
     }
 

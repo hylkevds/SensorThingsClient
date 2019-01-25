@@ -6,6 +6,7 @@ import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,10 +17,7 @@ public class ObservedProperty extends Entity<ObservedProperty> {
     private String description;
     private Map<String, Object> properties;
 
-    @JsonProperty("Datastreams")
     private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
-
-    @JsonProperty("MultiDatastreams")
     private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
     public ObservedProperty() {
@@ -112,11 +110,13 @@ public class ObservedProperty extends Entity<ObservedProperty> {
         return getService().datastreams().setParent(this);
     }
 
+    @JsonProperty("Datastreams")
     public EntityList<Datastream> getDatastreams() {
         return this.datastreams;
     }
 
-    public void setDatastreams(EntityList<Datastream> datastreams) {
+    @JsonProperty("Datastreams")
+    public void setDatastreams(List<Datastream> datastreams) {
         this.datastreams.replaceAll(datastreams);
     }
 
@@ -124,11 +124,13 @@ public class ObservedProperty extends Entity<ObservedProperty> {
         return getService().multiDatastreams().setParent(this);
     }
 
+    @JsonProperty("MultiDatastreams")
     public EntityList<MultiDatastream> getMultiDatastreams() {
         return this.multiDatastreams;
     }
 
-    public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
+    @JsonProperty("MultiDatastreams")
+    public void setMultiDatastreams(List<MultiDatastream> multiDatastreams) {
         this.multiDatastreams.replaceAll(multiDatastreams);
     }
 
