@@ -2,6 +2,9 @@
 
 **Updates**
 * Improved error handling.
+* Initial support for JsonPatch.
+* Fixed building on JDK 9+.
+* Fixed loss of precision when reading numbers with trailing zeroes.
 
 
 # Release Version 0.19
