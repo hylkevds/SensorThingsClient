@@ -1,3 +1,9 @@
+# Release Version 0.21
+
+**Updates**
+* Fixed deserialising of emtpy lists.
+
+
 # Release Version 0.20
 
 **Updates**

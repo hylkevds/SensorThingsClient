@@ -69,8 +69,8 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
         } else {
             boolean done = false;
             while (!done) {
-                JsonToken nextToken = parser.nextToken();
-                switch (nextToken) {
+                JsonToken mainToken = parser.nextToken();
+                switch (mainToken) {
                     case END_OBJECT:
                         done = true;
                         break;
@@ -93,11 +93,15 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
 
                             case "value":
                                 if (valueToken == JsonToken.START_ARRAY) {
-                                    parser.nextToken();
-                                    Iterator<T> values = parser.readValuesAs(type);
-                                    while (values.hasNext()) {
-                                        T value = values.next();
-                                        entities.add(value);
+                                    JsonToken nextToken = parser.nextToken();
+                                    if (nextToken == JsonToken.END_ARRAY) {
+                                        // Empty array.
+                                    } else {
+                                        Iterator<T> values = parser.readValuesAs(type);
+                                        while (values.hasNext()) {
+                                            T value = values.next();
+                                            entities.add(value);
+                                        }
                                     }
                                 } else {
                                     LOGGER.warn("value field is not an array!");
@@ -108,7 +112,7 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
                         break;
 
                     default:
-                        LOGGER.warn("Unhandled token: {}", nextToken);
+                        LOGGER.warn("Unhandled token: {}", mainToken);
                 }
             }
         }

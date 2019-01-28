@@ -174,4 +174,18 @@ public class EntityReaderTest {
         Assert.assertEquals(6L, datastreams.getCount());
 
     }
+
+    @Test
+    public void readEmptyEntityList() throws IOException {
+        String json = "{\n"
+                + "  \"value\" : [ ]\n"
+                + "}";
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        EntityList<Thing> things = mapper.readValue(json, EntityType.THINGS.getTypeReference());
+        Assert.assertEquals(null, things.getNextLink());
+        List<Thing> thingList = things.toList();
+
+        Assert.assertTrue(thingList.isEmpty());
+    }
 }
