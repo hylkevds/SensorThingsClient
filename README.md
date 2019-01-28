@@ -27,7 +27,7 @@ Add the dependency:
 <dependency>
     <groupId>de.fraunhofer.iosb.ilt</groupId>
     <artifactId>FROST-Client</artifactId>
-    <version>0.20</version>
+    <version>0.21</version>
 </dependency>
 
 ```
@@ -49,7 +49,7 @@ If you do not yet have the FraunhoferIOSB bintray repository, add:
 
 Add the dependency:
 ```gradle
-compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.20'
+compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.21'
 ```
 
 If you do not yet have the FraunhoferIOSB bintray repository, add:
