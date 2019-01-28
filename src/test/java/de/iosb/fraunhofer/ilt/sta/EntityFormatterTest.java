@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
-import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.IdString;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
@@ -31,7 +30,6 @@ import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
-import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
@@ -87,6 +85,7 @@ public class EntityFormatterTest {
         entity.setId(new IdLong(1L));
         entity.setName("This thing is an oven.");
         entity.setDescription("This thing is an oven.");
+        entity.setSelfLink("http://example.org/Observations/1");
         Map<String, Object> properties = new HashMap<>();
         properties.put("owner", "John Doe");
         properties.put("color", "Silver");
@@ -397,6 +396,7 @@ public class EntityFormatterTest {
         entity.setId(new IdLong(1L));
         entity.setResult(new BigDecimal("70.40"));
         entity.setPhenomenonTimeFrom(Interval.parse("2014-12-31T11:59:59Z/2014-12-31T12:01:01Z"));
+        entity.setSelfLink("http://example.org/Observations/1");
 
         final ObjectMapper mapper = ObjectMapperFactory.get();
         String json = mapper.writeValueAsString(entity);

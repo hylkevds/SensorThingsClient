@@ -1,3 +1,9 @@
+# Release Version 0.22
+
+**Updates**
+* Fixed selfLinks being serialised.
+
+
 # Release Version 0.21
 
 **Updates**

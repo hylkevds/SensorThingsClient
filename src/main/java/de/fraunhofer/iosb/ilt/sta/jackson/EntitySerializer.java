@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
@@ -40,7 +41,11 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 
         List<BeanPropertyDefinition> properties = beanDesc.findProperties();
         for (BeanPropertyDefinition property : properties) {
-            Object rawValue = property.getAccessor().getValue(entity);
+            AnnotatedMember accessor = property.getAccessor();
+            if (accessor == null) {
+                continue;
+            }
+            Object rawValue = accessor.getValue(entity);
             // TODO: Check if prop is collection
 
             if (rawValue instanceof Entity) {

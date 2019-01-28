@@ -33,6 +33,7 @@ public abstract class Entity<T extends Entity<T>> {
     @JsonProperty(value = "@iot.id")
     protected Id id;
 
+    @JsonIgnore
     protected URI selfLink;
 
     /**
@@ -137,6 +138,7 @@ public abstract class Entity<T extends Entity<T>> {
         this.id = id;
     }
 
+    @JsonIgnore
     public URI getSelfLink() {
         return this.selfLink;
     }
