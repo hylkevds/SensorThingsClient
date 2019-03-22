@@ -15,6 +15,10 @@ import java.util.Set;
  *
  */
 public enum EntityType {
+    ACTUATOR (Actuator.class, new TypeReference<Actuator>() {
+    }, "Actuator", false),
+    ACTUATORS (Actuator.class, new TypeReference<EntityList<Actuator>>() {
+    }, "Actuators", true),
     DATASTREAM(Datastream.class, new TypeReference<Datastream>() {
     }, "Datastream", false),
     DATASTREAMS(Datastream.class, new TypeReference<EntityList<Datastream>>() {
@@ -47,6 +51,14 @@ public enum EntityType {
     }, "Sensor", false),
     SENSORS(Sensor.class, new TypeReference<EntityList<Sensor>>() {
     }, "Sensors", true),
+    TASK(Task.class, new TypeReference<Task>() {
+    }, "Task", false),
+    TASKS(Task.class, new TypeReference<EntityList<Task>>() {
+    }, "Tasks", true),
+    TASKING_CAPABILITY(TaskingCapability.class, new TypeReference<TaskingCapability>() {
+    }, "TaskingCapability", false),
+    TASKING_CAPABILITIES(TaskingCapability.class, new TypeReference<EntityList<TaskingCapability>>() {
+    }, "TaskingCapabilities", true),
     THING(Thing.class, new TypeReference<Thing>() {
     }, "Thing", false),
     THINGS(Thing.class, new TypeReference<EntityList<Thing>>() {
@@ -65,6 +77,8 @@ public enum EntityType {
     private static final Map<Class<? extends Entity>, EntityType> singleForClass = new HashMap<>();
 
     static {
+        ACTUATOR.setOther(ACTUATORS);
+        ACTUATORS.setOther(ACTUATOR);
         DATASTREAM.setOther(DATASTREAMS);
         DATASTREAMS.setOther(DATASTREAM);
         MULTIDATASTREAM.setOther(MULTIDATASTREAMS);
@@ -81,9 +95,15 @@ public enum EntityType {
         OBSERVED_PROPERTIES.setOther(OBSERVED_PROPERTY);
         SENSOR.setOther(SENSORS);
         SENSORS.setOther(SENSOR);
+        TASK.setOther(TASKS);
+        TASKS.setOther(TASK);
+        TASKING_CAPABILITY.setOther(TASKING_CAPABILITIES);
+        TASKING_CAPABILITIES.setOther(TASKING_CAPABILITY);
         THING.setOther(THINGS);
         THINGS.setOther(THING);
 
+        ACTUATOR.addRelations(TASKING_CAPABILITIES);
+        ACTUATORS.addRelations(TASKING_CAPABILITIES);
         DATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
         DATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
         MULTIDATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
@@ -100,8 +120,12 @@ public enum EntityType {
         OBSERVED_PROPERTIES.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSOR.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSORS.addRelations(DATASTREAMS, MULTIDATASTREAMS);
-        THING.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS);
-        THINGS.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS);
+        TASK.addRelations(TASKING_CAPABILITY);
+        TASKS.addRelations(TASKING_CAPABILITY);
+        TASKING_CAPABILITY.addRelations(TASKS, ACTUATOR, THING);
+        TASKING_CAPABILITIES.addRelations(TASKS, ACTUATOR, THING);
+        THING.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
+        THINGS.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
 
         for (EntityType type : values()) {
             if (type.isList) {
@@ -200,6 +224,10 @@ public enum EntityType {
      */
     public static EntityType byName(String name) {
         switch (name) {
+            case "Actuator":
+                return ACTUATOR;
+            case "Actuators":
+                return ACTUATORS;
             case "Datastream":
                 return DATASTREAM;
             case "Datastreams":
@@ -228,6 +256,14 @@ public enum EntityType {
                 return SENSOR;
             case "Sensors":
                 return SENSORS;
+            case "Task":
+                return TASK;
+            case "Tasks":
+                return TASKS;
+            case "TaskingCapability":
+                return TASKING_CAPABILITY;
+            case "TaskingCapabilities":
+                return TASKING_CAPABILITIES;
             case "Thing":
                 return THING;
             case "Things":

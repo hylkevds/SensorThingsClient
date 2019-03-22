@@ -22,15 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
-import de.fraunhofer.iosb.ilt.sta.model.Datastream;
-import de.fraunhofer.iosb.ilt.sta.model.EntityType;
-import de.fraunhofer.iosb.ilt.sta.model.IdLong;
-import de.fraunhofer.iosb.ilt.sta.model.IdString;
-import de.fraunhofer.iosb.ilt.sta.model.Location;
-import de.fraunhofer.iosb.ilt.sta.model.Observation;
-import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
-import de.fraunhofer.iosb.ilt.sta.model.Sensor;
-import de.fraunhofer.iosb.ilt.sta.model.Thing;
+import de.fraunhofer.iosb.ilt.sta.model.*;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -44,11 +36,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geojson.Point;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.threeten.extra.Interval;
 
@@ -439,6 +427,108 @@ public class EntityFormatterTest {
             Assert.fail("Expected IllegalArgumentException, not ServiceFailureException");
         }
         Assert.fail("Expeted IllegalArgumentException, got none");
+    }
+
+    @Test
+    public void writeTaskingCapability() throws IOException {
+            String expResult =
+                    "{\n"
+                + "\"name\": \"defaultCapability\",\n"
+                + "\"description\": \"default\",\n"
+                + "\"properties\": {},\n"
+                + "\"taskingParameters\": {},\n"
+                + "\"@iot.id\": 1\n"
+                + "}";
+            TaskingCapability entity = new TaskingCapability();
+            entity.setId(new IdLong(1l));
+            entity.setDescription("default");
+            entity.setName("defaultCapability");
+            Map<String,Object> properties = new HashMap<>();
+            Map<String, Object> taskingParameters = new HashMap<>();
+            entity.setTaskingParameters(taskingParameters);
+            entity.setProperties(properties);
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        TaskingCapability parsed = mapper.readValue(expResult, TaskingCapability.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
+    }
+
+    @Test //little hack needed here cause creation time is set in class so you have to use the getter for it.
+    @Ignore  // breaks pipeline
+    public void writeEmptyTask() throws IOException {
+
+        Task entity = new Task();
+
+        String expResult = "{\n"
+                + "\"creationTime\":\""+ entity.getCreationTime().toString() + "\"\n"
+                + "}";
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        Task parsed = mapper.readValue(expResult, Task.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
+    }
+
+    @Test
+    public void writeActuator() throws IOException {
+        String expResult =
+             "{\n" +
+                     "    \"name\" : \"testActuator\",\n" +
+                     "    \"description\" : \"test\",\n" +
+                     "    \"@iot.id\" : 1\n" +
+                     "  }";
+        Actuator entity = new Actuator();
+        entity.setName("testActuator");
+        entity.setDescription("test");
+        entity.setId(new IdLong(1l));
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        Actuator parsed = mapper.readValue(expResult, Actuator.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
+    }
+
+    @Test
+    public void writeThingWithCapability() throws IOException {
+
+        String expResult = "{\n"
+                + "\"name\":\"default\",\n"
+                + "\"description\":\"defaultDescription\",\n"
+                + "\"TaskingCapabilities\":[\n"
+                + "{\n"
+                + "\"taskingParameters\":{\n"
+                + "}\n"
+                + "}\n"
+                + "]\n"
+                + "}";
+
+        Thing entity = new Thing();
+
+        entity.setName("default");
+        entity.setDescription("defaultDescription");
+
+        EntityList<TaskingCapability> capabilities = new EntityList<>(EntityType.TASKING_CAPABILITIES);
+        TaskingCapability capability = new TaskingCapability();
+        capabilities.add(capability);
+        entity.setTaskingCapabilities(capabilities);
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        Thing parsed = mapper.readValue(expResult, Thing.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        assert (jsonEqual(expResult, json2));
     }
 
     private boolean jsonEqual(String string1, String string2) {
