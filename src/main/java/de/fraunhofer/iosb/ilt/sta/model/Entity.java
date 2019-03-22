@@ -22,7 +22,7 @@ public abstract class Entity<T extends Entity<T>> {
     @JsonProperty(value = "@iot.id")
     protected Id id;
 
-    @JsonProperty(value = "@iot.selfLink", access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = "@iot.selfLink", access = JsonProperty.Access.READ_WRITE)
     protected URI selfLink;
 
     /**

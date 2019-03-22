@@ -26,6 +26,9 @@ public class Thing extends Entity<Thing> {
     @JsonProperty("MultiDatastreams")
     private EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
 
+    @JsonProperty("TaskingCapabilities")
+    private EntityList<TaskingCapability> taskingCapabilities = new EntityList<>(EntityType.TASKING_CAPABILITIES);
+
     public Thing() {
         super(EntityType.THING);
     }
@@ -55,6 +58,7 @@ public class Thing extends Entity<Thing> {
         datastreams.setService(service, Datastream.class);
         multiDatastreams.setService(service, MultiDatastream.class);
         historicalLocations.setService(service, HistoricalLocation.class);
+        taskingCapabilities.setService(service, TaskingCapability.class);
     }
 
     @Override
@@ -160,6 +164,18 @@ public class Thing extends Entity<Thing> {
 
     public void setMultiDatastreams(EntityList<MultiDatastream> multiDatastreams) {
         this.multiDatastreams = multiDatastreams;
+    }
+
+    public BaseDao<TaskingCapability> taskingCapabilities() {
+        return getService().taskingCapabilities().setParent(this);
+    }
+
+    public EntityList<TaskingCapability> getTaskingCapabilities() {
+        return this.taskingCapabilities;
+    }
+
+    public void setTaskingCapabilities(EntityList<TaskingCapability> taskingCapabilities) {
+        this.taskingCapabilities = taskingCapabilities;
     }
 
     @Override

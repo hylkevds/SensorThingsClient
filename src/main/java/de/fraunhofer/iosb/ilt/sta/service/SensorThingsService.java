@@ -2,15 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.service;
 
 import com.github.fge.jsonpatch.JsonPatchOperation;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
-import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
-import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
-import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
-import de.fraunhofer.iosb.ilt.sta.dao.LocationDao;
-import de.fraunhofer.iosb.ilt.sta.dao.MultiDatastreamDao;
-import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
-import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
-import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
-import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
+import de.fraunhofer.iosb.ilt.sta.dao.*;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.DataArrayDocument;
@@ -22,6 +14,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Objects;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -230,6 +224,30 @@ public class SensorThingsService {
     }
 
     /**
+     *
+     * @return a new Actuator Dao.
+     */
+    public ActuatorDao actuators() {
+        return new ActuatorDao(this);
+    }
+
+    /**
+     *
+     * @return a new Task Dao.
+     */
+    public TaskDao tasks() {
+        return new TaskDao(this);
+    }
+
+    /**
+     *
+     * @return a new TaskingCapability Dao.
+     */
+    public TaskingCapabilityDao taskingCapabilities() {
+        return new TaskingCapabilityDao(this);
+    }
+
+    /**
      * @return a new Thing Dao.
      */
     public ThingDao things() {
@@ -334,5 +352,4 @@ public class SensorThingsService {
     public void setClient(CloseableHttpClient client) {
         this.client = client;
     }
-
 }
