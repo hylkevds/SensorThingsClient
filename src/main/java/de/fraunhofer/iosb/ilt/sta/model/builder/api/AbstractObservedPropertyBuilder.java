@@ -30,6 +30,11 @@ public abstract class AbstractObservedPropertyBuilder<U extends AbstractObserved
         return getSelf();
     }
 
+    public U definition(final String definition) {
+        getBuildingInstance().setDefinition(definition);
+        return getSelf();
+    }
+
     public U description(final String description) {
         getBuildingInstance().setDescription(description);
         return getSelf();

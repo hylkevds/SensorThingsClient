@@ -31,6 +31,13 @@ public class ObservedProperty extends Entity<ObservedProperty> {
         this.description = description;
     }
 
+    public ObservedProperty(String name, String definition, String description) {
+        this();
+        this.name = name;
+        this.definition = definition;
+        this.description = description;
+    }
+
     @Override
     protected void ensureServiceOnChildren(SensorThingsService service) {
         datastreams.setService(service, Datastream.class);

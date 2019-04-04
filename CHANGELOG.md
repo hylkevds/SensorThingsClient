@@ -1,3 +1,9 @@
+# Release Version 0.23
+
+**Updates**
+* Allow ObservedProperty/definition to be set as a String.
+
+
 # Release Version 0.22
 
 **Updates**
