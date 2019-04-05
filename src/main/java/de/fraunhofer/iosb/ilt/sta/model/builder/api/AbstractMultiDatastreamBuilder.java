@@ -10,7 +10,7 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.geojson.Polygon;
+import org.geojson.GeoJsonObject;
 import org.threeten.extra.Interval;
 
 /**
@@ -57,7 +57,7 @@ public abstract class AbstractMultiDatastreamBuilder<U extends AbstractMultiData
         return getSelf();
     }
 
-    public U observedArea(final Polygon observedArea) {
+    public U observedArea(final GeoJsonObject observedArea) {
         getBuildingInstance().setObservedArea(observedArea);
         return getSelf();
     }

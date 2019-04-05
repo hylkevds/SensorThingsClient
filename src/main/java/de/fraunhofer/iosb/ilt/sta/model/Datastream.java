@@ -10,7 +10,7 @@ import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.geojson.Polygon;
+import org.geojson.GeoJsonObject;
 import org.threeten.extra.Interval;
 
 public class Datastream extends Entity<Datastream> {
@@ -19,7 +19,7 @@ public class Datastream extends Entity<Datastream> {
     private String description;
     private String observationType;
     private UnitOfMeasurement unitOfMeasurement;
-    private Polygon observedArea;
+    private GeoJsonObject observedArea;
     private Interval phenomenonTime;
     private Map<String, Object> properties;
     private Interval resultTime;
@@ -136,11 +136,11 @@ public class Datastream extends Entity<Datastream> {
         this.unitOfMeasurement = unitOfMeasurement;
     }
 
-    public Polygon getObservedArea() {
+    public GeoJsonObject getObservedArea() {
         return this.observedArea;
     }
 
-    public void setObservedArea(Polygon observedArea) {
+    public void setObservedArea(GeoJsonObject observedArea) {
         this.observedArea = observedArea;
     }
 

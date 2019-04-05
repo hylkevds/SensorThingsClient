@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.geojson.Polygon;
+import org.geojson.GeoJsonObject;
 import org.threeten.extra.Interval;
 
 public class MultiDatastream extends Entity<MultiDatastream> {
@@ -21,7 +21,7 @@ public class MultiDatastream extends Entity<MultiDatastream> {
     private String observationType;
     private List<String> multiObservationDataTypes;
     private List<UnitOfMeasurement> unitOfMeasurements;
-    private Polygon observedArea;
+    private GeoJsonObject observedArea;
     private Interval phenomenonTime;
     private Map<String, Object> properties;
     private Interval resultTime;
@@ -168,11 +168,11 @@ public class MultiDatastream extends Entity<MultiDatastream> {
         this.unitOfMeasurements.add(unitOfMeasurement);
     }
 
-    public Polygon getObservedArea() {
+    public GeoJsonObject getObservedArea() {
         return this.observedArea;
     }
 
-    public void setObservedArea(Polygon observedArea) {
+    public void setObservedArea(GeoJsonObject observedArea) {
         this.observedArea = observedArea;
     }
 

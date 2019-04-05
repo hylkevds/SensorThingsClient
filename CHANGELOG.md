@@ -2,6 +2,7 @@
 
 **Updates**
 * Allow ObservedProperty/definition to be set as a String.
+* Allow (Multi)Datastream/observedArea to be a non-polygon.
 
 
 # Release Version 0.22
