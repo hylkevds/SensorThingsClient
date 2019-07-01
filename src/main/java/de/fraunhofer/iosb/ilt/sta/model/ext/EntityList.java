@@ -218,7 +218,7 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
         return this.entities.retainAll(c);
     }
 
-    public void replaceAll(List<T> other) {
+    public void replaceAll(Collection<T> other) {
         this.entities.clear();
         this.entities.addAll(other);
     }
