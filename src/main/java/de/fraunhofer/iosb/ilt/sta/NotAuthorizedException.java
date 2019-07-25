@@ -7,7 +7,7 @@ package de.fraunhofer.iosb.ilt.sta;
  */
 public class NotAuthorizedException extends StatusCodeException {
 
-    public NotAuthorizedException(String statusMessage, String returnedContent) {
-        super(401, statusMessage, returnedContent);
+    public NotAuthorizedException(String url, String statusMessage, String returnedContent) {
+        super(url, 401, statusMessage, returnedContent);
     }
 }

@@ -96,7 +96,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
             response = service.execute(httpPost);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpPost, response);
 
             Header locationHeader = response.getLastHeader("location");
             if (locationHeader == null) {
@@ -174,7 +174,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpGet);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpGet, response);
 
             String returnContent = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -218,7 +218,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             httpPatch.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
             response = service.execute(httpPatch);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpPatch, response);
 
         } catch (JsonProcessingException | URISyntaxException ex) {
             throw new ServiceFailureException(ex);
@@ -248,7 +248,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             httpPatch.setEntity(new StringEntity(json, APPLICATION_JSON_PATCH));
 
             response = service.execute(httpPatch);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpPatch, response);
 
         } catch (JsonProcessingException | URISyntaxException ex) {
             throw new ServiceFailureException(ex);
@@ -273,7 +273,7 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
             LOGGER.debug("Deleting: {}", httpDelete.getURI());
 
             response = service.execute(httpDelete);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpDelete, response);
 
         } catch (IOException | URISyntaxException ex) {
             throw new ServiceFailureException(ex);

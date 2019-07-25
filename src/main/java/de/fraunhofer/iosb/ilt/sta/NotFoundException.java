@@ -7,8 +7,8 @@ package de.fraunhofer.iosb.ilt.sta;
  */
 public class NotFoundException extends StatusCodeException {
 
-    public NotFoundException(String statusMessage, String returnedContent) {
-        super(404, statusMessage, returnedContent);
+    public NotFoundException(String url, String statusMessage, String returnedContent) {
+        super(url, 404, statusMessage, returnedContent);
     }
 
 }

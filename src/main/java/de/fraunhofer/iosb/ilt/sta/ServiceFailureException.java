@@ -10,9 +10,6 @@ public class ServiceFailureException extends Exception {
 
     private static final long serialVersionUID = -1365036034620856088L;
 
-    public ServiceFailureException() {
-    }
-
     public ServiceFailureException(String message) {
         super(message);
     }

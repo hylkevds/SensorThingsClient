@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import org.apache.http.client.methods.HttpRequestBase;
 
 /**
  *
@@ -33,6 +34,16 @@ public class Utils {
      * The logger for this class.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
+    /**
+     * Returns true if the given string is null, or empty.
+     *
+     * @param string the string to check.
+     * @return true if string == null || string.isEmpty()
+     */
+    public static boolean isNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
+    }
 
     /**
      * Replaces all ' in the string with ''.
@@ -111,10 +122,11 @@ public class Utils {
      * Throws a StatusCodeException if the given response did not have status
      * code 2xx
      *
+     * @param request The request that generated the response.
      * @param response The response to check the status code of.
      * @throws StatusCodeException If the response was not 2xx.
      */
-    public static void throwIfNotOk(CloseableHttpResponse response) throws StatusCodeException {
+    public static void throwIfNotOk(HttpRequestBase request, CloseableHttpResponse response) throws StatusCodeException {
         final int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode < 200 || statusCode >= 300) {
             String returnContent = null;
@@ -124,12 +136,13 @@ public class Utils {
                 LOGGER.warn("Failed to get content from error response.", exc);
             }
             if (statusCode == 401) {
-                throw new NotAuthorizedException(response.getStatusLine().getReasonPhrase(), returnContent);
+                request.getURI();
+                throw new NotAuthorizedException(request.getURI().toString(), response.getStatusLine().getReasonPhrase(), returnContent);
             }
             if (statusCode == 404) {
-                throw new NotFoundException(response.getStatusLine().getReasonPhrase(), returnContent);
+                throw new NotFoundException(request.getURI().toString(), response.getStatusLine().getReasonPhrase(), returnContent);
             }
-            throw new StatusCodeException(statusCode, response.getStatusLine().getReasonPhrase(), returnContent);
+            throw new StatusCodeException(request.getURI().toString(), statusCode, response.getStatusLine().getReasonPhrase(), returnContent);
         }
     }
 

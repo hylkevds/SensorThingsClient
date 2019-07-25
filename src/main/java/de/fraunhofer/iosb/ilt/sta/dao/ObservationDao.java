@@ -80,7 +80,7 @@ public class ObservationDao extends BaseDao<Observation> {
             httpPost.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
 
             response = getService().execute(httpPost);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpPost, response);
 
             String jsonResponse = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             result = mapper.readValue(jsonResponse, LIST_OF_STRING);

@@ -170,7 +170,7 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
             httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpGet);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpGet, response);
 
             String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -206,7 +206,7 @@ public class Query<T extends Entity<T>> implements QueryRequest<T>, QueryParamet
             httpDelete.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpDelete);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpDelete, response);
 
         } catch (URISyntaxException | IOException exc) {
             throw new ServiceFailureException("Failed to delete from query.", exc);

@@ -93,7 +93,7 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
                 try {
                     LOGGER.debug("Fetching: {}", httpGet.getURI());
                     response = service.execute(httpGet);
-                    Utils.throwIfNotOk(response);
+                    Utils.throwIfNotOk(httpGet, response);
 
                     String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
                     final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -157,7 +157,7 @@ public class EntityList<T extends Entity<T>> implements EntityCollection<T> {
             httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
             response = service.execute(httpGet);
-            Utils.throwIfNotOk(response);
+            Utils.throwIfNotOk(httpGet, response);
 
             String json = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
             final ObjectMapper mapper = ObjectMapperFactory.get();

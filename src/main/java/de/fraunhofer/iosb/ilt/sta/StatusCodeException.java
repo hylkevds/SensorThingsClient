@@ -8,15 +8,26 @@ package de.fraunhofer.iosb.ilt.sta;
  */
 public class StatusCodeException extends ServiceFailureException {
 
+    private final String url;
     private final int statusCode;
     private final String statusMessage;
     private final String returnedContent;
 
-    public StatusCodeException(int statusCode, String statusMessage, String returnedContent) {
+    public StatusCodeException(String url, int statusCode, String statusMessage, String returnedContent) {
         super(statusMessage);
+        this.url = url;
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
         this.returnedContent = returnedContent;
+    }
+
+    /**
+     * The URL that generated the failure response.
+     *
+     * @return The URL that generated the failure response.
+     */
+    public String getUrl() {
+        return url;
     }
 
     /**
