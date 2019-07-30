@@ -21,18 +21,23 @@
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>FROST-Client</bintray.package>
 
+		<guava.version>24.1.1-jre</guava.version>
 		<httpclient.version>4.5.6</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.9.9</jackson.version>
+		<jacksonDatabind.version>2.9.9.2</jacksonDatabind.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.7.0</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
 		<junit.version>4.12</junit.version>
+		
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
 		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<owasp.version>5.2.0</owasp.version>
+		
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<threeten-extra.version>1.0</threeten-extra.version>
 	</properties>
@@ -135,6 +140,21 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${maven-release-plugin.version}</version>
 			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>${owasp.version}</version>
+				<configuration>
+					<failBuildOnCVSS>8</failBuildOnCVSS>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -158,7 +178,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
+			<version>${jacksonDatabind.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -194,6 +214,17 @@
 			<groupId>com.github.fge</groupId>
 			<artifactId>json-patch</artifactId>
 			<version>${json-patch.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
