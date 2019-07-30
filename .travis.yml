@@ -10,6 +10,10 @@ branches:
 after_success:
   - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && mvn deploy --settings travis-settings.xml
 
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
 env:
   global:
   # travis encrypt BINTRAY_USER=[username]
