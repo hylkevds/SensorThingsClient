@@ -1,3 +1,15 @@
+# Release Version 0.25
+
+**Updates**
+* Updated StatusCodeException to include the URL that returned the error
+
+
+# Release Version 0.24
+
+**Updates**
+* Changed method signature for EntityList.replaceAll to match related methods
+
+
 # Release Version 0.23
 
 **Updates**
