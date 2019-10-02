@@ -4,6 +4,7 @@ import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.HistoricalLocation;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
+import de.fraunhofer.iosb.ilt.sta.model.TaskingCapability;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Map;
  *
  * @param <U> the type of the concrete class that extends this
  * {@link AbstractThingBuilder}
- * @author Aurelien Bourdon
+ * @author Aurelien Bourdon, Michael Jacoby
  */
 public abstract class AbstractThingBuilder<U extends AbstractThingBuilder<U>> extends EntityBuilder<Thing, U> {
 
@@ -83,6 +84,16 @@ public abstract class AbstractThingBuilder<U extends AbstractThingBuilder<U>> ex
 
     public U historicalLocation(final HistoricalLocation historicalLocation) {
         getBuildingInstance().getHistoricalLocations().add(historicalLocation);
+        return getSelf();
+    }
+
+    public U taskingCapabilities(final List<TaskingCapability> taskingCapabilities) {
+        getBuildingInstance().getTaskingCapabilities().addAll(taskingCapabilities);
+        return getSelf();
+    }
+
+    public U taskingCapability(final TaskingCapability taskingCapability) {
+        getBuildingInstance().getTaskingCapabilities().add(taskingCapability);
         return getSelf();
     }
 

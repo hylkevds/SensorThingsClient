@@ -84,7 +84,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
                 }
                 gen.writeEndArray();
             } else {
-                JsonSerialize annotation = property.getField().getAnnotation(JsonSerialize.class);
+                JsonSerialize annotation = property.getAccessor().getAnnotation(JsonSerialize.class);
                 JsonSerializer serializer = null;
                 if (annotation != null) {
                     try {
@@ -95,7 +95,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
                     }
                 }
                 boolean suppressNulls = true;
-                JsonInclude includeAnnotation = property.getField().getAnnotation(JsonInclude.class);
+                JsonInclude includeAnnotation = property.getAccessor().getAnnotation(JsonInclude.class);
                 if (rawValue == null && includeAnnotation != null && includeAnnotation.value() == JsonInclude.Include.ALWAYS) {
                     suppressNulls = false;
                 }

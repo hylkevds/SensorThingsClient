@@ -19,6 +19,7 @@ public class Thing extends Entity<Thing> {
     private final EntityList<HistoricalLocation> historicalLocations = new EntityList<>(EntityType.HISTORICAL_LOCATIONS);
     private final EntityList<Datastream> datastreams = new EntityList<>(EntityType.DATASTREAMS);
     private final EntityList<MultiDatastream> multiDatastreams = new EntityList<>(EntityType.MULTIDATASTREAMS);
+    private final EntityList<TaskingCapability> taskingCapabilities = new EntityList<>(EntityType.TASKING_CAPABILITIES);
 
     public Thing() {
         super(EntityType.THING);
@@ -49,6 +50,9 @@ public class Thing extends Entity<Thing> {
         datastreams.setService(service, Datastream.class);
         multiDatastreams.setService(service, MultiDatastream.class);
         historicalLocations.setService(service, HistoricalLocation.class);
+        if (taskingCapabilities != null) {
+            taskingCapabilities.setService(service, TaskingCapability.class);
+        }
     }
 
     @Override
@@ -162,6 +166,20 @@ public class Thing extends Entity<Thing> {
     @JsonProperty("MultiDatastreams")
     public void setMultiDatastreams(List<MultiDatastream> multiDatastreams) {
         this.multiDatastreams.replaceAll(multiDatastreams);
+    }
+
+    public BaseDao<TaskingCapability> taskingCapabilities() {
+        return getService().taskingCapabilities().setParent(this);
+    }
+
+    @JsonProperty("TaskingCapabilities")
+    public EntityList<TaskingCapability> getTaskingCapabilities() {
+        return this.taskingCapabilities;
+    }
+
+    @JsonProperty("TaskingCapabilities")
+    public void setTaskingCapabilities(List<TaskingCapability> taskingCapabilities) {
+        this.taskingCapabilities.replaceAll(taskingCapabilities);
     }
 
     @Override

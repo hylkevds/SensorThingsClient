@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
+import de.fraunhofer.iosb.ilt.sta.model.Actuator;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.IdString;
@@ -29,8 +30,13 @@ import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
+import de.fraunhofer.iosb.ilt.sta.model.Task;
+import de.fraunhofer.iosb.ilt.sta.model.TaskingCapability;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.CategoryTaskingParameter;
+import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameterChoiceConstraint;
+import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameterRegExConstraint;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -473,6 +479,60 @@ public class EntityFormatterTest {
             Logger.getLogger(EntityFormatterTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    @Test
+    public void writeTaskingParameter() throws IOException {
+        String expResult
+                = "{\n"
+                + "	\"@iot.id\": 1,\n"
+                + "	\"phenomenonTime\": \"2014-12-31T11:59:59Z\",\n"
+                + "	\"result\": null\n"
+                + "}";
+        TaskingParameterChoiceConstraint choiceConstraint = new TaskingParameterChoiceConstraint();
+        choiceConstraint.getChoices().add("choice A");
+        choiceConstraint.getChoices().add("choice B");
+
+        TaskingParameterRegExConstraint regexConstraint = new TaskingParameterRegExConstraint();
+        regexConstraint.setPattern("^.*$");
+
+        CategoryTaskingParameter parameter = new CategoryTaskingParameter();
+        parameter.setName("parameter name");
+        parameter.setDescription("param description");
+        parameter.setLabel("parameter label");
+        parameter.getConstraints().add(choiceConstraint);
+        parameter.getConstraints().add(regexConstraint);
+
+        TaskingCapability taskingCapability = new TaskingCapability();
+        taskingCapability.setName("TaskingCapability name");
+        taskingCapability.setDescription("TaskingCapability description");
+        taskingCapability.getTaskingParameters().add(parameter);
+
+        Task task = new Task();
+        task.setCreationTime(ZonedDateTime.now());
+        task.getTaskingParameters().put("parameter name", "choice A");
+
+        Actuator actuator = new Actuator();
+        actuator.setName("actuator name");
+        actuator.setDescription("actuator description");
+        actuator.setEncodingType("encoding type");
+        actuator.setMetadata("metadata");
+
+        Thing thing = new Thing();
+        thing.setName("thing name");
+        thing.setDescription("thing description");
+
+        thing.getTaskingCapabilities().add(taskingCapability);
+        taskingCapability.getTasks().add(task);
+        taskingCapability.setActuator(actuator);
+
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        String json = mapper.writeValueAsString(thing);
+        //assert (jsonEqual(expResult, json));
+        String foo = mapper.writeValueAsString(taskingCapability);
+        Observation parsed = mapper.readValue(expResult, Observation.class);
+        String json2 = mapper.writeValueAsString(parsed);
+        //assert (jsonEqual(expResult, json2));
     }
 
 }

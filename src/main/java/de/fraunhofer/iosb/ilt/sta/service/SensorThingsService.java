@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.service;
 
 import com.github.fge.jsonpatch.JsonPatchOperation;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
+import de.fraunhofer.iosb.ilt.sta.dao.ActuatorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
 import de.fraunhofer.iosb.ilt.sta.dao.HistoricalLocationDao;
@@ -10,6 +11,8 @@ import de.fraunhofer.iosb.ilt.sta.dao.MultiDatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ObservedPropertyDao;
 import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
+import de.fraunhofer.iosb.ilt.sta.dao.TaskDao;
+import de.fraunhofer.iosb.ilt.sta.dao.TaskingCapabilityDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
@@ -18,27 +21,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 
 /**
  * A SensorThingsService represents the service endpoint of a server.
  *
- * @author Nils Sommer, Hylke van der Schaaf
+ * @author Nils Sommer, Hylke van der Schaaf, Michael Jacoby
  */
 public class SensorThingsService {
 
@@ -234,6 +227,27 @@ public class SensorThingsService {
      */
     public ThingDao things() {
         return new ThingDao(this);
+    }
+
+    /**
+     * @return a new Actuator Dao.
+     */
+    public ActuatorDao actuators() {
+        return new ActuatorDao(this);
+    }
+
+    /**
+     * @return a new Task Dao.
+     */
+    public TaskDao tasks() {
+        return new TaskDao(this);
+    }
+
+    /**
+     * @return a new TaskingCapability Dao.
+     */
+    public TaskingCapabilityDao taskingCapabilities() {
+        return new TaskingCapabilityDao(this);
     }
 
     /**

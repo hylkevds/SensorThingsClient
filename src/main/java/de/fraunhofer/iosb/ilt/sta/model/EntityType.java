@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * This enum contains class and naming information about entities.
  *
- * @author Nils Sommer, Hylke van der Schaaf
+ * @author Nils Sommer, Hylke van der Schaaf, Michael Jacoby
  *
  */
 public enum EntityType {
@@ -50,7 +50,19 @@ public enum EntityType {
     THING(Thing.class, new TypeReference<Thing>() {
     }, "Thing", false),
     THINGS(Thing.class, new TypeReference<EntityList<Thing>>() {
-    }, "Things", true);
+    }, "Things", true),
+    ACTUATOR(Actuator.class, new TypeReference<Actuator>() {
+    }, "Actuator", false),
+    ACTUATORS(Actuator.class, new TypeReference<EntityList<Actuator>>() {
+    }, "Actuators", true),
+    TASKING_CAPABILITY(TaskingCapability.class, new TypeReference<TaskingCapability>() {
+    }, "TaskingCapability", false),
+    TASKING_CAPABILITIES(TaskingCapability.class, new TypeReference<EntityList<TaskingCapability>>() {
+    }, "TaskingCapabilities", true),
+    TASK(Task.class, new TypeReference<Task>() {
+    }, "Task", false),
+    TASKS(Task.class, new TypeReference<EntityList<Task>>() {
+    }, "Tasks", true);
 
     private final Class<? extends Entity> type;
     private final TypeReference typeReference;
@@ -83,6 +95,12 @@ public enum EntityType {
         SENSORS.setOther(SENSOR);
         THING.setOther(THINGS);
         THINGS.setOther(THING);
+        ACTUATOR.setOther(ACTUATORS);
+        ACTUATORS.setOther(ACTUATOR);
+        TASKING_CAPABILITY.setOther(TASKING_CAPABILITIES);
+        TASKING_CAPABILITIES.setOther(TASKING_CAPABILITY);
+        TASK.setOther(TASKS);
+        TASKS.setOther(TASK);
 
         DATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
         DATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
@@ -100,8 +118,14 @@ public enum EntityType {
         OBSERVED_PROPERTIES.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSOR.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSORS.addRelations(DATASTREAMS, MULTIDATASTREAMS);
-        THING.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS);
-        THINGS.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS);
+        THING.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
+        THINGS.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
+        ACTUATOR.addRelations(TASKING_CAPABILITIES);
+        ACTUATORS.addRelations(TASKING_CAPABILITIES);
+        TASKING_CAPABILITY.addRelations(ACTUATOR, TASKS, THING);
+        TASKING_CAPABILITIES.addRelations(ACTUATOR, TASKS, THING);
+        TASK.addRelations(TASKING_CAPABILITIES);
+        TASKS.addRelations(TASKING_CAPABILITIES);
 
         for (EntityType type : values()) {
             if (type.isList) {
@@ -236,6 +260,18 @@ public enum EntityType {
                 return THING;
             case "Things":
                 return THINGS;
+            case "Actuator":
+                return ACTUATOR;
+            case "Actuators":
+                return ACTUATORS;
+            case "Task":
+                return TASK;
+            case "Tasks":
+                return TASKS;
+            case "TaskingCapability":
+                return TASKING_CAPABILITY;
+            case "TaskingCapabilities":
+                return TASKING_CAPABILITIES;
         }
 
         return null;

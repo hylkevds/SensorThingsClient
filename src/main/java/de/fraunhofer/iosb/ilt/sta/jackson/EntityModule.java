@@ -2,17 +2,21 @@ package de.fraunhofer.iosb.ilt.sta.jackson;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.Id;
+import de.fraunhofer.iosb.ilt.sta.model.TaskingCapability;
 import de.fraunhofer.iosb.ilt.sta.model.TimeObject;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameter;
+import java.util.List;
 import org.threeten.extra.Interval;
 
 /**
  * Module that contains all custom Serializer and Deserializer registrations
  * written as part of this library.
  *
- * @author Nils Sommer
+ * @author Nils Sommer, Michael Jacoby
  *
  */
 public class EntityModule extends SimpleModule {
@@ -25,6 +29,7 @@ public class EntityModule extends SimpleModule {
         addSerializer(UnitOfMeasurement.class, new UnitOfMeasurementSerializer());
         addSerializer(Interval.class, new IntervalSerializer());
         addSerializer(TimeObject.class, new TimeObjectSerializer());
+//        addSerializer(TaskingCapability.class, new TaskingCapabilitySerializer());
 
         addDeserializer(Id.class, new IdDeserializer());
         addDeserializer(Interval.class, new IntervalDeserializer());
