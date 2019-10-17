@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.swe.common.AbstractDataComponent;
+import de.fraunhofer.iosb.ilt.swe.common.AbstractSWEIdentifiable;
+import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
 
 /**
  * Factory for ObjectMapper instances. Keeps track of configuration.
@@ -34,15 +37,16 @@ public final class ObjectMapperFactory {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new EntityModule());
+            mapper.addMixIn(DataRecord.class, DataRecordMixin.class);
+            mapper.addMixIn(AbstractDataComponent.class, AbstractDataComponentMixin.class);
+            mapper.addMixIn(AbstractSWEIdentifiable.class, AbstractSWEIdentifiableMixin.class);
             // Write any date/time values as ISO-8601 formated strings.
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
-
             final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
             m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
             mapper.registerModule(m);
         }
-
         return mapper;
     }
 

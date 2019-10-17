@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
-import de.fraunhofer.iosb.ilt.sta.model.Actuator;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.IdString;
@@ -30,14 +29,17 @@ import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
 import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
-import de.fraunhofer.iosb.ilt.sta.model.Task;
 import de.fraunhofer.iosb.ilt.sta.model.TaskingCapability;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
+import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.ext.CategoryBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.ext.TextBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
-import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.CategoryTaskingParameter;
-import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameterChoiceConstraint;
-import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameterRegExConstraint;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
+import de.fraunhofer.iosb.ilt.swe.common.constraint.AllowedTokens;
+import de.fraunhofer.iosb.ilt.swe.common.simple.Category;
+import de.fraunhofer.iosb.ilt.swe.common.simple.Text;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -49,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
 import org.geojson.Point;
 import org.junit.After;
 import org.junit.Assert;
@@ -486,53 +489,68 @@ public class EntityFormatterTest {
         String expResult
                 = "{\n"
                 + "	\"@iot.id\": 1,\n"
-                + "	\"phenomenonTime\": \"2014-12-31T11:59:59Z\",\n"
-                + "	\"result\": null\n"
+                + "	\"name\": \"Control Light\",\n"
+                + "	\"description\": \"Turn the light on and off, as well as specifying light color.\",\n"
+                + "	\"taskingParameters\":\n"
+                + "	{\n"
+                + "		\"type\": \"DataRecord\",\n"
+                + "		\"field\": [\n"
+                + "			{\n"
+                + "				\"name\": \"status\",\n"
+                + "				\"label\": \"On/Off status\",\n"
+                + "				\"description\": \"Specifies turning the light On or Off\",\n"
+                + "				\"type\": \"Category\",\n"
+                + "				\"constraint\":\n"
+                + "				{\n"
+                + "					\"type\": \"AllowedTokens\",\n"
+                + "					\"value\": [\n"
+                + "						\"on\", \"off\"\n"
+                + "					]\n"
+                + "				}\n"
+                + "			},\n"
+                + "			{\n"
+                + "				\"name\": \"color\",\n"
+                + "				\"label\": \"Light Color\",\n"
+                + "				\"description\": \"Specifies the light color in RGB HEX format. Example: #FF11A0\",\n"
+                + "				\"type\": \"Text\",\n"
+                + "				\"constraint\":\n"
+                + "				{\n"
+                + "					\"type\": \"AllowedTokens\",\n"
+                + "					\"pattern\": \"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$\"\n"
+                + "				}\n"
+                + "			}\n"
+                + "		]\n"
+                + "	}\n"
                 + "}";
-        TaskingParameterChoiceConstraint choiceConstraint = new TaskingParameterChoiceConstraint();
-        choiceConstraint.getChoices().add("choice A");
-        choiceConstraint.getChoices().add("choice B");
-
-        TaskingParameterRegExConstraint regexConstraint = new TaskingParameterRegExConstraint();
-        regexConstraint.setPattern("^.*$");
-
-        CategoryTaskingParameter parameter = new CategoryTaskingParameter();
-        parameter.setName("parameter name");
-        parameter.setDescription("param description");
-        parameter.setLabel("parameter label");
-        parameter.getConstraints().add(choiceConstraint);
-        parameter.getConstraints().add(regexConstraint);
-
-        TaskingCapability taskingCapability = new TaskingCapability();
-        taskingCapability.setName("TaskingCapability name");
-        taskingCapability.setDescription("TaskingCapability description");
-        taskingCapability.getTaskingParameters().add(parameter);
-
-        Task task = new Task();
-        task.setCreationTime(ZonedDateTime.now());
-        task.getTaskingParameters().put("parameter name", "choice A");
-
-        Actuator actuator = new Actuator();
-        actuator.setName("actuator name");
-        actuator.setDescription("actuator description");
-        actuator.setEncodingType("encoding type");
-        actuator.setMetadata("metadata");
-
-        Thing thing = new Thing();
-        thing.setName("thing name");
-        thing.setDescription("thing description");
-
-        thing.getTaskingCapabilities().add(taskingCapability);
-        taskingCapability.getTasks().add(task);
-        taskingCapability.setActuator(actuator);
+        TaskingCapability entity = TaskingCapabilityBuilder.builder()
+                .id(new IdLong(1L))
+                .name("Control Light")
+                .description("Turn the light on and off, as well as specifying light color.")
+                .taskingParameter(
+                        CategoryBuilder.builder()
+                                .name("status")
+                                .label("On/Off status")
+                                .description("Specifies turning the light On or Off")
+                                .allowedValues("on", "off")
+                                .build())
+                .taskingParameter(
+                        TextBuilder.builder()
+                                .name("color")
+                                .label("Light Color")
+                                .description("Specifies the light color in RGB HEX format. Example: #FF11A0")
+                                .pattern("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+                                .build())
+                .build();
 
         final ObjectMapper mapper = ObjectMapperFactory.get();
-        String json = mapper.writeValueAsString(thing);
-        //assert (jsonEqual(expResult, json));
-        String foo = mapper.writeValueAsString(taskingCapability);
-        Observation parsed = mapper.readValue(expResult, Observation.class);
+        String json = mapper.writeValueAsString(entity);
+        assert (jsonEqual(expResult, json));
+
+        TaskingCapability parsed = mapper.readValue(expResult, TaskingCapability.class);
+        Assert.assertEquals(entity, parsed);
+
         String json2 = mapper.writeValueAsString(parsed);
-        //assert (jsonEqual(expResult, json2));
+        assert (jsonEqual(expResult, json2));
     }
 
 }

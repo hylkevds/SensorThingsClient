@@ -1,15 +1,12 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.TaskingCapabilityDao;
-import de.fraunhofer.iosb.ilt.sta.jackson.TaskingParameterListSerializer;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
-import de.fraunhofer.iosb.ilt.sta.model.tasking.parameter.TaskingParameter;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
-import java.util.ArrayList;
+import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +20,7 @@ public class TaskingCapability extends Entity<TaskingCapability> {
     private String name;
     private String description;
     private Map<String, Object> properties;
-    private List<TaskingParameter> taskingParameters;
+    private DataRecord taskingParameters;
 
     private final EntityList<Task> tasks = new EntityList<>(EntityType.TASKS);
     @JsonProperty("Thing")
@@ -34,7 +31,6 @@ public class TaskingCapability extends Entity<TaskingCapability> {
 
     public TaskingCapability() {
         super(EntityType.TASK);
-        this.taskingParameters = new ArrayList<>();
     }
 
     @Override
@@ -87,12 +83,12 @@ public class TaskingCapability extends Entity<TaskingCapability> {
         return hash;
     }
 
-    @JsonSerialize(using = TaskingParameterListSerializer.class)
-    public List<TaskingParameter> getTaskingParameters() {
+//    @JsonSerialize(using = TaskingParameterListSerializer.class)
+    public DataRecord getTaskingParameters() {
         return this.taskingParameters;
     }
 
-    public void setTaskingParameters(List<TaskingParameter> taskingParameters) {
+    public void setTaskingParameters(DataRecord taskingParameters) {
         this.taskingParameters = taskingParameters;
     }
 

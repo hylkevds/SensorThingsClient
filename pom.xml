@@ -56,6 +56,12 @@
 			<organization>Fraunhofer IOSB</organization>
 			<organizationUrl>https://www.iosb.fraunhofer.de</organizationUrl>
 		</developer>
+		<developer>
+			<name>Michael Jacoby</name>
+			<email>michael.jacoby@iosb.fraunhofer.de</email>
+			<organization>Fraunhofer IOSB</organization>
+			<organizationUrl>https://www.iosb.fraunhofer.de</organizationUrl>
+		</developer>
 	</developers>
 
 	<organization>
@@ -93,6 +99,16 @@
 			</properties>
 		</profile>
 	</profiles>
+	
+	<repositories>
+		<repository>
+			<id>bintray-fraunhoferiosb-Maven</id>
+			<url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
@@ -236,6 +252,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.3</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.fraunhofer.iosb.ilt</groupId>
+			<artifactId>SensorThings-SWE-Common</artifactId>
+			<version>0.2</version>
 		</dependency>
 	</dependencies>
 </project>
