@@ -1,7 +1,12 @@
 package de.fraunhofer.iosb.ilt.sta.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchOperation;
+import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
+import de.fraunhofer.iosb.ilt.sta.StatusCodeException;
+import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.dao.ActuatorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
@@ -14,18 +19,40 @@ import de.fraunhofer.iosb.ilt.sta.dao.SensorDao;
 import de.fraunhofer.iosb.ilt.sta.dao.TaskDao;
 import de.fraunhofer.iosb.ilt.sta.dao.TaskingCapabilityDao;
 import de.fraunhofer.iosb.ilt.sta.dao.ThingDao;
+import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.DataArrayDocument;
+import de.fraunhofer.iosb.ilt.sta.service.ServerSettings.Extension;
+import static de.fraunhofer.iosb.ilt.sta.service.ServerSettings.TAG_MQTT_ENDPOINTS;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Consts;
+import org.apache.http.ParseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -33,7 +60,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Nils Sommer, Hylke van der Schaaf, Michael Jacoby
  */
-public class SensorThingsService {
+public class SensorThingsService implements MqttCallback {
 
     /**
      * The logger for this class.
@@ -41,15 +68,20 @@ public class SensorThingsService {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SensorThingsService.class);
 
     private URL endpoint;
-    private CloseableHttpClient client;
+    private CloseableHttpClient httpClient;
     private TokenManager tokenManager;
+    private MqttClient mqttClient;
+    private MqttConfig mqttConfig;
+    private boolean mqttAutoConfigChecked = false;
+    private Map<String, Set<Consumer<MqttMessage>>> mqttSubscriptions = new HashMap<>();
+    private SensorThingsAPIVersion version;
 
     /**
      * Creates a new SensorThingsService without an endpoint url set. The
      * endpoint url MUST be set before the service can be used.
      */
     public SensorThingsService() {
-        this.client = HttpClients.createSystem();
+        this.httpClient = HttpClients.createSystem();
     }
 
     /**
@@ -70,7 +102,25 @@ public class SensorThingsService {
      */
     public SensorThingsService(URL endpoint) throws MalformedURLException {
         setEndpoint(endpoint);
-        this.client = HttpClients.createSystem();
+        this.httpClient = HttpClients.createSystem();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param endpoint the base URL of the SensorThings service
+     * @param mqttConfig the config object for MQTT connections
+     * @throws java.net.MalformedURLException when building the final url fails.
+     */
+    public SensorThingsService(URL endpoint, MqttConfig mqttConfig) throws MalformedURLException, MqttException {
+        this(endpoint);
+        this.mqttConfig = mqttConfig;
+        try {
+            this.mqttClient = new MqttClient(mqttConfig.getServerUri(), mqttConfig.getClientId(), mqttConfig.getPersistence());
+        } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+            throw new MqttException("could not create MQTT client", exc);
+        }
+        this.mqttClient.setCallback(this);
     }
 
     /**
@@ -95,11 +145,21 @@ public class SensorThingsService {
         if (this.endpoint != null) {
             throw new IllegalStateException("endpoint URL already set.");
         }
-        if (!endpoint.toString().endsWith("/")) {
-            this.endpoint = new URL(endpoint.toString() + "/");
+        String url = StringUtils.removeEnd(endpoint.toString(), "/");
+        String lastSegment = endpoint.getPath().substring(endpoint.getPath().lastIndexOf('/') + 1);
+        SensorThingsAPIVersion detectedVersion = SensorThingsAPIVersion.fromString(lastSegment);
+        if (detectedVersion != null) {
+            version = detectedVersion;
         } else {
-            this.endpoint = endpoint;
+            if (getVersion() == null) {
+                throw new MalformedURLException("endpoint URL does not contain version (e.g. http://example.org/v1.0/) nor version information explicitely provided");
+            }
+            url += "/" + getVersion().getUrlPattern();
         }
+        cleanupMqtt();
+        mqttAutoConfigChecked = false;
+        mqttConfig = null;
+        this.endpoint = new URL(url + "/");
     }
 
     public URL getEndpoint() {
@@ -122,6 +182,31 @@ public class SensorThingsService {
      * @return The path to the entity collection.
      */
     public String getPath(Entity<?> parent, EntityType relation) {
+        if (parent == null) {
+            return relation.getName();
+        }
+        if (!parent.getType().hasRelationTo(relation)) {
+            throw new IllegalArgumentException("Entity of type " + parent.getType() + " has no relation of type " + relation + ".");
+        }
+        if (parent.getId() == null) {
+            throw new IllegalArgumentException("Can not create a path with a parent without id.");
+        }
+        return String.format("%s(%s)/%s", EntityType.listForClass(parent.getClass()).getName(), parent.getId().getUrl(), relation.getName());
+    }
+
+    /**
+     * The path to the entity or collection. used for Mqtt e.g.:
+     * <ul>
+     * <li>Things</li>
+     * <li>Things(2)/Datastreams</li>
+     * <li>Datastreams(5)/Thing</li>
+     * </ul>
+     *
+     * @param parent The entity holding the relation, can be null.
+     * @param relation The relation or collection to get.
+     * @return The path to the entity collection.
+     */
+    public String getMqttPath(Entity<?> parent, EntityType relation) {
         if (parent == null) {
             return relation.getName();
         }
@@ -163,7 +248,7 @@ public class SensorThingsService {
         if (tokenManager != null) {
             tokenManager.addAuthHeader(request);
         }
-        return client.execute(request);
+        return httpClient.execute(request);
     }
 
     /**
@@ -318,7 +403,7 @@ public class SensorThingsService {
      */
     public SensorThingsService setTokenManager(TokenManager tokenManager) {
         if (tokenManager != null && tokenManager.getHttpClient() == null) {
-            tokenManager.setHttpClient(client);
+            tokenManager.setHttpClient(httpClient);
         }
         this.tokenManager = tokenManager;
         return this;
@@ -336,17 +421,210 @@ public class SensorThingsService {
      *
      * @return the client
      */
-    public CloseableHttpClient getClient() {
-        return client;
+    public CloseableHttpClient getHttpClient() {
+        return httpClient;
     }
 
     /**
      * Set the httpclient used for requests.
      *
-     * @param client the client to set
+     * @param httpClient the client to set
      */
-    public void setClient(CloseableHttpClient client) {
-        this.client = client;
+    public void setHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    @Override
+    public void connectionLost(Throwable e) {
+        LOGGER.warn("MQTT connection lost", e);
+    }
+
+    /**
+     * Start a MQTT subscription
+     *
+     * @param <T> return type
+     * @param topic The MQTT topic to subscribe
+     * @param handler is called when a new notification happens (if result
+     * satisfies the filter)
+     * @param returnType type to cast the result to
+     * @param filter if not null, filters incoming notifications before handler
+     * is called
+     * @return the client
+     * @throws MqttException when subscription fails
+     */
+    public <T> MqttSubscription subscribe(String topic, Consumer<T> handler, Class<T> returnType, Predicate<T> filter) throws MqttException {
+        Consumer<MqttMessage> typedHandler = x -> {
+            try {
+                T entity = ObjectMapperFactory.get().readValue(x.getPayload(), returnType);
+                if (filter == null || filter.test(entity)) {
+                    handler.accept(entity);
+                }
+            } catch (Exception exc) {
+                LOGGER.warn("could not parse payload received via MQTT");
+            }
+        };
+        subscribe(topic, typedHandler);
+        return new MqttSubscription(topic, typedHandler);
+    }
+
+    /**
+     * Start a MQTT subscription
+     *
+     * @param topic The MQTT topic to subscribe
+     * @param handler is called when a new notification happens (if result
+     * satisfies the filter)
+     * @return the client
+     * @throws MqttException when subscription fails
+     */
+    public MqttSubscription subscribe(String topic, Consumer<MqttMessage> handler) throws MqttException {
+        checkMqttConfigured();
+        if (!mqttSubscriptions.containsKey(topic)) {
+            mqttSubscriptions.put(topic, new HashSet<>());
+        }
+        if (mqttSubscriptions.get(topic).add(handler) && mqttSubscriptions.get(topic).size() == 1) {
+            if (!mqttClient.isConnected()) {
+                try {
+                    mqttClient.connect(mqttConfig.getOptions());
+                } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+                    throw new MqttException("MQTT connection failed", exc);
+                }
+            }
+            try {
+                mqttClient.subscribe(topic);
+            } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+                throw new MqttException(String.format("subscribing topic '%s' failed", topic), exc);
+            }
+        }
+        return new MqttSubscription(topic, handler);
+    }
+
+    private void checkMqttConfigured() throws MqttException {
+        if (mqttClient == null) {
+            if (mqttConfig == null) {
+                LOGGER.info("trying to auto-configure MQTT connection");
+                mqttConfig = getRemoteConfig();
+            }
+            if (mqttConfig == null) {
+                throw new MqttException("you must configure MQTT to use this feature");
+            }
+            try {
+                mqttClient = new MqttClient(mqttConfig.getServerUri(), mqttConfig.getClientId(), mqttConfig.getPersistence());
+            } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+                throw new MqttException("could not create MQTT client", exc);
+            }
+        }
+    }
+
+    private MqttConfig getRemoteConfig() {
+        CloseableHttpResponse response = null;
+        try {
+            HttpGet httpGet = new HttpGet(getEndpoint().toURI());
+            LOGGER.debug("Fetching: {}", getEndpoint().toURI());
+            httpGet.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
+
+            response = execute(httpGet);
+            Utils.throwIfNotOk(httpGet, response);
+
+            String returnContent = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+            final ObjectMapper mapper = ObjectMapperFactory.get();
+            JsonNode root = mapper.readTree(returnContent);
+            if (root.has(ServerSettings.TAG_SERVER_SETTINGS)) {
+                ServerSettings serverSettings = mapper.treeToValue(root.get(ServerSettings.TAG_SERVER_SETTINGS), ServerSettings.class);
+                return new MqttConfig(((List<String>) serverSettings.getExtensions().get(Extension.MQTT).get(TAG_MQTT_ENDPOINTS)).get(0));
+            }
+        } catch (IOException | ParseException ex) {
+            LOGGER.warn("");
+        } catch (StatusCodeException ex) {
+            Logger.getLogger(SensorThingsService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SensorThingsService.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException ex) {
+            }
+        }
+        return null;
+    }
+
+    public void unsubscribe(MqttSubscription subscription) throws MqttException {
+        unsubscribe(subscription.getTopic(), subscription.getHandler());
+    }
+
+    public void unsubscribe(String topic, Consumer<MqttMessage> handler) throws MqttException {
+        checkMqttConfigured();
+        if (mqttSubscriptions.containsKey(topic)) {
+            if (mqttSubscriptions.get(topic).size() == 1 && mqttSubscriptions.get(topic).contains(handler)) {
+                unsubscribeMqtt(topic);
+            }
+            mqttSubscriptions.get(topic).remove(handler);
+            cleanupMqttSubscriptions();
+        }
+    }
+
+    private void cleanupMqttSubscriptions() throws MqttException {
+        mqttSubscriptions.entrySet().removeIf(x -> x.getValue().isEmpty());
+    }
+
+    private void unsubscribeMqtt(String topic) throws MqttException {
+        try {
+            mqttClient.unsubscribe(topic);
+
+        } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+            throw new MqttException(String.format("could not unsubscribe from MQTT '%s'", topic), exc);
+        }
+        try {
+            if (mqttSubscriptions.isEmpty()) {
+                mqttClient.disconnect();
+
+            }
+        } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+            LOGGER.info("error closing MQTT connection", exc);
+        }
+    }
+
+    public void unsubscribe(String topic) throws MqttException {
+        if (mqttSubscriptions.containsKey(topic)) {
+            unsubscribeMqtt(topic);
+            mqttSubscriptions.get(topic).clear();
+            cleanupMqttSubscriptions();
+        }
+    }
+
+    private void cleanupMqtt() {
+        mqttSubscriptions.forEach((x, y) -> {
+            try {
+                unsubscribe(x);
+            } catch (MqttException exc) {
+                LOGGER.warn("error unsubscribing from MQTT", exc);
+            }
+        });
+        if (mqttClient != null) {
+            try {
+                mqttClient.close(true);
+            } catch (org.eclipse.paho.client.mqttv3.MqttException ex) {
+                LOGGER.warn("error closing MQTT conection");
+            }
+        }
+        mqttClient = null;
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+        if (mqttSubscriptions.containsKey(topic)) {
+            mqttSubscriptions.get(topic).forEach(x -> x.accept(message));
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public SensorThingsAPIVersion getVersion() {
+        return version;
     }
 
 }

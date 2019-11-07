@@ -3,22 +3,30 @@ package de.fraunhofer.iosb.ilt.sta.dao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchOperation;
+import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.EntityProperty;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.IdString;
 import de.fraunhofer.iosb.ilt.sta.query.Expansion;
 import de.fraunhofer.iosb.ilt.sta.query.Query;
+import de.fraunhofer.iosb.ilt.sta.service.MqttSubscription;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.ParseException;
@@ -39,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * entity Daos can be implemented by inheriting from this class and supplying
  * three arguments in the constructor.
  *
- * @author Nils Sommer, Hylke van der Schaaf
+ * @author Nils Sommer, Hylke van der Schaaf, Michael Jacoby
  *
  * @param <T> the entity's type
  */
@@ -300,4 +308,76 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
         return service;
     }
 
+    @Override
+    public MqttSubscription subscribe(Consumer<T> handler) throws MqttException {
+        return service.subscribe(getMqttTopic(), handler, entityClass, null);
+    }
+
+    @Override
+    public MqttSubscription subscribe(Predicate<T> filter, Consumer<T> handler) throws MqttException {
+        return service.subscribe(getMqttTopic(), handler, entityClass, filter);
+    }
+
+    private void validatePropertySelect(EntityProperty... properties) throws MqttException {
+        if (Stream.of(properties).anyMatch(x -> !singular.hasProperty(x))) {
+            throw new MqttException("use of unknown property in $select. Allowed properties for type " + singular.getName() + ": "
+                    + singular.getProperties().stream().
+                            map(x -> x.getName())
+                            .collect(Collectors.joining(", ")));
+        }
+    }
+
+    @Override
+    public MqttSubscription subscribe(Predicate<T> filter, Consumer<T> handler, EntityProperty... properties) throws MqttException {
+        validatePropertySelect(properties);
+        return service.subscribe(getMqttTopic(Arrays.asList(properties)), handler, entityClass, filter);
+    }
+
+    @Override
+    public MqttSubscription subscribe(Consumer<T> handler, EntityProperty... properties) throws MqttException {
+        validatePropertySelect(properties);
+        return service.subscribe(getMqttTopic(Arrays.asList(properties)), handler, entityClass, null);
+    }
+
+    public MqttSubscription subscribe(Entity entity, Consumer<T> handler) throws MqttException {
+        return service.subscribe(getMqttTopic(entity), handler, entityClass, null);
+    }
+
+    private String getMqttTopic() {
+        if (parent != null && !parent.getType().hasRelationTo(plural)) {
+            throw new IllegalArgumentException("Cannot create entity, not a list");
+        }
+        return service.getVersion().getUrlPattern() + "/" + service.getPath(parent, plural);
+    }
+
+    private String getMqttTopic(Entity entity) throws MqttException {
+        if (parent != null && !parent.getType().hasRelationTo(plural)) {
+            throw new IllegalArgumentException("Cannot create entity, not a list");
+        }
+        return service.getVersion().getUrlPattern() + "/" + entityPath(entity.getId());
+    }
+
+    private String getMqttTopic(List<EntityProperty> properties) throws MqttException {
+        if (parent != null && !parent.getType().hasRelationTo(plural)) {
+            throw new IllegalArgumentException("Cannot create entity, not a list");
+        }
+        String result = service.getVersion().getUrlPattern() + "/" + service.getPath(parent, plural);
+        if (properties != null && !properties.isEmpty()) {
+            if (properties.stream().anyMatch(x -> !singular.hasProperty(x))) {
+                throw new MqttException("Property not defined for this entity. Allowed properties: " + singular.getProperties());
+            }
+            result += "?$select=" + properties.stream().map(x -> x.getName()).collect(Collectors.joining(","));
+        }
+        return result;
+    }
+
+    @Override
+    public void unsubscribe(MqttSubscription subscription) throws MqttException {
+        service.unsubscribe(subscription);
+    }
+
+    @Override
+    public void unsubscribe() throws MqttException {
+        service.unsubscribe(getMqttTopic());
+    }
 }

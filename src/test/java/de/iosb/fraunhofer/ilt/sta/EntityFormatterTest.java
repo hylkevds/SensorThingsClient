@@ -20,6 +20,7 @@ package de.iosb.fraunhofer.ilt.sta;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
@@ -35,13 +36,11 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ext.CategoryBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ext.TextBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import de.fraunhofer.iosb.ilt.sta.service.MqttConfig;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
-import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
-import de.fraunhofer.iosb.ilt.swe.common.constraint.AllowedTokens;
-import de.fraunhofer.iosb.ilt.swe.common.simple.Category;
-import de.fraunhofer.iosb.ilt.swe.common.simple.Text;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.ZonedDateTime;
@@ -51,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.stream.XMLStreamException;
 import org.geojson.Point;
 import org.junit.After;
 import org.junit.Assert;
@@ -63,15 +61,17 @@ import org.threeten.extra.Interval;
 
 /**
  *
- * @author jab
+ * @author Michael Jacoby
  */
 public class EntityFormatterTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+    private SensorThingsService service;
 
     @Before
-    public void setUp() {
+    public void setUp() throws MalformedURLException, MqttException {
+        service = new SensorThingsService(new URL("http://localhost:8080/FROST-Server/v1.0"), new MqttConfig("tcp://localhost:1883"));
     }
 
     @After
@@ -463,7 +463,6 @@ public class EntityFormatterTest {
         Observation entity = new Observation();
         entity.setId(new IdLong(1L));
         entity.setPhenomenonTimeFrom(ZonedDateTime.parse("2014-12-31T11:59:59Z"));
-        SensorThingsService service = new SensorThingsService(new URL("http://localhost:8080/v1.0"));
         try {
             service.create(entity);
         } catch (ServiceFailureException ex) {

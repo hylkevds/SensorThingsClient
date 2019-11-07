@@ -4,13 +4,19 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.sta.service.MqttSubscription;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import net.jodah.typetools.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * An abstract representation of an entity. Entities are considered equal when
  * all entity properties (non-navigation properties) are equal.
  *
- * @author Nils Sommer, Hylke van der Schaaf
+ * @author Nils Sommer, Hylke van der Schaaf, MIchael Jacoby
  * @param <T> The type of the entity implementing this interface
  *
  */
@@ -185,6 +191,35 @@ public abstract class Entity<T extends Entity<T>> {
             return "no id";
         }
         return id.toString();
+    }
+
+    public MqttSubscription subscribe(Consumer<T> handler) throws MqttException {
+        return getDao(getService()).subscribe(this, handler);
+    }
+
+    public <U> MqttSubscription subscribeRelative(Consumer<U> handler, EntityType... path) throws MqttException {
+        if (path != null && path.length > 0) {
+            EntityType current = type;
+            for (EntityType entityType : path) {
+                if (!current.hasRelationTo(entityType)) {
+                    throw new MqttException("invalid relative subscription path. EntityType " + current.getName() + " has no relation to " + entityType.getName());
+                }
+                current = entityType;
+            }
+        }
+        EntityType resultType = getType();
+        Class<?> handlerType = TypeResolver.resolveRawArgument(Consumer.class, handler.getClass());
+        String topic = getService().getVersion().getUrlPattern() + "/" + getType().getPlural().getName() + "(" + getId() + ")/";
+        if (path != null && path.length > 0) {
+            topic += Stream.of(path).map(x -> x.getName()).collect(Collectors.joining("/"));
+            resultType = path[path.length - 1];
+        }
+        if (!handlerType.isAssignableFrom(resultType.getType())) {
+            throw new MqttException(String.format("Could not subscribe. Reason: type of provided message handler (%s) does not match expected result type (%s)",
+                    handlerType,
+                    resultType.getType()));
+        }
+        return getService().subscribe(topic, handler, (Class<U>) resultType.getType(), null);
     }
 
 }

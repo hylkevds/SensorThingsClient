@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.sta.service.ServerSettings;
 import de.fraunhofer.iosb.ilt.swe.common.AbstractDataComponent;
 import de.fraunhofer.iosb.ilt.swe.common.AbstractSWEIdentifiable;
 import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
@@ -15,7 +16,7 @@ import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
 /**
  * Factory for ObjectMapper instances. Keeps track of configuration.
  *
- * @author Nils Sommer, Hylke van der Schaaf
+ * @author Nils Sommer, Hylke van der Schaaf, Michael Jacoby
  *
  */
 public final class ObjectMapperFactory {
@@ -45,9 +46,9 @@ public final class ObjectMapperFactory {
             mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
             final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
             m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
+            m.addDeserializer(ServerSettings.class, new ServerSettingsDeserializer());
             mapper.registerModule(m);
         }
         return mapper;
     }
-
 }

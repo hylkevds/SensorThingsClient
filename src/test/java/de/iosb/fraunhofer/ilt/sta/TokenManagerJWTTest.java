@@ -46,13 +46,13 @@ public class TokenManagerJWTTest {
         if (configured) {
             URL serviceEndpoint = new URL(staRootUrl);
             SensorThingsService service = new SensorThingsService();
-            service.setClient(Utils.createInsecureHttpClient());
+            service.setHttpClient(Utils.createInsecureHttpClient());
             service.setEndpoint(serviceEndpoint);
             TokenManagerJWT tokenMgr = new TokenManagerJWT()
                     .setJwtId(jwtId)
                     .setJwtKey(jwtKey)
                     .setTokenServerUrl(authUrl)
-                    .setHttpClient(service.getClient());
+                    .setHttpClient(service.getHttpClient());
             service.setTokenManager(tokenMgr);
             ObservedProperty op = ObservedPropertyBuilder.builder()
                     .name("Test ObservedProperty")
