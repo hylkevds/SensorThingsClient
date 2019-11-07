@@ -29,7 +29,7 @@ public class Actuator extends Entity<Actuator> {
     private final EntityList<TaskingCapability> taskingCapabilities = new EntityList<>(EntityType.TASKING_CAPABILITY);
 
     public Actuator() {
-        super(EntityType.SENSOR);
+        super(EntityType.ACTUATOR);
     }
 
     public Actuator(String name, String description, String encodingType, Object metadata) {
