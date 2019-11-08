@@ -9,7 +9,7 @@ import java.util.Objects;
  *
  * @author scf
  */
-public class IdString implements Id {
+public class IdString implements Id<IdString> {
 
     private String value;
 
@@ -69,6 +69,11 @@ public class IdString implements Id {
     @Override
     public String toString() {
         return value;
+    }
+
+    @Override
+    public int compareTo(IdString o) {
+        return value.compareTo(o.value);
     }
 
 }

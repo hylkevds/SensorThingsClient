@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.DatastreamDao;
+import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -193,8 +194,10 @@ public class Datastream extends Entity<Datastream> {
         this.observedProperty = observedProperty;
     }
 
-    public BaseDao<Observation> observations() {
-        return getService().observations().setParent(this);
+    public ObservationDao observations() {
+        ObservationDao result = getService().observations();
+        result.setParent(this);
+        return result;
     }
 
     @JsonProperty("Observations")

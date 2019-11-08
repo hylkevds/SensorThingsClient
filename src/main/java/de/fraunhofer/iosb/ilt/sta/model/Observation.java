@@ -203,6 +203,8 @@ public class Observation extends Entity<Observation> {
                 datastream = getService().datastreams().find(this);
             } catch (NotFoundException ex) {
                 LOGGER.trace("Observation has no Datastream.", ex);
+            } catch (Exception ex) {
+                LOGGER.trace("Could not find Datastream for Observation", ex);
             }
         }
         return datastream;
@@ -218,6 +220,8 @@ public class Observation extends Entity<Observation> {
                 multiDatastream = getService().multiDatastreams().find(this);
             } catch (NotFoundException ex) {
                 LOGGER.trace("Observation has no MultiDatastream.", ex);
+            } catch (Exception ex) {
+                LOGGER.trace("Could not find MultiDatastream for Observation", ex);
             }
         }
         return multiDatastream;
@@ -229,7 +233,13 @@ public class Observation extends Entity<Observation> {
 
     public FeatureOfInterest getFeatureOfInterest() throws ServiceFailureException {
         if (featureOfInterest == null && getService() != null) {
-            featureOfInterest = getService().featuresOfInterest().find(this);
+            try {
+                featureOfInterest = getService().featuresOfInterest().find(this);
+            } catch (NotFoundException ex) {
+                LOGGER.trace("Observation has no FeatureOfInterest.", ex);
+            } catch (Exception ex) {
+                LOGGER.trace("Could not find FeatureOfInterest for Observation", ex);
+            }
         }
         return this.featureOfInterest;
     }

@@ -3,6 +3,7 @@ package de.fraunhofer.iosb.ilt.sta.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
+import de.fraunhofer.iosb.ilt.sta.dao.ObservationDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.List;
@@ -118,8 +119,10 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
         this.properties = properties;
     }
 
-    public BaseDao<Observation> observations() {
-        return getService().observations().setParent(this);
+    public ObservationDao observations() {
+        ObservationDao result = getService().observations();
+        result.setParent(this);
+        return result;
     }
 
     @JsonProperty("Observations")

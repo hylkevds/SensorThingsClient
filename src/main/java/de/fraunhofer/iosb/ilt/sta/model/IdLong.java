@@ -8,7 +8,7 @@ import java.util.Objects;
  *
  * @author scf
  */
-public class IdLong implements Id {
+public class IdLong implements Id<IdLong> {
 
     public Long value;
 
@@ -70,6 +70,11 @@ public class IdLong implements Id {
     @Override
     public String toString() {
         return Long.toString(value);
+    }
+
+    @Override
+    public int compareTo(IdLong o) {
+        return value.compareTo(o.value);
     }
 
 }

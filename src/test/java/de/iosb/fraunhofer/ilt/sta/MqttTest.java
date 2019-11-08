@@ -18,6 +18,7 @@
 package de.iosb.fraunhofer.ilt.sta;
 
 import de.fraunhofer.iosb.ilt.sta.MqttException;
+import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.model.Actuator;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.EntityProperty;
@@ -36,6 +37,7 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.ActuatorBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.DatastreamBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.FeatureOfInterestBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.HistoricalLocationBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.LocationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.MultiDatastreamBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservedPropertyBuilder;
@@ -43,11 +45,18 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.SensorBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.TaskBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ThingBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractActuatorBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractDatastreamBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractLocationBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractSensorBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.ext.TextBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.MqttConfig;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.Collectors;
+import org.geojson.Point;
 import static org.hamcrest.CoreMatchers.containsString;
 import org.junit.After;
 import org.junit.Assert;
@@ -333,4 +342,90 @@ public class MqttTest {
         Assert.assertEquals("v1.0/Things(1)/Locations", thing.locations().subscribe(x -> {}).getTopic());
         Assert.assertEquals("v1.0/Things(1)/TaskingCapabilities", thing.taskingCapabilities().subscribe(x -> {}).getTopic());
     }
+
+    private Datastream createDatastreamWithDependencies() throws ServiceFailureException {
+        Datastream datastream = DatastreamBuilder.builder()
+                .name("datastream name")
+                .description("datastream description")
+                .unitOfMeasurement(new UnitOfMeasurement("", "", ""))
+                .observationType(AbstractDatastreamBuilder.ValueCode.OM_Observation)
+                .observedProperty(new ObservedProperty("observedProperty name", "observedProperty definition", "observedProperty description"))
+                .sensor(SensorBuilder.builder()
+                        .name("sensor name")
+                        .description("sensor description")
+                        .encodingType(AbstractSensorBuilder.ValueCode.SensorML)
+                        .metadata("sensor metadata")
+                        .build())
+                .thing(ThingBuilder.builder()
+                        .name("thing name")
+                        .description("thing description")
+                        .location(LocationBuilder.builder()
+                                .name("location name")
+                                .description("location description")
+                                .encodingType(AbstractLocationBuilder.ValueCode.GeoJSON)
+                                .location(new Point(-114.05, 51.05))
+                                .build())
+                        .build())
+                .build();
+        service.create(datastream);
+        return datastream;
+    }
+
+//    @Test
+//    public void createObservation() throws MalformedURLException, MqttException, ServiceFailureException {
+//        Datastream datastream = createDatastreamWithDependencies();
+//        // v1.0/Observations
+//        service.observations().createMqtt(ObservationBuilder.builder()
+//                .result("foo")
+//                .datastream(datastream)
+//                .build());
+//        // v1.0/Datastreams([id])/Observations
+//        datastream.observations().createMqtt(ObservationBuilder.builder()
+//                .result("foo")
+//                .build());
+//        // v1.0/FeaturesOfInterest([id])/Observations
+//        FeatureOfInterest foi = datastream.observations().query().first().getFeatureOfInterest();
+//        foi.observations().createMqtt(ObservationBuilder.builder()
+//                .result("foo")
+//                .datastream(datastream)
+//                .build());
+//    }
+
+    private TaskingCapability createTaskingCapability() throws ServiceFailureException {
+        TaskingCapability taskingCapability = TaskingCapabilityBuilder.builder()
+                .name("taskingCapability name")
+                .description("taskingCapability description")
+                .taskingParameter(TextBuilder.builder()
+                        .name("parameterName")
+                        .label("parameter label")
+                        .description("parameter description")
+                        .build())
+                .actuator(ActuatorBuilder.builder()
+                        .name("actuator name")
+                        .description("actuator description")
+                        .encodingType(AbstractActuatorBuilder.ValueCode.SensorML)
+                        .metadata("actuator metadata")
+                        .build())
+                .thing(ThingBuilder.builder()
+                        .name("thing name")
+                        .description("thing description")
+                        .build())
+                .build();
+        service.create(taskingCapability);
+        return taskingCapability;
+    }
+
+//    @Test
+//    public void createTask() throws MalformedURLException, MqttException, ServiceFailureException {
+//        TaskingCapability taskingCapability = createTaskingCapability();
+//        // v1.0/Tasks
+//        service.tasks().createMqtt(TaskBuilder.builder()
+//                .taskingParameter("parameterName", "example value")
+//                .taskingCapability(taskingCapability)
+//                .build());
+//        // v1.0/TaskingCapabilities([id])/Tasks
+//        taskingCapability.tasks().createMqtt(TaskBuilder.builder().service(service)
+//                .taskingParameter("parameterName", "example value")
+//                .build());
+//    }
 }

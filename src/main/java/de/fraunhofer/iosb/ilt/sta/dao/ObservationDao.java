@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.Utils;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
@@ -53,6 +54,13 @@ public class ObservationDao extends BaseDao<Observation> {
             throw new IllegalArgumentException("Result must be set on Observation.");
         }
         super.create(entity);
+    }
+
+    public void createMqtt(Observation entity) throws MqttException {
+        if (!entity.isResultSet()) {
+            throw new IllegalArgumentException("Result must be set on Observation.");
+        }
+        getService().publish(getMqttTopic(), entity);
     }
 
     /**

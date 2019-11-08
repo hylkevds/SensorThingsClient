@@ -3,6 +3,7 @@ package de.fraunhofer.iosb.ilt.sta.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
+import de.fraunhofer.iosb.ilt.sta.dao.TaskDao;
 import de.fraunhofer.iosb.ilt.sta.dao.TaskingCapabilityDao;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
@@ -141,8 +142,10 @@ public class TaskingCapability extends Entity<TaskingCapability> {
         this.tasks.replaceAll(tasks);
     }
 
-    public BaseDao<Task> tasks() {
-        return getService().tasks().setParent(this);
+    public TaskDao tasks() {
+        TaskDao result = getService().tasks();
+        result.setParent(this);
+        return result;
     }
 
     public String getName() {

@@ -343,21 +343,21 @@ public abstract class BaseDao<T extends Entity<T>> implements Dao<T> {
         return service.subscribe(getMqttTopic(entity), handler, entityClass, null);
     }
 
-    private String getMqttTopic() {
+    protected String getMqttTopic() {
         if (parent != null && !parent.getType().hasRelationTo(plural)) {
             throw new IllegalArgumentException("Cannot create entity, not a list");
         }
         return service.getVersion().getUrlPattern() + "/" + service.getPath(parent, plural);
     }
 
-    private String getMqttTopic(Entity entity) throws MqttException {
+    protected String getMqttTopic(Entity entity) throws MqttException {
         if (parent != null && !parent.getType().hasRelationTo(plural)) {
             throw new IllegalArgumentException("Cannot create entity, not a list");
         }
         return service.getVersion().getUrlPattern() + "/" + entityPath(entity.getId());
     }
 
-    private String getMqttTopic(List<EntityProperty> properties) throws MqttException {
+    protected String getMqttTopic(List<EntityProperty> properties) throws MqttException {
         if (parent != null && !parent.getType().hasRelationTo(plural)) {
             throw new IllegalArgumentException("Cannot create entity, not a list");
         }

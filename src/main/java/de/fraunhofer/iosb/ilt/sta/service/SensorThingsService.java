@@ -1,5 +1,6 @@
 package de.fraunhofer.iosb.ilt.sta.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchOperation;
@@ -482,13 +483,7 @@ public class SensorThingsService implements MqttCallback {
             mqttSubscriptions.put(topic, new HashSet<>());
         }
         if (mqttSubscriptions.get(topic).add(handler) && mqttSubscriptions.get(topic).size() == 1) {
-            if (!mqttClient.isConnected()) {
-                try {
-                    mqttClient.connect(mqttConfig.getOptions());
-                } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
-                    throw new MqttException("MQTT connection failed", exc);
-                }
-            }
+            checkMqttConnected();
             try {
                 mqttClient.subscribe(topic);
             } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
@@ -496,6 +491,34 @@ public class SensorThingsService implements MqttCallback {
             }
         }
         return new MqttSubscription(topic, handler);
+    }
+
+    /**
+     * Publish entity via MQTT on given topic
+     *
+     * @param topic The MQTT topic to publish to
+     * @param entity entity to publish
+     * @throws MqttException when publication fails
+     */
+    public void publish(String topic, Entity entity) throws MqttException {
+        checkMqttConfigured();
+        checkMqttConnected();
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        try {
+            mqttClient.publish(topic, new MqttMessage(ObjectMapperFactory.get().writeValueAsBytes(entity)));
+        } catch (JsonProcessingException ex) {
+            throw new MqttException("Could not process JSON", ex);
+        } catch (org.eclipse.paho.client.mqttv3.MqttException ex) {
+            throw new MqttException("Error publishing via MQTT", ex);
+        }
+    }
+
+    private void checkMqttConnected() throws MqttException {
+        try {
+            mqttClient.connect(mqttConfig.getOptions());
+        } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {
+            throw new MqttException("MQTT connection failed", exc);
+        }
     }
 
     private void checkMqttConfigured() throws MqttException {

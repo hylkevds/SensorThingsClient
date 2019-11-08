@@ -7,9 +7,10 @@ import java.io.IOException;
 /**
  * the interface that all Id implementations need to implement.
  *
- * @author scf
+ * @author scf, Michael Jacoby
+ * @param <T> concrete implementation class, needed for typesafe implementation of compare interface
  */
-public interface Id {
+public interface Id<T extends Id> extends Comparable<T> {
 
     public static Id tryToParse(String input) {
         if (input.startsWith("'")) {
