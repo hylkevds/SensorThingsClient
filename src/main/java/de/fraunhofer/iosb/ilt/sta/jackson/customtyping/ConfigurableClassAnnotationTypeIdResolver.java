@@ -17,18 +17,16 @@
  */
 package de.fraunhofer.iosb.ilt.sta.jackson.customtyping;
 
+import de.fraunhofer.iosb.ilt.configurable.annotations.ConfigurableClass;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import de.fraunhofer.iosb.ilt.configurable.annotations.ConfigurableClass;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.reflections.Reflections;
+import java.io.IOException;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
