@@ -1,4 +1,4 @@
-# Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/FROST-Client.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/FROST-Client)
+# Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/FROST-Client.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/FROST-Client) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e99823ab3a7541b085a9c9c48461d39f)](https://www.codacy.com/gh/FraunhoferIOSB/FROST-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FraunhoferIOSB/FROST-Client&amp;utm_campaign=Badge_Grade)
 
 ![FROST-Client Logo](https://raw.githubusercontent.com/FraunhoferIOSB/FROST-Client/master/images/FROST-Client-darkgrey.png)
 
@@ -8,17 +8,17 @@ aims to simplify development of SensorThings enabled client applications.
 
 ## Features
 
-* CRUD operations
-* Queries on entity sets
-* Loading of referenced entities
-* MultiDatastreams
-* dataArray (for creating observations)
+  * CRUD operations
+  * Queries on entity sets
+  * Loading of referenced entities
+  * MultiDatastreams
+  * dataArray (for creating observations)
 
 ## Unsupported
 
-* Batch requests
-* dataArray (for requesting observations)
-* MQTT
+  * Batch requests
+  * dataArray (for requesting observations)
+  * MQTT
 
 ## Using with maven
 
@@ -112,7 +112,6 @@ for (Thing thing : things) {
 }
 ```
 
-
 Entity sets only load so many entities at a time. If you want to get *all* entities,
 and there are more entities than the $top parameter allows you get in one request, you can
 use the `EntityList.fullIterator();` Iterator.
@@ -130,7 +129,6 @@ while (i.hasNext()) {
     System.out.println("Observation " + obs.getId() + " has result " + obs.getResult());
 }
 ```
-
 
 Related entity sets can also be queried.
 ```java
@@ -196,9 +194,9 @@ This library emerged from a practical work for a lecture at [KIT](http://www.kit
 
 Contributions are welcome!
 
-1. Fork this repository
-2. Commit your changes
-3. Create a pull request
+ 1. Fork this repository
+ 2. Commit your changes
+ 3. Create a pull request
 
 ## License
 
