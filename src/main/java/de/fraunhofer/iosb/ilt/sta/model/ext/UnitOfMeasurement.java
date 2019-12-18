@@ -4,7 +4,9 @@ import java.util.Objects;
 
 public class UnitOfMeasurement {
 
-    private String name, symbol, definition;
+    private String name;
+    private String symbol;
+    private String definition;
 
     public UnitOfMeasurement() {
     }
