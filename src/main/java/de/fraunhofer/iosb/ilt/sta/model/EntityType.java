@@ -65,7 +65,7 @@ public enum EntityType {
     }, "Tasks", true);
 
     private final Class<? extends Entity> type;
-    private final TypeReference typeReference;
+    private final TypeReference<EntityList> typeReference;
     private final String name;
     private final Set<EntityType> relations;
     private final boolean isList;
@@ -163,7 +163,7 @@ public enum EntityType {
      *
      * @return The type reference.
      */
-    public TypeReference getTypeReference() {
+    public TypeReference<EntityList> getTypeReference() {
         return typeReference;
     }
 

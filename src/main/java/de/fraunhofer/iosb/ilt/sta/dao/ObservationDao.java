@@ -39,7 +39,7 @@ public class ObservationDao extends BaseDao<Observation> {
      * The typereference for a list of Strings, used for type-safe json
      * deserialization.
      */
-    public static final TypeReference LIST_OF_STRING = new TypeReference<List<String>>() {
+    public static final TypeReference<List<String>> LIST_OF_STRING = new TypeReference<List<String>>() {
         // Empty by design.
     };
 

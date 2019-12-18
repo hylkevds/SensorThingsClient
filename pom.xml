@@ -23,8 +23,8 @@
 
 		<httpclient.version>4.5.6</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
-		<jackson.version>2.9.9</jackson.version>
-		<jacksonDatabind.version>2.9.9.2</jacksonDatabind.version>
+		<jackson.version>2.10.1</jackson.version>
+		<jacksonDatabind.version>${jackson.version}</jacksonDatabind.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.7.0</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
