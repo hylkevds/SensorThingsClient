@@ -8,17 +8,17 @@ aims to simplify development of SensorThings enabled client applications.
 
 ## Features
 
-* CRUD operations
-* Queries on entity sets
-* Loading of referenced entities
-* MultiDatastreams
-* dataArray (for creating observations)
+*   CRUD operations
+*   Queries on entity sets
+*   Loading of referenced entities
+*   MultiDatastreams
+*   dataArray (for creating observations)
 
 ## Unsupported
 
-* Batch requests
-* dataArray (for requesting observations)
-* MQTT
+*   Batch requests
+*   dataArray (for requesting observations)
+*   MQTT
 
 ## Using with maven
 
@@ -194,9 +194,9 @@ This library emerged from a practical work for a lecture at [KIT](http://www.kit
 
 Contributions are welcome!
 
-1. Fork this repository
-2. Commit your changes
-3. Create a pull request
+1.  Fork this repository
+2.  Commit your changes
+3.  Create a pull request
 
 ## License
 
