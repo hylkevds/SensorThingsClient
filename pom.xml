@@ -36,6 +36,7 @@
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<owasp.version>5.2.4</owasp.version>
+		<jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
 		
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<threeten-extra.version>1.0</threeten-extra.version>
@@ -166,6 +167,25 @@
 					<execution>
 						<goals>
 							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
