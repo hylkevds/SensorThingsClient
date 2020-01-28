@@ -26,7 +26,7 @@
 		<jackson.version>2.10.1</jackson.version>
 		<jacksonDatabind.version>${jackson.version}</jacksonDatabind.version>
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
-		<jjwt.version>0.7.0</jjwt.version>
+		<jjwt.version>0.9.1</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
 		<junit.version>4.12</junit.version>
 		
