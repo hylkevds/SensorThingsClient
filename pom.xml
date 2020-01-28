@@ -25,7 +25,7 @@
 		<jaxb-api.version>2.3.1</jaxb-api.version>
 		<jackson.version>2.10.2</jackson.version>
 		<jacksonDatabind.version>${jackson.version}</jacksonDatabind.version>
-		<jacksonGeojson.version>1.6</jacksonGeojson.version>
+		<jacksonGeojson.version>1.12</jacksonGeojson.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
 		<junit.version>4.13</junit.version>
