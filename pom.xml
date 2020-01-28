@@ -28,7 +28,7 @@
 		<jacksonGeojson.version>1.6</jacksonGeojson.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<json-patch.version>1.9</json-patch.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13</junit.version>
 		
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
