@@ -36,7 +36,7 @@
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<owasp.version>5.2.4</owasp.version>
-		<jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 		
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<threeten-extra.version>1.0</threeten-extra.version>
