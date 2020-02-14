@@ -523,15 +523,15 @@ public class EntityFormatterTest {
                 .name("Control Light")
                 .description("Turn the light on and off, as well as specifying light color.")
                 .taskingParameter(
+                        "status",
                         CategoryBuilder.builder()
-                                .name("status")
                                 .label("On/Off status")
                                 .description("Specifies turning the light On or Off")
                                 .allowedValues("on", "off")
                                 .build())
                 .taskingParameter(
+                        "color",
                         TextBuilder.builder()
-                                .name("color")
                                 .label("Light Color")
                                 .description("Specifies the light color in RGB HEX format. Example: #FF11A0")
                                 .pattern("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")

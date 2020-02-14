@@ -11,6 +11,8 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.swe.common.AbstractDataComponent;
 import de.fraunhofer.iosb.ilt.swe.common.AbstractSWEIdentifiable;
 import de.fraunhofer.iosb.ilt.swe.common.complex.DataRecord;
+import de.fraunhofer.iosb.ilt.swe.common.complex.Field;
+import de.fraunhofer.iosb.ilt.swe.common.constraint.AbstractConstraint;
 
 /**
  * Factory for ObjectMapper instances. Keeps track of configuration.
@@ -40,11 +42,14 @@ public final class ObjectMapperFactory {
             mapper.addMixIn(DataRecord.class, DataRecordMixin.class);
             mapper.addMixIn(AbstractDataComponent.class, AbstractDataComponentMixin.class);
             mapper.addMixIn(AbstractSWEIdentifiable.class, AbstractSWEIdentifiableMixin.class);
+            mapper.addMixIn(AbstractConstraint.class, AbstractConstraintMixin.class);
             // Write any date/time values as ISO-8601 formated strings.
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
             final SimpleModule m = new SimpleModule(new Version(0, 0, 1, null, null, null));
             m.addDeserializer(EntityList.class, new EntityListDeserializer<>());
+            m.addSerializer(Field.class, new FieldSerializer());
+            m.addDeserializer(Field.class, new FieldDeserializer());
             mapper.registerModule(m);
         }
         return mapper;

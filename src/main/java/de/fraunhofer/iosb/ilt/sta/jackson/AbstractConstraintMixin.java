@@ -24,9 +24,10 @@ import de.fraunhofer.iosb.ilt.sta.jackson.customtyping.ConfigurableClassAnnotati
 /**
  *
  * @author Michael Jacoby
+ * @author Hylke van der Schaaf
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonTypeIdResolver(ConfigurableClassAnnotationTypeIdResolver.class)
-public abstract class AbstractSWEIdentifiableMixin {
+public abstract class AbstractConstraintMixin {
 
 }
