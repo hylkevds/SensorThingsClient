@@ -1,3 +1,15 @@
+# Release Version 0.27
+
+**Updates**
+* Updated dependency versions
+
+
+# Release Version 0.26
+
+**Updates**
+* Added tasking support
+
+
 # Release Version 0.25
 
 **Updates**
