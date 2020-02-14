@@ -27,7 +27,7 @@
 		<jacksonDatabind.version>${jackson.version}</jacksonDatabind.version>
 		<jacksonGeojson.version>1.12</jacksonGeojson.version>
 		<jjwt.version>0.9.1</jjwt.version>
-		<json-patch.version>1.9</json-patch.version>
+		<json-patch.version>1.12</json-patch.version>
 		<junit.version>4.13</junit.version>
 		
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -247,7 +247,7 @@
 			<version>${jjwt.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.fge</groupId>
+			<groupId>com.github.java-json-tools</groupId>
 			<artifactId>json-patch</artifactId>
 			<version>${json-patch.version}</version>
 			<exclusions>

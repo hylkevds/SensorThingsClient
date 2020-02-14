@@ -1,4 +1,4 @@
-# Release Version 0.27
+# Release Version 0.27 & 0.28
 
 **Updates**
 * Updated dependency versions
