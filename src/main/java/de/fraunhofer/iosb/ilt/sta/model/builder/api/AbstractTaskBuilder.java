@@ -39,7 +39,7 @@ public abstract class AbstractTaskBuilder<U extends AbstractTaskBuilder<U>> exte
     }
 
     public U taskingCapability(final TaskingCapability taskingCapability) {
-        getBuildingInstance().setThing(taskingCapability);
+        getBuildingInstance().setTaskingCapability(taskingCapability);
         return getSelf();
     }
 }

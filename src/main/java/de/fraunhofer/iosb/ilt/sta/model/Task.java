@@ -92,7 +92,7 @@ public class Task extends Entity<Task> {
         return taskingCapability;
     }
 
-    public void setThing(TaskingCapability taskingCapability) {
+    public void setTaskingCapability(TaskingCapability taskingCapability) {
         this.taskingCapability = taskingCapability;
     }
 

@@ -30,7 +30,7 @@ public class TaskingCapability extends Entity<TaskingCapability> {
     private Actuator actuator;
 
     public TaskingCapability() {
-        super(EntityType.TASK);
+        super(EntityType.TASKING_CAPABILITY);
     }
 
     @Override
