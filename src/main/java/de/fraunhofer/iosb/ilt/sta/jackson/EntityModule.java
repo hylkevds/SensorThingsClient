@@ -7,6 +7,7 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import org.threeten.extra.Interval;
 
 /**
@@ -26,8 +27,7 @@ public class EntityModule extends SimpleModule {
         addSerializer(UnitOfMeasurement.class, new UnitOfMeasurementSerializer());
         addSerializer(Interval.class, new IntervalSerializer());
         addSerializer(TimeObject.class, new TimeObjectSerializer());
-//        addSerializer(TaskingCapability.class, new TaskingCapabilitySerializer());
-
+        addDeserializer(EntityList.class, new EntityListDeserializer<>());
         addDeserializer(Id.class, new IdDeserializer());
         addDeserializer(Interval.class, new IntervalDeserializer());
         addDeserializer(TimeObject.class, new TimeObjectDeserializer());
