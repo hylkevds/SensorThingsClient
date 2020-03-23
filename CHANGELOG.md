@@ -1,3 +1,12 @@
+# Release Version 0.29
+
+**Updates**
+* Updated dependency versions
+* [Fix]: EntityType of TaskingCapability and name of Setter in Task
+* Added isEndpointSet method
+* Removed unneeded classes
+
+
 # Release Version 0.27 & 0.28
 
 **Updates**
