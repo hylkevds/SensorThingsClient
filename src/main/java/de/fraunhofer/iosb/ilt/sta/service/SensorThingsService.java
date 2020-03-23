@@ -102,11 +102,26 @@ public class SensorThingsService {
         }
     }
 
+    /**
+     * Gets the endpoint URL for the service. Throws an IllegalStateException if
+     * the endpoint is not set.
+     *
+     * @return the endpoint URL for the service.
+     */
     public URL getEndpoint() {
         if (this.endpoint == null) {
             throw new IllegalStateException("endpoint URL not set.");
         }
         return this.endpoint;
+    }
+
+    /**
+     * Check if the endpoint is set.
+     *
+     * @return true if the endpoint is set, false otherwise.
+     */
+    public boolean isEndpointSet() {
+        return endpoint != null;
     }
 
     /**
