@@ -38,7 +38,7 @@
 		<owasp.version>5.3.1</owasp.version>
 		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 		
-		<SensorThings-SWE-Common.version>0.3</SensorThings-SWE-Common.version>
+		<SensorThings-SWE-Common.version>0.4</SensorThings-SWE-Common.version>
 		<slf4j-api.version>1.7.30</slf4j-api.version>
 		<threeten-extra.version>1.5.0</threeten-extra.version>
 	</properties>
