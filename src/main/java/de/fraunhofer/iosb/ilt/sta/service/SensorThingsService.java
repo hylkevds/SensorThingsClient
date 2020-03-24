@@ -22,8 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,10 @@ public class SensorThingsService {
     private URL endpoint;
     private CloseableHttpClient client;
     private TokenManager tokenManager;
+    /**
+     * The request timeout in MS.
+     */
+    private int requestTimeoutMs = 120000;
 
     /**
      * Creates a new SensorThingsService without an endpoint url set. The
@@ -174,11 +179,22 @@ public class SensorThingsService {
      * @return the response.
      * @throws IOException in case of problems.
      */
-    public CloseableHttpResponse execute(HttpUriRequest request) throws IOException {
+    public CloseableHttpResponse execute(HttpRequestBase request) throws IOException {
+        setTimeouts(request);
         if (tokenManager != null) {
             tokenManager.addAuthHeader(request);
         }
         return client.execute(request);
+    }
+
+    private void setTimeouts(HttpRequestBase request) {
+        RequestConfig config = RequestConfig
+                .copy(request.getConfig())
+                .setSocketTimeout(requestTimeoutMs)
+                .setConnectTimeout(requestTimeoutMs)
+                .setConnectionRequestTimeout(requestTimeoutMs)
+                .build();
+        request.setConfig(config);
     }
 
     /**
@@ -362,6 +378,24 @@ public class SensorThingsService {
      */
     public void setClient(CloseableHttpClient client) {
         this.client = client;
+    }
+
+    /**
+     * The request timeout in MS.
+     *
+     * @return the requestTimeoutMs
+     */
+    public int getRequestTimeoutMs() {
+        return requestTimeoutMs;
+    }
+
+    /**
+     * The request timeout in MS.
+     *
+     * @param requestTimeoutMs the requestTimeoutMs to set
+     */
+    public void setRequestTimeoutMs(int requestTimeoutMs) {
+        this.requestTimeoutMs = requestTimeoutMs;
     }
 
 }

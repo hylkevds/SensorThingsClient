@@ -1,3 +1,11 @@
+# Release Version 0.30
+
+**Updates**
+* Added timeouts to connections. Default timeout is 120 seconds.
+
+
+**Updates**
+
 # Release Version 0.29
 
 **Updates**
