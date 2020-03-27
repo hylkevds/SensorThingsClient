@@ -28,6 +28,8 @@ import de.fraunhofer.iosb.ilt.sta.model.TimeObject;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import de.fraunhofer.iosb.ilt.swe.common.constraint.AllowedValues;
+import de.fraunhofer.iosb.ilt.swe.common.simple.Count;
 import de.fraunhofer.iosb.ilt.swe.common.simple.Text;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +43,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -233,6 +236,73 @@ public class EntityReaderTest {
                 .description("Virtual Actuator Server, starts new Virtual Actuators")
                 .taskingParameter("vaName", vaName)
                 .taskingParameter("vaDescription", vaDescription)
+                .id(new IdLong(1L))
+                .build();
+        expected.setSelfLink("https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)");
+
+        Assert.assertEquals(expected, observation);
+    }
+
+    @Test
+    public void readTaskingCapabilitiesWithConstraint() throws IOException {
+        String json = "{\n"
+                + "  \"name\": \"DatastreamCopierCapability\",\n"
+                + "  \"description\": \"Copies Observations from one Datastream to another\",\n"
+                + "  \"taskingParameters\": {\n"
+                + "    \"type\": \"DataRecord\",\n"
+                + "    \"field\": [{\n"
+                + "      \"type\": \"Count\",\n"
+                + "      \"name\": \"sourceDatastream\",\n"
+                + "      \"label\": \"Source Datastream\",\n"
+                + "      \"description\": \"ID of the datastream from which the observations should be taken.\",\n"
+                + "      \"constraint\": {\n"
+                + "        \"type\": \"AllowedValues\",\n"
+                + "        \"interval\": [[0, 10000]]\n"
+                + "      }\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"type\": \"Count\",\n"
+                + "      \"name\": \"destinationDatastream\",\n"
+                + "      \"label\": \"Destination Datastream\",\n"
+                + "      \"description\": \"ID of the datastream to which the observations should be copied.\",\n"
+                + "      \"constraint\": {\n"
+                + "        \"type\": \"AllowedValues\",\n"
+                + "        \"interval\": [[0, 10000]]\n"
+                + "      }\n"
+                + "    }]\n"
+                + "  },\n"
+                + "  \"Actuator@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/Actuator\",\n"
+                + "  \"Thing@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Thing\",\n"
+                + "  \"Tasks@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Tasks\",\n"
+                + "  \"@iot.id\" : 1,\n"
+                + "  \"@iot.selfLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)\"\n"
+                + "}";
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        TaskingCapability observation = mapper.readValue(json, TaskingCapability.class);
+
+        AllowedValues allowedValues = new AllowedValues();
+        List<List<BigDecimal>> interval = new ArrayList<>();
+        List<BigDecimal> intervallItem = new ArrayList<>();
+        intervallItem.add(new BigDecimal(0));
+        intervallItem.add(new BigDecimal(10000));
+        interval.add(intervallItem);
+        allowedValues.setInterval(interval);
+
+        Count sourceDS = new Count();
+        sourceDS.setLabel("Source Datastream");
+        sourceDS.setDescription("ID of the datastream from which the observations should be taken.");
+        sourceDS.setConstraint(allowedValues);
+
+        Count destDS = new Count();
+        destDS.setLabel("Destination Datastream");
+        destDS.setDescription("ID of the datastream to which the observations should be copied.");
+        destDS.setConstraint(allowedValues);
+
+        TaskingCapability expected = TaskingCapabilityBuilder.builder()
+                .name("DatastreamCopierCapability")
+                .description("Copies Observations from one Datastream to another")
+                .taskingParameter("sourceDatastream", sourceDS)
+                .taskingParameter("destinationDatastream", destDS)
                 .id(new IdLong(1L))
                 .build();
         expected.setSelfLink("https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)");
