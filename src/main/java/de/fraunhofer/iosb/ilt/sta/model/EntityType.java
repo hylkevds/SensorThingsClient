@@ -124,8 +124,8 @@ public enum EntityType {
         ACTUATORS.addRelations(TASKING_CAPABILITIES);
         TASKING_CAPABILITY.addRelations(ACTUATOR, TASKS, THING);
         TASKING_CAPABILITIES.addRelations(ACTUATOR, TASKS, THING);
-        TASK.addRelations(TASKING_CAPABILITIES);
-        TASKS.addRelations(TASKING_CAPABILITIES);
+        TASK.addRelations(TASKING_CAPABILITY);
+        TASKS.addRelations(TASKING_CAPABILITY);
 
         for (EntityType type : values()) {
             if (type.isList) {

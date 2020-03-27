@@ -26,7 +26,7 @@ public class Actuator extends Entity<Actuator> {
     private Object metadata;
     private Map<String, Object> properties;
 
-    private final EntityList<TaskingCapability> taskingCapabilities = new EntityList<>(EntityType.TASKING_CAPABILITY);
+    private final EntityList<TaskingCapability> taskingCapabilities = new EntityList<>(EntityType.TASKING_CAPABILITIES);
 
     public Actuator() {
         super(EntityType.SENSOR);
