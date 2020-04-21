@@ -188,8 +188,13 @@ public class SensorThingsService {
     }
 
     private void setTimeouts(HttpRequestBase request) {
-        RequestConfig config = RequestConfig
-                .copy(request.getConfig())
+        RequestConfig.Builder configBuilder;
+        if (request.getConfig() == null) {
+            configBuilder = RequestConfig.copy(RequestConfig.DEFAULT);
+        } else {
+            configBuilder = RequestConfig.copy(request.getConfig());
+        }
+        RequestConfig config = configBuilder
                 .setSocketTimeout(requestTimeoutMs)
                 .setConnectTimeout(requestTimeoutMs)
                 .setConnectionRequestTimeout(requestTimeoutMs)

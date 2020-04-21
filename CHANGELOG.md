@@ -1,3 +1,9 @@
+# Release Version 0.31
+
+**Updates**
+* Fixed NPE in timeout configuration
+
+
 # Release Version 0.30
 
 **Updates**
