@@ -2,6 +2,9 @@
 
 **Updates**
 * Added timeouts to connections. Default timeout is 120 seconds.
+* [Fix]: Correct use of singular/plural of TaskingCapability
+* Bump geojson-jackson from 1.13 to 1.14 (#31)
+* Bump dependency-check-maven from 5.3.1 to 5.3.2 (#30)
 
 
 **Updates**
