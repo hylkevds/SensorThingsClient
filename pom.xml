@@ -27,7 +27,7 @@
 		<jacksonDatabind.version>${jackson.version}</jacksonDatabind.version>
 		<jacksonGeojson.version>1.14</jacksonGeojson.version>
 		<jjwt.version>0.9.1</jjwt.version>
-		<json-patch.version>1.12</json-patch.version>
+		<json-patch.version>1.13</json-patch.version>
 		<junit.version>4.13</junit.version>
 		
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
