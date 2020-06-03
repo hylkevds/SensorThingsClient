@@ -57,4 +57,9 @@ public class StatusCodeException extends ServiceFailureException {
         return returnedContent;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + " Code: " + statusCode + " " + statusMessage;
+    }
+
 }
