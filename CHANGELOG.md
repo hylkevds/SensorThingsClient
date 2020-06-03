@@ -1,3 +1,11 @@
+# Release Version 0.32
+
+**Updates**
+* Improved output of StatusCodeException
+* Bump json-patch from 1.12 to 1.13
+* Bump jackson from 2.10.3 to 2.11.0
+
+
 # Release Version 0.31
 
 **Updates**
