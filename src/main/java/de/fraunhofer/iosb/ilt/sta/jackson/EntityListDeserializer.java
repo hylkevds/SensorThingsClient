@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import static de.fraunhofer.iosb.ilt.sta.model.Entity.AT_IOT_COUNT;
+import static de.fraunhofer.iosb.ilt.sta.model.Entity.AT_IOT_NEXT_LINK;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import java.io.IOException;
@@ -79,11 +81,11 @@ public class EntityListDeserializer<T extends Entity<T>> extends StdDeserializer
                         String fieldName = parser.getCurrentName();
                         JsonToken valueToken = parser.nextToken();
                         switch (fieldName) {
-                            case "@iot.count":
+                            case AT_IOT_COUNT:
                                 entities.setCount(parser.getValueAsLong());
                                 break;
 
-                            case "@iot.nextLink":
+                            case AT_IOT_NEXT_LINK:
                                 try {
                                     entities.setNextLink(URI.create(parser.getValueAsString()));
                                 } catch (IllegalArgumentException e) {
