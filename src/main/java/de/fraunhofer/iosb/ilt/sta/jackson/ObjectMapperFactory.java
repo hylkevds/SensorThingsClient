@@ -31,17 +31,18 @@ public final class ObjectMapperFactory {
      */
     public static ObjectMapper get() {
         if (mapper == null) {
-            mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            mapper.registerModule(new EntityModule());
-            mapper.registerModule(new SweCommonModule());
-            mapper.addMixIn(DataRecord.class, DataRecordMixin.class);
-            mapper.addMixIn(AbstractDataComponent.class, AbstractDataComponentMixin.class);
-            mapper.addMixIn(AbstractSWEIdentifiable.class, AbstractSWEIdentifiableMixin.class);
-            mapper.addMixIn(AbstractConstraint.class, AbstractConstraintMixin.class);
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            ObjectMapper myMapper = new ObjectMapper();
+            myMapper.registerModule(new JavaTimeModule());
+            myMapper.registerModule(new EntityModule());
+            myMapper.registerModule(new SweCommonModule());
+            myMapper.addMixIn(DataRecord.class, DataRecordMixin.class);
+            myMapper.addMixIn(AbstractDataComponent.class, AbstractDataComponentMixin.class);
+            myMapper.addMixIn(AbstractSWEIdentifiable.class, AbstractSWEIdentifiableMixin.class);
+            myMapper.addMixIn(AbstractConstraint.class, AbstractConstraintMixin.class);
+            myMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            myMapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+            myMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            mapper = myMapper;
         }
         return mapper;
     }
