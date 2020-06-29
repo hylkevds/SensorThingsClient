@@ -30,8 +30,8 @@ public abstract class AbstractActuatorBuilder<U extends AbstractActuatorBuilder<
         return getSelf();
     }
 
-    public U encodingType(final ValueCode encodingType) {
-        getBuildingInstance().setEncodingType(encodingType.getValue());
+    public U encodingType(final String encodingType) {
+        getBuildingInstance().setEncodingType(encodingType);
         return getSelf();
     }
 
@@ -61,27 +61,5 @@ public abstract class AbstractActuatorBuilder<U extends AbstractActuatorBuilder<
     public U taskingCapability(final TaskingCapability taskingCapability) {
         getBuildingInstance().getTaskingCapabilities().add(taskingCapability);
         return getSelf();
-    }
-
-    /**
-     * All the possible values for a {@link Actuator#encodingType} attribute
-     *
-     * @author Michael Jacoby
-     */
-    public enum ValueCode {
-
-        PDF("application/pdf"),
-        SensorML("http://www.opengis.net/doc/IS/SensorML/2.0");
-
-        private final String value;
-
-        ValueCode(final String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
     }
 }
