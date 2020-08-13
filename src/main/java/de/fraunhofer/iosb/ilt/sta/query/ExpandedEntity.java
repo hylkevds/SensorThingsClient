@@ -20,7 +20,7 @@ public class ExpandedEntity {
 
         for (int i = 0; i < entities.length; i++) {
             if (i > 0) {
-                if (!entities[i].hasRelationTo(entities[i - 1])) {
+                if (!entities[i - 1].hasRelationTo(entities[i])) {
                     throw new InvalidRelationException(
                             String.format("%s is not directly related to %s",
                                     entities[i].getName(),
