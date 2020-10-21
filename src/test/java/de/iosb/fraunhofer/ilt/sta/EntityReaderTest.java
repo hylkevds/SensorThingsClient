@@ -17,27 +17,34 @@
  */
 package de.iosb.fraunhofer.ilt.sta;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.EntityType;
 import de.fraunhofer.iosb.ilt.sta.model.IdLong;
 import de.fraunhofer.iosb.ilt.sta.model.Observation;
+import de.fraunhofer.iosb.ilt.sta.model.TaskingCapability;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.TimeObject;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservationBuilder;
+import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.util.List;
+import de.fraunhofer.iosb.ilt.swe.common.constraint.AllowedValues;
+import de.fraunhofer.iosb.ilt.swe.common.simple.Count;
+import de.fraunhofer.iosb.ilt.swe.common.simple.Text;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -62,10 +69,10 @@ public class EntityReaderTest {
                 + "\"phenomenonTime\": \"2016-01-07T02:00:00.000Z\",\n"
                 + "\"resultTime\": null,\n"
                 + "\"result\": 0.15,\n"
-                + "\"Datastream@iot.navigationLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)/Datastream\",\n"
-                + "\"FeatureOfInterest@iot.navigationLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)/FeatureOfInterest\",\n"
+                + "\"Datastream@iot.navigationLink\": \"https://server.de/SensorThingsService/v1.0/Observations(7179373)/Datastream\",\n"
+                + "\"FeatureOfInterest@iot.navigationLink\": \"https://server.de/SensorThingsService/v1.0/Observations(7179373)/FeatureOfInterest\",\n"
                 + "\"@iot.id\": 7179373,\n"
-                + "\"@iot.selfLink\": \"https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)\"\n"
+                + "\"@iot.selfLink\": \"https://server.de/SensorThingsService/v1.0/Observations(7179373)\"\n"
                 + "}";
         final ObjectMapper mapper = ObjectMapperFactory.get();
         Observation observation = mapper.readValue(json, Observation.class);
@@ -75,7 +82,7 @@ public class EntityReaderTest {
                 .result(BigDecimal.valueOf(0.15))
                 .id(new IdLong(7179373L))
                 .build();
-        expected.setSelfLink("https://beaware.server.de/SensorThingsService/v1.0/Observations(7179373)");
+        expected.setSelfLink("https://server.de/SensorThingsService/v1.0/Observations(7179373)");
 
         Assert.assertEquals(expected, observation);
     }
@@ -187,5 +194,119 @@ public class EntityReaderTest {
         List<Thing> thingList = things.toList();
 
         Assert.assertTrue(thingList.isEmpty());
+    }
+
+    @Test
+    public void readTaskingCapabilities() throws IOException {
+        String json = "{\n"
+                + "  \"name\" : \"createNewVA\",\n"
+                + "  \"description\" : \"Virtual Actuator Server, starts new Virtual Actuators\",\n"
+                + "  \"taskingParameters\" : {\n"
+                + "    \"type\" : \"DataRecord\",\n"
+                + "    \"field\" : [ {\n"
+                + "      \"type\" : \"Text\",\n"
+                + "      \"label\" : \"Aktor-Name\",\n"
+                + "      \"description\" : \"Name des neuen virtuellen Aktors\",\n"
+                + "      \"name\" : \"vaName\"\n"
+                + "    }, {\n"
+                + "      \"type\" : \"Text\",\n"
+                + "      \"label\" : \"Aktor-Beschreibung\",\n"
+                + "      \"description\" : \"Beschreibung des neuen virtuellen Aktors\",\n"
+                + "      \"name\" : \"vaDescription\"\n"
+                + "    } ]\n"
+                + "  },\n"
+                + "  \"Actuator@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/Actuator\",\n"
+                + "  \"Thing@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Thing\",\n"
+                + "  \"Tasks@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Tasks\",\n"
+                + "  \"@iot.id\" : 1,\n"
+                + "  \"@iot.selfLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)\"\n" + "}";
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        TaskingCapability observation = mapper.readValue(json, TaskingCapability.class);
+
+        Text vaName = new Text();
+        vaName.setLabel("Aktor-Name");
+        vaName.setDescription("Name des neuen virtuellen Aktors");
+
+        Text vaDescription = new Text();
+        vaDescription.setLabel("Aktor-Beschreibung");
+        vaDescription.setDescription("Beschreibung des neuen virtuellen Aktors");
+
+        TaskingCapability expected = TaskingCapabilityBuilder.builder()
+                .name("createNewVA")
+                .description("Virtual Actuator Server, starts new Virtual Actuators")
+                .taskingParameter("vaName", vaName)
+                .taskingParameter("vaDescription", vaDescription)
+                .id(new IdLong(1L))
+                .build();
+        expected.setSelfLink("https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)");
+
+        Assert.assertEquals(expected, observation);
+    }
+
+    @Test
+    public void readTaskingCapabilitiesWithConstraint() throws IOException {
+        String json = "{\n"
+                + "  \"name\": \"DatastreamCopierCapability\",\n"
+                + "  \"description\": \"Copies Observations from one Datastream to another\",\n"
+                + "  \"taskingParameters\": {\n"
+                + "    \"type\": \"DataRecord\",\n"
+                + "    \"field\": [{\n"
+                + "      \"type\": \"Count\",\n"
+                + "      \"name\": \"sourceDatastream\",\n"
+                + "      \"label\": \"Source Datastream\",\n"
+                + "      \"description\": \"ID of the datastream from which the observations should be taken.\",\n"
+                + "      \"constraint\": {\n"
+                + "        \"type\": \"AllowedValues\",\n"
+                + "        \"interval\": [[0, 10000]]\n"
+                + "      }\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"type\": \"Count\",\n"
+                + "      \"name\": \"destinationDatastream\",\n"
+                + "      \"label\": \"Destination Datastream\",\n"
+                + "      \"description\": \"ID of the datastream to which the observations should be copied.\",\n"
+                + "      \"constraint\": {\n"
+                + "        \"type\": \"AllowedValues\",\n"
+                + "        \"interval\": [[0, 10000]]\n"
+                + "      }\n"
+                + "    }]\n"
+                + "  },\n"
+                + "  \"Actuator@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/Actuator\",\n"
+                + "  \"Thing@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Thing\",\n"
+                + "  \"Tasks@iot.navigationLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)/Tasks\",\n"
+                + "  \"@iot.id\" : 1,\n"
+                + "  \"@iot.selfLink\" : \"https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)\"\n"
+                + "}";
+        final ObjectMapper mapper = ObjectMapperFactory.get();
+        TaskingCapability observation = mapper.readValue(json, TaskingCapability.class);
+
+        AllowedValues allowedValues = new AllowedValues();
+        List<List<BigDecimal>> interval = new ArrayList<>();
+        List<BigDecimal> intervallItem = new ArrayList<>();
+        intervallItem.add(new BigDecimal(0));
+        intervallItem.add(new BigDecimal(10000));
+        interval.add(intervallItem);
+        allowedValues.setInterval(interval);
+
+        Count sourceDS = new Count();
+        sourceDS.setLabel("Source Datastream");
+        sourceDS.setDescription("ID of the datastream from which the observations should be taken.");
+        sourceDS.setConstraint(allowedValues);
+
+        Count destDS = new Count();
+        destDS.setLabel("Destination Datastream");
+        destDS.setDescription("ID of the datastream to which the observations should be copied.");
+        destDS.setConstraint(allowedValues);
+
+        TaskingCapability expected = TaskingCapabilityBuilder.builder()
+                .name("DatastreamCopierCapability")
+                .description("Copies Observations from one Datastream to another")
+                .taskingParameter("sourceDatastream", sourceDS)
+                .taskingParameter("destinationDatastream", destDS)
+                .id(new IdLong(1L))
+                .build();
+        expected.setSelfLink("https://server.de/SensorThingsService/v1.0/TaskingCapabilities(1)");
+
+        Assert.assertEquals(expected, observation);
     }
 }

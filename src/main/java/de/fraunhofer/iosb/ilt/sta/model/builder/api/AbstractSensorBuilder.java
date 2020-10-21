@@ -4,6 +4,8 @@ import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Base class for any {@link EntityBuilder} of {@link Sensor}
@@ -26,6 +28,11 @@ public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> 
 
     public U description(final String description) {
         getBuildingInstance().setDescription(description);
+        return getSelf();
+    }
+
+    public U encodingType(final String encodingType) {
+        getBuildingInstance().setEncodingType(encodingType);
         return getSelf();
     }
 
@@ -62,7 +69,7 @@ public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> 
     /**
      * All the possible values for a {@link Sensor#encodingType} attribute
      *
-     * @author Aurelien Bourdon
+     * @author Michael Jacoby
      */
     public enum ValueCode {
 
@@ -79,6 +86,14 @@ public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> 
             return value;
         }
 
+        public static ValueCode from(String value) {
+            Optional<ValueCode> result = Stream.of(ValueCode.values())
+                    .filter(x -> x.value.equals(value))
+                    .findAny();
+            if (!result.isPresent()) {
+                throw new IllegalArgumentException("unkown value code '" + value + "'");
+            }
+            return result.get();
+        }
     }
-
 }

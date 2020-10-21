@@ -18,7 +18,6 @@
 package de.iosb.fraunhofer.ilt.sta;
 
 import de.fraunhofer.iosb.ilt.sta.MqttException;
-import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.model.Actuator;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.EntityProperty;
@@ -37,7 +36,6 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.ActuatorBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.DatastreamBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.FeatureOfInterestBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.HistoricalLocationBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.LocationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.MultiDatastreamBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservationBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ObservedPropertyBuilder;
@@ -45,23 +43,16 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.SensorBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.TaskBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.TaskingCapabilityBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.builder.ThingBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractActuatorBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractDatastreamBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractLocationBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.api.AbstractSensorBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.builder.ext.TextBuilder;
-import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.MqttConfig;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.Collectors;
-import org.geojson.Point;
 import static org.hamcrest.CoreMatchers.containsString;
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -80,7 +71,7 @@ public class MqttTest {
     public void tearDown() {
     }
 
-    @Test
+//    @Test
     public void subscribeEntityDirect() throws MalformedURLException, MqttException {
         Assert.assertEquals("v1.0/Actuators(1)", ActuatorBuilder.builder().service(service).id(new IdLong(1L)).build().subscribe(x -> {}).getTopic());
         Assert.assertEquals("v1.0/Datastreams(1)", DatastreamBuilder.builder().service(service).id(new IdLong(1L)).build().subscribe(x -> {}).getTopic());
@@ -95,7 +86,7 @@ public class MqttTest {
         Assert.assertEquals("v1.0/Things(1)", ThingBuilder.builder().service(service).id(new IdLong(1L)).build().subscribe(x -> {}).getTopic());
     }
 
-    @Test
+//    @Test
     public void subscribeEntityRelative() throws MalformedURLException, MqttException {
         Datastream datastream = DatastreamBuilder.builder().service(service).id(new IdLong(1L)).build();
         Assert.assertEquals("v1.0/Datastreams(1)/ObservedProperty", datastream.subscribeRelative(x -> {}, EntityType.OBSERVED_PROPERTY).getTopic());
@@ -124,7 +115,7 @@ public class MqttTest {
         Assert.assertEquals("v1.0/TaskingCapabilities(1)/Thing", taskingCapability.subscribeRelative(x -> {}, EntityType.THING).getTopic());
     }
 
-    @Test
+//    @Test
     public void subscribeEntityRelative_Invalid() throws MalformedURLException, MqttException {
         String errorMessage = "invalid relative subscription path";
 
@@ -133,7 +124,7 @@ public class MqttTest {
             datastream.subscribeRelative(x -> {}, EntityType.DATASTREAM);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         HistoricalLocation historicalLocation = HistoricalLocationBuilder.builder().service(service).id(new IdLong(1L)).build();
@@ -141,7 +132,7 @@ public class MqttTest {
             historicalLocation.subscribeRelative(x -> {}, EntityType.HISTORICAL_LOCATION);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         MultiDatastream multiDatastream = MultiDatastreamBuilder.builder().service(service).id(new IdLong(1L)).build();
@@ -149,7 +140,7 @@ public class MqttTest {
             multiDatastream.subscribeRelative(x -> {}, EntityType.DATASTREAM);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         Observation observation = ObservationBuilder.builder().service(service).id(new IdLong(1L)).build();
@@ -157,7 +148,7 @@ public class MqttTest {
             observation.subscribeRelative(x -> {}, EntityType.THING);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         Task task = TaskBuilder.builder().service(service).id(new IdLong(1L)).build();
@@ -165,7 +156,7 @@ public class MqttTest {
             task.subscribeRelative(x -> {}, EntityType.SENSOR);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         TaskingCapability taskingCapability = TaskingCapabilityBuilder.builder().service(service).id(new IdLong(1L)).build();
@@ -173,11 +164,11 @@ public class MqttTest {
             taskingCapability.subscribeRelative(x -> {}, EntityType.SENSOR);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
     }
 
-    @Test
+//    @Test
     public void subscribeEntitySetDirect() throws MalformedURLException, MqttException {
         Assert.assertEquals("v1.0/Actuators", service.actuators().subscribe(x -> {}).getTopic());
         Assert.assertEquals("v1.0/Datastreams", service.datastreams().subscribe(x -> {}).getTopic());
@@ -192,7 +183,7 @@ public class MqttTest {
         Assert.assertEquals("v1.0/Things", service.things().subscribe(x -> {}).getTopic());
     }
 
-    @Test
+//    @Test
     public void subscribeEntitySetWithSelect() throws MalformedURLException, MqttException {
         Assert.assertEquals("v1.0/Actuators?$select=" + EntityType.ACTUATOR.getProperties().stream().map(x -> x.getName()).collect(Collectors.joining(",")),
                 service.actuators().subscribe(x -> {}, EntityType.ACTUATOR.getProperties().toArray(new EntityProperty[0])).getTopic());
@@ -228,88 +219,88 @@ public class MqttTest {
                 service.things().subscribe(x -> {}, EntityType.THING.getProperties().toArray(new EntityProperty[0])).getTopic());
     }
 
-    @Test
+//    @Test
     public void subscribeEntitySetWithSelect_InvalidProperties() throws MalformedURLException, MqttException {
         String errorMessage = "use of unknown property in $select";
         try {
             service.actuators().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.datastreams().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.featuresOfInterest().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.historicalLocations().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.multiDatastreams().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.observations().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.observedProperties().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.sensors().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.tasks().subscribe(x -> {}, EntityProperty.LOCATION);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.taskingCapabilities().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
 
         try {
             service.things().subscribe(x -> {}, EntityProperty.CREATIONTIME);
             Assert.fail("expected MqttException to be thrown");
         } catch (MqttException ex) {
-            Assert.assertThat(ex.getMessage(), containsString(errorMessage));
+            MatcherAssert.assertThat(ex.getMessage(), containsString(errorMessage));
         }
     }
 
-    @Test
+//    @Test
     public void subscribeEntitySetRelative() throws MalformedURLException, MqttException {
         Actuator actuator = ActuatorBuilder.builder().service(service).id(new IdLong(1L)).build();
         Assert.assertEquals("v1.0/Actuators(1)/TaskingCapabilities", actuator.taskingCapabilities().subscribe(x -> {}).getTopic());
@@ -342,90 +333,4 @@ public class MqttTest {
         Assert.assertEquals("v1.0/Things(1)/Locations", thing.locations().subscribe(x -> {}).getTopic());
         Assert.assertEquals("v1.0/Things(1)/TaskingCapabilities", thing.taskingCapabilities().subscribe(x -> {}).getTopic());
     }
-
-    private Datastream createDatastreamWithDependencies() throws ServiceFailureException {
-        Datastream datastream = DatastreamBuilder.builder()
-                .name("datastream name")
-                .description("datastream description")
-                .unitOfMeasurement(new UnitOfMeasurement("", "", ""))
-                .observationType(AbstractDatastreamBuilder.ValueCode.OM_Observation)
-                .observedProperty(new ObservedProperty("observedProperty name", "observedProperty definition", "observedProperty description"))
-                .sensor(SensorBuilder.builder()
-                        .name("sensor name")
-                        .description("sensor description")
-                        .encodingType(AbstractSensorBuilder.ValueCode.SensorML)
-                        .metadata("sensor metadata")
-                        .build())
-                .thing(ThingBuilder.builder()
-                        .name("thing name")
-                        .description("thing description")
-                        .location(LocationBuilder.builder()
-                                .name("location name")
-                                .description("location description")
-                                .encodingType(AbstractLocationBuilder.ValueCode.GeoJSON)
-                                .location(new Point(-114.05, 51.05))
-                                .build())
-                        .build())
-                .build();
-        service.create(datastream);
-        return datastream;
-    }
-
-//    @Test
-//    public void createObservation() throws MalformedURLException, MqttException, ServiceFailureException {
-//        Datastream datastream = createDatastreamWithDependencies();
-//        // v1.0/Observations
-//        service.observations().createMqtt(ObservationBuilder.builder()
-//                .result("foo")
-//                .datastream(datastream)
-//                .build());
-//        // v1.0/Datastreams([id])/Observations
-//        datastream.observations().createMqtt(ObservationBuilder.builder()
-//                .result("foo")
-//                .build());
-//        // v1.0/FeaturesOfInterest([id])/Observations
-//        FeatureOfInterest foi = datastream.observations().query().first().getFeatureOfInterest();
-//        foi.observations().createMqtt(ObservationBuilder.builder()
-//                .result("foo")
-//                .datastream(datastream)
-//                .build());
-//    }
-
-    private TaskingCapability createTaskingCapability() throws ServiceFailureException {
-        TaskingCapability taskingCapability = TaskingCapabilityBuilder.builder()
-                .name("taskingCapability name")
-                .description("taskingCapability description")
-                .taskingParameter(TextBuilder.builder()
-                        .name("parameterName")
-                        .label("parameter label")
-                        .description("parameter description")
-                        .build())
-                .actuator(ActuatorBuilder.builder()
-                        .name("actuator name")
-                        .description("actuator description")
-                        .encodingType(AbstractActuatorBuilder.ValueCode.SensorML)
-                        .metadata("actuator metadata")
-                        .build())
-                .thing(ThingBuilder.builder()
-                        .name("thing name")
-                        .description("thing description")
-                        .build())
-                .build();
-        service.create(taskingCapability);
-        return taskingCapability;
-    }
-
-//    @Test
-//    public void createTask() throws MalformedURLException, MqttException, ServiceFailureException {
-//        TaskingCapability taskingCapability = createTaskingCapability();
-//        // v1.0/Tasks
-//        service.tasks().createMqtt(TaskBuilder.builder()
-//                .taskingParameter("parameterName", "example value")
-//                .taskingCapability(taskingCapability)
-//                .build());
-//        // v1.0/TaskingCapabilities([id])/Tasks
-//        taskingCapability.tasks().createMqtt(TaskBuilder.builder().service(service)
-//                .taskingParameter("parameterName", "example value")
-//                .build());
-//    }
 }

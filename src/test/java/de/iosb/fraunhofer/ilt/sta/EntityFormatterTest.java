@@ -17,9 +17,6 @@
  */
 package de.iosb.fraunhofer.ilt.sta;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.ilt.sta.MqttException;
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import de.fraunhofer.iosb.ilt.sta.jackson.ObjectMapperFactory;
@@ -38,6 +35,18 @@ import de.fraunhofer.iosb.ilt.sta.model.builder.ext.TextBuilder;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
 import de.fraunhofer.iosb.ilt.sta.service.MqttConfig;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geojson.Point;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.threeten.extra.Interval;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -526,15 +535,15 @@ public class EntityFormatterTest {
                 .name("Control Light")
                 .description("Turn the light on and off, as well as specifying light color.")
                 .taskingParameter(
+                        "status",
                         CategoryBuilder.builder()
-                                .name("status")
                                 .label("On/Off status")
                                 .description("Specifies turning the light On or Off")
                                 .allowedValues("on", "off")
                                 .build())
                 .taskingParameter(
+                        "color",
                         TextBuilder.builder()
-                                .name("color")
                                 .label("Light Color")
                                 .description("Specifies the light color in RGB HEX format. Example: #FF11A0")
                                 .pattern("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")

@@ -2,6 +2,7 @@ package de.fraunhofer.iosb.ilt.sta.jackson;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import de.fraunhofer.iosb.ilt.sta.jackson.customtyping.ConfigurableClassAnnotationTypeIdResolver;
 
 /**
  *

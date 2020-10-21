@@ -4,7 +4,7 @@
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>FROST-Client</artifactId>
-	<version>0.27-SNAPSHOT</version>
+	<version>0.33-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>FROST-Client</name>
@@ -21,25 +21,27 @@
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>FROST-Client</bintray.package>
 
-		<guava.version>24.1.1-jre</guava.version>
-		<httpclient.version>4.5.6</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
-		<jackson.version>2.9.9</jackson.version>
-		<jacksonDatabind.version>2.9.9.2</jacksonDatabind.version>
-		<jacksonGeojson.version>1.6</jacksonGeojson.version>
-		<jjwt.version>0.7.0</jjwt.version>
-		<json-patch.version>1.9</json-patch.version>
-		<junit.version>4.12</junit.version>
+		<jackson.version>2.11.3</jackson.version>
+		<jacksonGeojson.version>1.14</jacksonGeojson.version>
+		<jjwt.version>0.9.1</jjwt.version>
+		<json-patch.version>1.13</json-patch.version>
+		<junit.version>4.13.1</junit.version>
 		
-		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<owasp.version>5.2.0</owasp.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<owasp.version>6.0.2</owasp.version>
+		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
 		
-		<slf4j-api.version>1.7.25</slf4j-api.version>
-		<threeten-extra.version>1.0</threeten-extra.version>
+		<SensorThings-SWE-Common.version>0.5</SensorThings-SWE-Common.version>
+		<slf4j-api.version>1.7.30</slf4j-api.version>
+		<threeten-extra.version>1.5.0</threeten-extra.version>
+		<org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
+		<typetools.version>0.6.1</typetools.version>
 	</properties>
 
 	<licenses>
@@ -171,6 +173,25 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -194,7 +215,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jacksonDatabind.version}</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -227,7 +248,7 @@
 			<version>${jjwt.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.fge</groupId>
+			<groupId>com.github.java-json-tools</groupId>
 			<artifactId>json-patch</artifactId>
 			<version>${json-patch.version}</version>
 			<exclusions>
@@ -236,11 +257,6 @@
 					<artifactId>guava</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -256,17 +272,17 @@
 		<dependency>
 			<groupId>de.fraunhofer.iosb.ilt</groupId>
 			<artifactId>SensorThings-SWE-Common</artifactId>
-			<version>0.2</version>
+			<version>${SensorThings-SWE-Common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.paho</groupId>
 			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-			<version>1.2.2</version>
+			<version>${org.eclipse.paho.client.mqttv3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jodah</groupId>
 			<artifactId>typetools</artifactId>
-			<version>0.6.1</version>
+			<version>${typetools.version}</version>
 		</dependency>
 	</dependencies>
 </project>

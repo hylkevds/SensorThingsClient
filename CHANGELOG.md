@@ -1,3 +1,49 @@
+# Release Version 0.32
+
+**Updates**
+* Improved output of StatusCodeException
+* Bump json-patch from 1.12 to 1.13
+* Bump jackson from 2.10.3 to 2.11.0
+
+
+# Release Version 0.31
+
+**Updates**
+* Fixed NPE in timeout configuration
+
+
+# Release Version 0.30
+
+**Updates**
+* Added timeouts to connections. Default timeout is 120 seconds.
+* [Fix]: Correct use of singular/plural of TaskingCapability
+* Bump geojson-jackson from 1.13 to 1.14 (#31)
+* Bump dependency-check-maven from 5.3.1 to 5.3.2 (#30)
+
+
+**Updates**
+
+# Release Version 0.29
+
+**Updates**
+* Updated dependency versions
+* [Fix]: EntityType of TaskingCapability and name of Setter in Task
+* Added isEndpointSet method
+* Removed unneeded classes
+
+
+# Release Version 0.27 & 0.28
+
+**Updates**
+* Updated dependency versions
+
+
+# Release Version 0.26
+
+**Updates**
+* Added tasking support
+
+
 # Release Version 0.25
 
 **Updates**
@@ -26,7 +72,7 @@
 # Release Version 0.21
 
 **Updates**
-* Fixed deserialising of emtpy lists.
+* Fixed de-serialising of empty lists.
 
 
 # Release Version 0.20

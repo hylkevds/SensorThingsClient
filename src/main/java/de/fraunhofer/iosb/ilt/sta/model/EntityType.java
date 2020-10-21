@@ -69,7 +69,7 @@ public enum EntityType {
     }
 
     private final Class<? extends Entity> type;
-    private final TypeReference typeReference;
+    private final TypeReference<EntityList> typeReference;
     private final String name;
     private final Set<EntityType> relations;
     private final Set<EntityProperty> properties;
@@ -82,55 +82,55 @@ public enum EntityType {
     private static final Map<Class<? extends Entity>, EntityType> singleForClass = new HashMap<>();
 
     static {
-        ACTUATOR.setOther(ACTUATORS);
-        ACTUATORS.setOther(ACTUATOR);
         DATASTREAM.setOther(DATASTREAMS);
         DATASTREAMS.setOther(DATASTREAM);
+        MULTIDATASTREAM.setOther(MULTIDATASTREAMS);
+        MULTIDATASTREAMS.setOther(MULTIDATASTREAM);
         FEATURE_OF_INTEREST.setOther(FEATURES_OF_INTEREST);
         FEATURES_OF_INTEREST.setOther(FEATURE_OF_INTEREST);
         HISTORICAL_LOCATION.setOther(HISTORICAL_LOCATIONS);
         HISTORICAL_LOCATIONS.setOther(HISTORICAL_LOCATION);
         LOCATION.setOther(LOCATIONS);
         LOCATIONS.setOther(LOCATION);
-        MULTIDATASTREAM.setOther(MULTIDATASTREAMS);
-        MULTIDATASTREAMS.setOther(MULTIDATASTREAM);
         OBSERVATION.setOther(OBSERVATIONS);
         OBSERVATIONS.setOther(OBSERVATION);
         OBSERVED_PROPERTY.setOther(OBSERVED_PROPERTIES);
         OBSERVED_PROPERTIES.setOther(OBSERVED_PROPERTY);
         SENSOR.setOther(SENSORS);
         SENSORS.setOther(SENSOR);
-        TASK.setOther(TASKS);
-        TASKS.setOther(TASK);
-        TASKING_CAPABILITY.setOther(TASKING_CAPABILITIES);
-        TASKING_CAPABILITIES.setOther(TASKING_CAPABILITY);
         THING.setOther(THINGS);
         THINGS.setOther(THING);
+        ACTUATOR.setOther(ACTUATORS);
+        ACTUATORS.setOther(ACTUATOR);
+        TASKING_CAPABILITY.setOther(TASKING_CAPABILITIES);
+        TASKING_CAPABILITIES.setOther(TASKING_CAPABILITY);
+        TASK.setOther(TASKS);
+        TASKS.setOther(TASK);
 
-        ACTUATOR.addRelations(TASKING_CAPABILITIES);
-        ACTUATORS.addRelations(TASKING_CAPABILITIES);
         DATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
         DATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTY, OBSERVATIONS);
+        MULTIDATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
+        MULTIDATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
         FEATURE_OF_INTEREST.addRelations(OBSERVATIONS);
         FEATURES_OF_INTEREST.addRelations(OBSERVATIONS);
         HISTORICAL_LOCATION.addRelations(THING, LOCATIONS);
         HISTORICAL_LOCATIONS.addRelations(THING, LOCATIONS);
         LOCATION.addRelations(THINGS, HISTORICAL_LOCATIONS);
         LOCATIONS.addRelations(THINGS, HISTORICAL_LOCATIONS);
-        MULTIDATASTREAM.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
-        MULTIDATASTREAMS.addRelations(SENSOR, THING, OBSERVED_PROPERTIES, OBSERVATIONS);
         OBSERVATION.addRelations(FEATURE_OF_INTEREST, DATASTREAM, MULTIDATASTREAM);
         OBSERVATIONS.addRelations(FEATURE_OF_INTEREST, DATASTREAM, MULTIDATASTREAM);
         OBSERVED_PROPERTY.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         OBSERVED_PROPERTIES.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSOR.addRelations(DATASTREAMS, MULTIDATASTREAMS);
         SENSORS.addRelations(DATASTREAMS, MULTIDATASTREAMS);
-        TASK.addRelations(TASKING_CAPABILITY);
-        TASKS.addRelations(TASKING_CAPABILITY);
-        TASKING_CAPABILITY.addRelations(ACTUATOR, TASKS, THING);
-        TASKING_CAPABILITIES.addRelations(ACTUATOR, TASKS, THING);
         THING.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
         THINGS.addRelations(DATASTREAMS, MULTIDATASTREAMS, LOCATIONS, HISTORICAL_LOCATIONS, TASKING_CAPABILITIES);
+        ACTUATOR.addRelations(TASKING_CAPABILITIES);
+        ACTUATORS.addRelations(TASKING_CAPABILITIES);
+        TASKING_CAPABILITY.addRelations(ACTUATOR, TASKS, THING);
+        TASKING_CAPABILITIES.addRelations(ACTUATOR, TASKS, THING);
+        TASK.addRelations(TASKING_CAPABILITY);
+        TASKS.addRelations(TASKING_CAPABILITY);
 
         ACTUATOR.addProperties(EntityProperty.ID, EntityProperty.PROPERTIES, EntityProperty.NAME, EntityProperty.DESCRIPTION, EntityProperty.ENCODINGTYPE, EntityProperty.METADATA);
         DATASTREAM.addProperties(EntityProperty.ID, EntityProperty.PROPERTIES, EntityProperty.NAME, EntityProperty.DESCRIPTION, EntityProperty.OBSERVATIONTYPE, EntityProperty.UNITOFMEASUREMENT, EntityProperty.OBSERVEDAREA, EntityProperty.PHENOMENONTIME, EntityProperty.RESULTTIME);
@@ -186,7 +186,7 @@ public enum EntityType {
      *
      * @return The type reference.
      */
-    public TypeReference getTypeReference() {
+    public TypeReference<EntityList> getTypeReference() {
         return typeReference;
     }
 

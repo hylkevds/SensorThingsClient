@@ -43,9 +43,10 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.ParseException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -76,6 +77,10 @@ public class SensorThingsService implements MqttCallback {
     private boolean mqttAutoConfigChecked = false;
     private Map<String, Set<Consumer<MqttMessage>>> mqttSubscriptions = new HashMap<>();
     private SensorThingsAPIVersion version;
+    /**
+     * The request timeout in MS.
+     */
+    private int requestTimeoutMs = 120000;
 
     /**
      * Creates a new SensorThingsService without an endpoint url set. The
@@ -163,11 +168,26 @@ public class SensorThingsService implements MqttCallback {
         this.endpoint = new URL(url + "/");
     }
 
+    /**
+     * Gets the endpoint URL for the service. Throws an IllegalStateException if
+     * the endpoint is not set.
+     *
+     * @return the endpoint URL for the service.
+     */
     public URL getEndpoint() {
         if (this.endpoint == null) {
             throw new IllegalStateException("endpoint URL not set.");
         }
         return this.endpoint;
+    }
+
+    /**
+     * Check if the endpoint is set.
+     *
+     * @return true if the endpoint is set, false otherwise.
+     */
+    public boolean isEndpointSet() {
+        return endpoint != null;
     }
 
     /**
@@ -245,11 +265,27 @@ public class SensorThingsService implements MqttCallback {
      * @return the response.
      * @throws IOException in case of problems.
      */
-    public CloseableHttpResponse execute(HttpUriRequest request) throws IOException {
+    public CloseableHttpResponse execute(HttpRequestBase request) throws IOException {
+        setTimeouts(request);
         if (tokenManager != null) {
             tokenManager.addAuthHeader(request);
         }
         return httpClient.execute(request);
+    }
+
+    private void setTimeouts(HttpRequestBase request) {
+        RequestConfig.Builder configBuilder;
+        if (request.getConfig() == null) {
+            configBuilder = RequestConfig.copy(RequestConfig.DEFAULT);
+        } else {
+            configBuilder = RequestConfig.copy(request.getConfig());
+        }
+        RequestConfig config = configBuilder
+                .setSocketTimeout(requestTimeoutMs)
+                .setConnectTimeout(requestTimeoutMs)
+                .setConnectionRequestTimeout(requestTimeoutMs)
+                .build();
+        request.setConfig(config);
     }
 
     /**
@@ -514,6 +550,9 @@ public class SensorThingsService implements MqttCallback {
     }
 
     private void checkMqttConnected() throws MqttException {
+        if (mqttClient.isConnected()) {
+            return;
+        }
         try {
             mqttClient.connect(mqttConfig.getOptions());
         } catch (org.eclipse.paho.client.mqttv3.MqttException exc) {

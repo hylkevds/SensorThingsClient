@@ -31,6 +31,15 @@ import org.slf4j.LoggerFactory;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Entity<T extends Entity<T>> {
 
+    public static final String IOT_COUNT = "iot.count";
+    public static final String AT_IOT_COUNT = "@iot.count";
+    public static final String IOT_NAVIGATION_LINK = "iot.navigationLink";
+    public static final String AT_IOT_NAVIGATION_LINK = "@iot.navigationLink";
+    public static final String IOT_NEXT_LINK = "iot.nextLink";
+    public static final String AT_IOT_NEXT_LINK = "@iot.nextLink";
+    public static final String IOT_SELF_LINK = "iot.selfLink";
+    public static final String AT_IOT_SELF_LINK = "@iot.selfLink";
+
     /**
      * The logger for this class.
      */
@@ -69,7 +78,7 @@ public abstract class Entity<T extends Entity<T>> {
             LOGGER.info("Ignoring unknown property {}.", name);
             return;
         }
-        if ("iot.selfLink".equals(split[1])) {
+        if (IOT_SELF_LINK.equals(split[1])) {
             setSelfLink(value.toString());
             return;
         }
@@ -84,7 +93,7 @@ public abstract class Entity<T extends Entity<T>> {
             if (linkedEntity instanceof EntityList) {
                 EntityList entityList = (EntityList) linkedEntity;
                 switch (split[1]) {
-                    case "iot.count":
+                    case IOT_COUNT:
                         if (value instanceof Number) {
                             entityList.setCount(((Number) value).longValue());
                         } else {
@@ -92,11 +101,11 @@ public abstract class Entity<T extends Entity<T>> {
                         }
                         break;
 
-                    case "iot.nextLink":
+                    case IOT_NEXT_LINK:
                         entityList.setNextLink(URI.create(value.toString()));
                         break;
 
-                    case "iot.navigationLink":
+                    case IOT_NAVIGATION_LINK:
                         // ignored
                         break;
                 }

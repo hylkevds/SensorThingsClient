@@ -31,11 +31,6 @@ import de.fraunhofer.iosb.ilt.swe.common.AbstractDataComponent;
  */
 public abstract class AbstractDataComponentBuilder<T extends AbstractDataComponent, U extends AbstractDataComponentBuilder<T, U>> extends AbstractSWEIdentifiableBuilder<T, U> {
 
-    public U name(final String name) {
-        getBuildingInstance().setName(name);
-        return getSelf();
-    }
-
     public U definition(final String definition) {
         getBuildingInstance().setDefinition(definition);
         return getSelf();
