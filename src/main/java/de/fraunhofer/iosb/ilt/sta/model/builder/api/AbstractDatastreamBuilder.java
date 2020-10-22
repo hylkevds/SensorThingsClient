@@ -7,7 +7,9 @@ import de.fraunhofer.iosb.ilt.sta.model.ObservedProperty;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.UnitOfMeasurement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.geojson.GeoJsonObject;
 import org.threeten.extra.Interval;
 
@@ -82,6 +84,19 @@ public abstract class AbstractDatastreamBuilder<U extends AbstractDatastreamBuil
 
     public U observation(final Observation observation) {
         getBuildingInstance().getObservations().add(observation);
+        return getSelf();
+    }
+
+    public U properties(final Map<String, Object> properties) {
+        getBuildingInstance().setProperties(properties);
+        return getSelf();
+    }
+
+    public U property(final String key, final Object value) {
+        if (getBuildingInstance().getProperties() == null) {
+            getBuildingInstance().setProperties(new HashMap<>());
+        }
+        getBuildingInstance().getProperties().put(key, value);
         return getSelf();
     }
 
