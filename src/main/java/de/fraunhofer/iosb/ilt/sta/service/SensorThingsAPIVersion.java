@@ -8,7 +8,8 @@ import java.util.stream.Stream;
  * @author Michael Jacoby
  */
 public enum SensorThingsAPIVersion {
-    v1_0(1, 0);
+    v1_0(1, 0),
+    V1_1(1,1);
 
     public static SensorThingsAPIVersion fromString(String value) {
         Optional<SensorThingsAPIVersion> result = Stream.of(SensorThingsAPIVersion.values())
