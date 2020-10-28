@@ -152,7 +152,7 @@ public class SensorThingsService implements MqttCallback {
             throw new IllegalStateException("endpoint URL already set.");
         }
         String url = StringUtils.removeEnd(endpoint.toString(), "/");
-        String lastSegment = endpoint.getPath().substring(endpoint.getPath().lastIndexOf('/') + 1);
+        String lastSegment = url.substring(url.lastIndexOf('/') + 1);
         SensorThingsAPIVersion detectedVersion = SensorThingsAPIVersion.fromString(lastSegment);
         if (detectedVersion != null) {
             version = detectedVersion;
