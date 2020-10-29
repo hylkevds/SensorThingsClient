@@ -2,8 +2,10 @@ package de.fraunhofer.iosb.ilt.sta.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import java.io.IOException;
@@ -28,7 +30,12 @@ public class LocationDeserializer extends StdDeserializer<Object> {
 
     @Override
     public Object deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
-        TreeNode tree = parser.getCodec().readTree(parser);
+        final ObjectCodec codec = parser.getCodec();
+        TreeNode tree = codec.readTree(parser);
+        return tryConvertTree(tree, codec);
+    }
+
+    private static Object tryConvertTree(TreeNode tree, ObjectCodec parser) {
         if (tree.isValueNode()) {
             ValueNode value = (ValueNode) tree;
             if (value.isTextual()) {
@@ -45,10 +52,15 @@ public class LocationDeserializer extends StdDeserializer<Object> {
             }
         }
         try {
-            return parser.getCodec().treeToValue(tree, GeoJsonObject.class);
+            return parser.treeToValue(tree, GeoJsonObject.class);
         } catch (IOException e) {
             LOGGER.debug("Not a geoJsonObject.");
         }
         return tree;
+    }
+
+    public static Object deserialize(String text, ObjectMapper mapper) throws JsonProcessingException {
+        TreeNode tree = mapper.readTree(text);
+        return tryConvertTree(tree, mapper);
     }
 }

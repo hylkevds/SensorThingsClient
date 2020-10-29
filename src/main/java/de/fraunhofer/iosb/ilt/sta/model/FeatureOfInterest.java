@@ -1,8 +1,12 @@
 package de.fraunhofer.iosb.ilt.sta.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.fraunhofer.iosb.ilt.sta.dao.BaseDao;
 import de.fraunhofer.iosb.ilt.sta.dao.FeatureOfInterestDao;
+import de.fraunhofer.iosb.ilt.sta.jackson.LocationDeserializer;
+import de.fraunhofer.iosb.ilt.sta.jackson.LocationSerializer;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import java.util.List;
@@ -15,7 +19,9 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
     private String name;
     private String description;
     private String encodingType;
-    private GeoJsonObject feature;
+    @JsonDeserialize(using = LocationDeserializer.class)
+    @JsonSerialize(using = LocationSerializer.class)
+    private Object feature;
     private Map<String, Object> properties;
 
     private final EntityList<Observation> observations = new EntityList<>(EntityType.OBSERVATIONS);
@@ -102,11 +108,11 @@ public class FeatureOfInterest extends Entity<FeatureOfInterest> {
         this.encodingType = encodingType;
     }
 
-    public GeoJsonObject getFeature() {
+    public Object getFeature() {
         return this.feature;
     }
 
-    public void setFeature(GeoJsonObject feature) {
+    public void setFeature(Object feature) {
         this.feature = feature;
     }
 
