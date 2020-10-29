@@ -1,3 +1,11 @@
+# Release Version 0.33
+
+**Updates**
+* Fixed relationship between entity types in ExpandedEntity not being checked correctly.
+* Fixed FeatureOfInterest/feature not being of type Any.
+* Many library version updates.
+
+
 # Release Version 0.32
 
 **Updates**
