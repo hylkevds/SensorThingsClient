@@ -3,7 +3,9 @@ package de.fraunhofer.iosb.ilt.sta.model.builder.api;
 import de.fraunhofer.iosb.ilt.sta.model.Datastream;
 import de.fraunhofer.iosb.ilt.sta.model.MultiDatastream;
 import de.fraunhofer.iosb.ilt.sta.model.Sensor;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -63,6 +65,19 @@ public abstract class AbstractSensorBuilder<U extends AbstractSensorBuilder<U>> 
 
     public U multiDatastream(final MultiDatastream multiDatastream) {
         getBuildingInstance().getMultiDatastreams().add(multiDatastream);
+        return getSelf();
+    }
+
+    public U properties(final Map<String, Object> properties) {
+        getBuildingInstance().setProperties(properties);
+        return getSelf();
+    }
+
+    public U property(final String key, final Object value) {
+        if (getBuildingInstance().getProperties() == null) {
+            getBuildingInstance().setProperties(new HashMap<>());
+        }
+        getBuildingInstance().getProperties().put(key, value);
         return getSelf();
     }
 
