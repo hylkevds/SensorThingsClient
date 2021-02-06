@@ -1,3 +1,10 @@
+# Release Version 0.34
+
+**Updates**
+* Changed distribution from BinTray to Maven Central.
+* Updated dependencies.
+
+
 # Release Version 0.33
 
 **Updates**

@@ -27,38 +27,16 @@ Add the dependency:
 <dependency>
     <groupId>de.fraunhofer.iosb.ilt</groupId>
     <artifactId>FROST-Client</artifactId>
-    <version>0.33</version>
+    <version>0.34</version>
 </dependency>
 
-```
-
-If you do not yet have the FraunhoferIOSB bintray repository, add:
-```xml
-<repositories>
-    <repository>
-        <id>bintray-fraunhoferiosb-Maven</id>
-        <url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-    </repository>
-</repositories>
 ```
 
 ## Using with gradle
 
 Add the dependency:
 ```gradle
-compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.33'
-```
-
-If you do not yet have the FraunhoferIOSB bintray repository, add:
-```gradle
-repositories {
-    maven {
-        url  "https://dl.bintray.com/fraunhoferiosb/Maven"
-    }
-}
+compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.34'
 ```
 
 ## API
