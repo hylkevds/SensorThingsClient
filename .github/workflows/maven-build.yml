@@ -24,7 +24,6 @@ jobs:
     - name: Cache maven repository
       uses: actions/cache@v2
       with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven
