@@ -1,4 +1,4 @@
-# Frost-Client [![codecov](https://codecov.io/gh/FraunhoferIOSB/FROST-Client/branch/master/graph/badge.svg)](https://codecov.io/gh/FraunhoferIOSB/FROST-Client) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e99823ab3a7541b085a9c9c48461d39f)](https://www.codacy.com/gh/FraunhoferIOSB/FROST-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FraunhoferIOSB/FROST-Client&amp;utm_campaign=Badge_Grade)
+# Frost-Client [![Build Status](https://github.com/FraunhoferIOSB/FROST-Client/workflows/Maven%20Build/badge.svg)](https://github.com/FraunhoferIOSB/FROST-Client/actions) [![codecov](https://codecov.io/gh/FraunhoferIOSB/FROST-Client/branch/master/graph/badge.svg)](https://codecov.io/gh/FraunhoferIOSB/FROST-Client) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e99823ab3a7541b085a9c9c48461d39f)](https://www.codacy.com/gh/FraunhoferIOSB/FROST-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FraunhoferIOSB/FROST-Client&amp;utm_campaign=Badge_Grade)
 
 ![FROST-Client Logo](https://raw.githubusercontent.com/FraunhoferIOSB/FROST-Client/master/images/FROST-Client-darkgrey.png)
 
