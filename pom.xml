@@ -37,7 +37,7 @@
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<owasp.version>6.1.6</owasp.version>
-		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
 		<SensorThings-SWE-Common.version>0.6</SensorThings-SWE-Common.version>
 		<slf4j-api.version>1.7.30</slf4j-api.version>
