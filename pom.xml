@@ -4,7 +4,7 @@
 
 	<groupId>de.fraunhofer.iosb.ilt</groupId>
 	<artifactId>FROST-Client</artifactId>
-	<version>0.33-SNAPSHOT</version>
+	<version>0.35-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>FROST-Client</name>
@@ -23,23 +23,26 @@
 
 		<httpclient.version>4.5.13</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
-		<jackson.version>2.11.3</jackson.version>
+		<jackson.version>2.12.3</jackson.version>
 		<jacksonGeojson.version>1.14</jacksonGeojson.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<json-patch.version>1.13</json-patch.version>
-		<junit.version>4.13.1</junit.version>
-		
+		<junit.version>4.13.2</junit.version>
+
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-gpg-plugin>3.0.1</maven-gpg-plugin>
+		<maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
+		<maven-nexus-staging-plugin>1.6.8</maven-nexus-staging-plugin>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<owasp.version>6.0.2</owasp.version>
-		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-		
-		<SensorThings-SWE-Common.version>0.5</SensorThings-SWE-Common.version>
+		<owasp.version>6.2.2</owasp.version>
+		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+
+		<SensorThings-SWE-Common.version>0.6</SensorThings-SWE-Common.version>
 		<slf4j-api.version>1.7.30</slf4j-api.version>
 		<threeten-extra.version>1.5.0</threeten-extra.version>
+		<threeten-extra.version>1.6.0</threeten-extra.version>
 		<org.eclipse.paho.client.mqttv3.version>1.2.2</org.eclipse.paho.client.mqttv3.version>
 		<typetools.version>0.6.1</typetools.version>
 	</properties>
@@ -84,33 +87,15 @@
 	</issueManagement>
 
 	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<id>fraunhoferiosb-Maven</id>
-			<url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-
-	<profiles>
-		<profile>
-			<id>SUREFIRE-1588</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-			</properties>
-		</profile>
-	</profiles>
-	
-	<repositories>
-		<repository>
-			<id>bintray-fraunhoferiosb-Maven</id>
-			<url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
 
 	<build>
 		<plugins>
@@ -122,36 +107,6 @@
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<configuration>
-					<source>8</source>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -194,6 +149,81 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>SUREFIRE-1588</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven-source-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<configuration>
+							<source>8</source>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>${maven-nexus-staging-plugin}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>

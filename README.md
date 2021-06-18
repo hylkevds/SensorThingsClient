@@ -1,4 +1,4 @@
-# Frost-Client [![Build Status](https://travis-ci.org/FraunhoferIOSB/FROST-Client.svg?branch=master)](https://travis-ci.org/FraunhoferIOSB/FROST-Client) [![codecov](https://codecov.io/gh/FraunhoferIOSB/FROST-Client/branch/master/graph/badge.svg)](https://codecov.io/gh/FraunhoferIOSB/FROST-Client) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e99823ab3a7541b085a9c9c48461d39f)](https://www.codacy.com/gh/FraunhoferIOSB/FROST-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FraunhoferIOSB/FROST-Client&amp;utm_campaign=Badge_Grade)
+# Frost-Client [![Build Status](https://github.com/FraunhoferIOSB/FROST-Client/workflows/Maven%20Build/badge.svg)](https://github.com/FraunhoferIOSB/FROST-Client/actions) [![codecov](https://codecov.io/gh/FraunhoferIOSB/FROST-Client/branch/master/graph/badge.svg)](https://codecov.io/gh/FraunhoferIOSB/FROST-Client) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e99823ab3a7541b085a9c9c48461d39f)](https://www.codacy.com/gh/FraunhoferIOSB/FROST-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FraunhoferIOSB/FROST-Client&amp;utm_campaign=Badge_Grade)
 
 ![FROST-Client Logo](https://raw.githubusercontent.com/FraunhoferIOSB/FROST-Client/master/images/FROST-Client-darkgrey.png)
 
@@ -27,38 +27,16 @@ Add the dependency:
 <dependency>
     <groupId>de.fraunhofer.iosb.ilt</groupId>
     <artifactId>FROST-Client</artifactId>
-    <version>0.32</version>
+    <version>0.34</version>
 </dependency>
 
-```
-
-If you do not yet have the FraunhoferIOSB bintray repository, add:
-```xml
-<repositories>
-    <repository>
-        <id>bintray-fraunhoferiosb-Maven</id>
-        <url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-    </repository>
-</repositories>
 ```
 
 ## Using with gradle
 
 Add the dependency:
 ```gradle
-compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.32'
-```
-
-If you do not yet have the FraunhoferIOSB bintray repository, add:
-```gradle
-repositories {
-    maven {
-        url  "https://dl.bintray.com/fraunhoferiosb/Maven"
-    }
-}
+compile 'de.fraunhofer.iosb.ilt:FROST-Client:0.34'
 ```
 
 ## API
@@ -184,6 +162,61 @@ dad.addDataArrayValue(dav2);
 
 service.create(dad);
 
+```
+
+### Subscription via MQTT
+
+To be notified about changes to entities or entity sets you can use MQTT subscriptions.
+
+```java
+// subscribe directly to an entity, topic: [version]/Datastreams(1)
+MqttSubscription datastreamDirectSubscription = DatastreamBuilder
+		.builder()
+		.service(service)
+		.id(new IdLong(1L))
+		.build()
+		.subscribe(x -> System.out.println(x.getId()));
+service.unsubscribe(datastreamDirectSubscription);
+
+// subscribe to an entity relative to another, topic: [version]/Datastreams(1)/Thing
+MqttSubscription thingViaDatastreamSubscription = DatastreamBuilder
+		.builder()
+		.service(service)
+		.id(new IdLong(1L))
+		.build()
+		.<Thing>subscribeRelative(x -> System.out.println(x.getId()), EntityType.THING);
+service.unsubscribe(thingViaDatastreamSubscription);
+
+// subscribe directly to an entity set, topic: [version]/Observations
+MqttSubscription observationsDirectSubscription = service
+		.observations()
+		.subscribe(x -> System.out.println(x.getId()));
+service.unsubscribe(observationsDirectSubscription);
+
+// subscribe directly to an entity set including only selected properties in the response,
+// topic: [version]/Observations?$select=result,resultTime
+MqttSubscription observationsDirectWithSelectSubscription = service
+		.observations()
+		.subscribe(x -> System.out.println(x.getId()), EntityProperty.RESULT, EntityProperty.RESULTTIME);
+service.unsubscribe(observationsDirectWithSelectSubscription);
+
+// subscribe directly to an entity set but locally filter incoming notifications before calling the handler function
+// here: only fire handler if observation was man since yesterday
+MqttSubscription observationsDirectWithFilterSubscription = service
+		.observations()
+		.subscribe(x -> x.getResultTime().isAfter(ZonedDateTime.now().minusDays(1)),
+				x -> System.out.println(x.getId()),
+				EntityProperty.RESULT, EntityProperty.RESULTTIME);
+service.unsubscribe(observationsDirectWithFilterSubscription);
+
+// subscribe to an entity relative to another, topic: [version]/Datastreams(1)/Observations
+MqttSubscription observationsViaDatastreamSubscription = DatastreamBuilder
+		.builder()
+		.service(service)
+		.id(new IdLong(1L))
+		.build()
+		.<Observation>subscribeRelative(x -> System.out.println(x.getId()), EntityType.OBSERVATIONS);
+service.unsubscribe(observationsViaDatastreamSubscription);
 ```
 
 ## Background

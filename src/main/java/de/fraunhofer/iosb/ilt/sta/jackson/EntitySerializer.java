@@ -1,25 +1,26 @@
 package de.fraunhofer.iosb.ilt.sta.jackson;
 
+import de.fraunhofer.iosb.ilt.sta.model.Entity;
+import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-import de.fraunhofer.iosb.ilt.sta.model.Entity;
-import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Serializer for SensorThings Entities.
@@ -37,7 +38,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
         gen.writeStartObject();
 
         SerializationConfig config = serializers.getConfig();
-        final BasicBeanDescription beanDesc = config.introspect(serializers.constructType(entity.getClass()));
+        final BeanDescription beanDesc = config.introspect(serializers.constructType(entity.getClass()));
 
         List<BeanPropertyDefinition> properties = beanDesc.findProperties();
         for (BeanPropertyDefinition property : properties) {
