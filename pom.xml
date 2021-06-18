@@ -20,7 +20,7 @@
 		<bintray.subject>fraunhoferiosb</bintray.subject>
 		<bintray.repo>Maven</bintray.repo>
 		<bintray.package>FROST-Client</bintray.package>
-
+		<commons-lang3.version>3.12.0</commons-lang3.version>
 		<httpclient.version>4.5.13</httpclient.version>
 		<jaxb-api.version>2.3.1</jaxb-api.version>
 		<jackson.version>2.12.3</jackson.version>
@@ -36,6 +36,7 @@
 		<maven-nexus-staging-plugin>1.6.8</maven-nexus-staging-plugin>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<mockito.version>3.11.1</mockito.version>
 		<owasp.version>6.2.2</owasp.version>
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
@@ -231,6 +232,17 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
