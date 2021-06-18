@@ -44,7 +44,7 @@
 		<SensorThings-SWE-Common.version>0.6</SensorThings-SWE-Common.version>
 		<slf4j-api.version>1.7.31</slf4j-api.version>
 		<threeten-extra.version>1.6.0</threeten-extra.version>
-		<typetools.version>0.6.1</typetools.version>
+		<typetools.version>0.6.3</typetools.version>
 	</properties>
 
 	<licenses>
