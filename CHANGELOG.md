@@ -1,3 +1,10 @@
+# Release Version 0.35
+
+**Updates**
+* Added MQTT support.
+* Updated dependencies.
+
+
 # Release Version 0.34
 
 **Updates**
