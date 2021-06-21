@@ -36,7 +36,7 @@
 		<maven-nexus-staging-plugin>1.6.8</maven-nexus-staging-plugin>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<mockito.version>3.11.1</mockito.version>
+		<mockito.version>3.11.2</mockito.version>
 		<owasp.version>6.2.2</owasp.version>
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
